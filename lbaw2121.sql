@@ -1,50 +1,53 @@
+SET Search.path lbaw2121;
 -----------------------------------------
 -- Types
 -----------------------------------------
 
 --CREATE TYPE media AS ENUM ('CD', 'DVD', 'VHS', 'Slides', 'Photos', 'MP3');
+CREATE TYPE video_quality AS ENUM ('480p', '720p', '1080')
 
 -----------------------------------------
 -- Tables
 -----------------------------------------
 
--- Note that a plural 'users' name was adopted because user is a reserved word in PostgreSQL.
 
+-- Note that a plural 'users' name was adopted because user is a reserved word in PostgreSQL.
 CREATE TABLE User (
-   --id SERIAL PRIMARY KEY,
-   name TEXT NOT NULL PRIMARY KEY,
+   id SERIAL PRIMARY KEY,
+   username TEXT UNIQUE NOT NULL,
+   name TEXT NOT NULL,
    email TEXT NOT NULL CONSTRAINT user_email_uk UNIQUE,
-   username TEXT NOT NULL,
    hashed_password TEXT NOT NULL,
    profile_picture TEXT NOT NULL, --Path
    cover_picture TEXT NOT NULL, --Path
-   phone_number TEXT NOT NULL,
-   birthay TIMESTAMP WITH TIME ZONE NOT NULL
+   phone_number TEXT,
+   advertiser BIGINT,
+   FOREIGN KEY (advertiser) REFERENCES Advertiser(id),   
+   birthday TIMESTAMP WITH TIME ZONE NOT NULL
+);
+
+CREATE TABLE Advertiser (
+   id SERIAL PRIMARY KEY,
+   company_name TEXT NOT NULL,
+   wallet INTEGER FOREIGN KEY REFERENCES Wallet(id) NOT NULL,
+);
+
+CREATE TABLE Wallet (
+   id SERIAL PRIMARY KEY,
+   CONSTRAINT CHK_budget CHECK (budget >= 0.0)
 );
 
 CREATE TABLE Content (
    id SERIAL PRIMARY KEY,
    number_likes INTEGER,
-   publishing_date TIMESTAMP WITH TIME ZONE NOT NULL
-);
-
-CREATE TABLE Location (
-   id SERIAL PRIMARY KEY,
-   region TEXT NOT NULL,
-   --address TEXT NOT NULL,
-   --gps TEXT
+   publishing_date TIMESTAMP WITH TIME ZONE NOT NULL,
+   creator TEXT NOT NULL REFERENCES User(username) ON UPDATE CASCADE
 );
 
 CREATE TABLE Group (
    id SERIAL PRIMARY KEY,
    name TEXT NOT NULL,
    description TEXT
-);
-
-CREATE TABLE Country (
-   iso_3166 TEXT NOT NULL UNIQUE ,
-   name TEXT,
-   CONSTRAINT PRIMARY KEY (iso_3166)
 );
 
 CREATE TABLE Comment (
@@ -61,7 +64,7 @@ CREATE TABLE Interest (
 
 CREATE TABLE MediaContent (
    id SERIAL PRIMARY KEY,
-   title TEXT NOT NULL,
+   description TEXT NOT NULL,
    media TEXT NOT NULL, --Path
    fullscreen BOOLEAN
 );
@@ -73,11 +76,87 @@ CREATE TABLE Message (
 );
 
 CREATE TABLE PaymentMethod (
-   name TEXT NOT NULL,
-   company TEXT,
+   id SERIAL PRIMARY KEY,
+   name TEXT NOT NULL PRIMARY KEY,
+   company TEXT NOT NULL,
    transaction_limit FLOAT,
    CONSTRAINT CHK_limit CHECK (transation_limit >= 0.0)
 );
+
+CREATE TABLE FriendRequest (
+   user_from TEXT,
+   user_to TEXT,
+   creation DATE NOT NULL,
+   state INT,  -- for not answered/accepted/rejected
+   CONSTRAINT PK_FriendRequest PRIMARY KEY (user_from,user_to)
+);
+
+CREATE TABLE Location (
+   id SERIAL PRIMARY KEY,
+   region TEXT NOT NULL,
+   --address TEXT NOT NULL,
+   --gps TEXT
+);
+
+CREATE TABLE Country (
+   iso_3166 TEXT NOT NULL UNIQUE ,
+   name TEXT,
+   CONSTRAINT PRIMARY KEY (iso_3166)
+);
+
+CREATE TABLE ContentLikes (
+   id_user TEXT NOT NULL REFERENCES User(usename) ON UPDATE CASCADE,
+   id_content INTEGER NOT NULL REFERENCES Content(id),
+   date DATE,
+   PRIMARY KEY (id_user, id_content)
+);
+
+CREATE TABLE Notification (
+   id_notification SERIAL PRIMARY KEY,
+   read BOOLEAN
+);
+
+CREATE TABLE Text(
+   id_text SERIAL SERIAL PRIMARY KEY,
+   post_text TEXT NOT NULL 
+);
+
+CREATE TABLE Video(
+   id_video SERIAL SERIAL PRIMARY KEY,
+   title TEXT NOT NULL,
+   size INTEGER,  --number of seconds?
+   quality VIDEO_QUALITY,
+   views INTEGER,
+   CONSTRAINT CHK_size CHECK (size > 0.0)
+);
+
+CREATE TABLE Image(
+   id_image SERIAL PRIMARY KEY,
+   title TEXT NOT NULL,
+   width INTEGER,
+   height INTEGER,
+   CONSTRAINT CHK_width CHECK (width > 0.0),
+   CONSTRAINT CHK_heigh CHECK (height > 0.0)
+);
+
+CREATE TABLE Campaign(
+   id_campaign SERIAL PRIMARY KEY,
+   starting_date TIMESTAMP WITH TIME ZONE NOT NULL,
+   finishing_date TIMESTAMP WITH TIME ZONE NOT NULL,
+   budget FLOAT,
+   remaining_budget FLOAT,
+   impressions INTEGER,
+   clicks INTEGER,
+   CONSTRAINT CHK_campaign_dates CHECK (finishing_date > starting_date),
+   CONSTRAINT CHK_campaign_budgets CHECK (remaining_budget <= budget)
+);
+
+CREATE TABLE MeetingGame (
+   id SERIAL PRIMARY KEY,
+   name TEXT NOT NULL,
+   Type TEXT
+);
+
 
 /*
 CREATE TABLE work (
