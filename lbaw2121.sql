@@ -60,12 +60,24 @@ CREATE TABLE Interest (
 );
 
 CREATE TABLE MediaContent (
-   --id SERIAL PRIMARY KEY,
+   id SERIAL PRIMARY KEY,
    title TEXT NOT NULL,
    media TEXT NOT NULL, --Path
    fullscreen BOOLEAN
 );
 
+CREATE TABLE Message (
+   id SERIAL PRIMARY KEY,
+   message TEXT NOT NULL,
+   publish_date DATE
+);
+
+CREATE TABLE PaymentMethod (
+   name TEXT NOT NULL,
+   company TEXT,
+   transaction_limit FLOAT,
+   CONSTRAINT CHK_limit CHECK (transation_limit >= 0.0)
+);
 
 /*
 CREATE TABLE work (
