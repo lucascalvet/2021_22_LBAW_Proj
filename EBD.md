@@ -30,19 +30,27 @@
 
 | Relation reference | Relation Compact Notation                        |
 | ------------------ | ------------------------------------------------ |
-| R01                | User(__id__, name NN, profile_picture, cover_picture, username NN, email NN, hashed_password NN, phone_number, birthday NN)                     |
-| R02                | Video(__id__, )            |
-| R03                | Content(__id__, publishing_date NN)            |
-| R04                | Group(__id1__, name NN, description)   |
-| R05                | Comment(__id1__, comment_text NN, date NN) |
+| R01                | User(__id__, username UQ NN, name NN, email UQ NN, hashed_password NN, profile_picture NN, cover_picture NN, phone_number, id_country NN, birthday NN)                     |
+| R02                | AdminUser(__id__)  |
+| R03                | Advertiser(__id__, company_name NN, id_wallet NN)  |
+| R04                | Wallet(__id__, budget NN) |
+| R05                | Content(__id__, publishing_date NN, id_group, id_creator NN)            |
+| R06                | ContentLikes(__id_user NN, id_content NN__, date) |
+| R07                | TextContent(__id__, post_text NN, id_content)    |
+| R08                | TextReply(__child_text__, parent_text NN)    |
+| R09                | MediaContent(__id__, description NN, media NN, fullscreen, id_content NN, id_locale)            |
+| R10                | Video(__id__, title NN, size, quality, views, id_media_content NN)            |
+| R11                | Image(__id__, alt_text NN, width, height, id_media_content NN)  |
+| R12                | Comment(__id__, comment_text NN, comment_date, author NN, id_media_content NN) |
+| R13                | FriendRequest(__id_user_from NN, id_user_to NN__, creation NN, state)                     |
+| R14                | Message(__id__, message NN, id_user_sender NN, id_user_receiver NN, publish_date)   |
+| R15                | Group(__id__, name NN, description)   |
+| R16                | UserGroupModerator(__id_group NN, id_user_moderator NN__)   |
+| R16                | UserGroupMember(__id_group NN, id_user_moderator NN__)   |
 | R06                | Interest(__id__, name NN, description NN)                     |
-| R07                | MediaContent(__id__, description, media NN, fullscreen NN)            |
-| R08                | Message(__id1__, message NN, date NN)   |
 | R09                | PaymentMethod(name NN, company NN, transaction_limit NN CK transaction_limit >= 0) |
-| R10                | FriendRequest(__id__, creation_date NN)                     |
 | R11                | Location(__id__, region NN)            |
 | R12                | Country(__id1__, iso_3166 NN, )   |
-| R13                | ContentLikes() |
 | R14                | Text(__id__, )                     |
 | R15                | Video(__id__, )            |
 
