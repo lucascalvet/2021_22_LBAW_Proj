@@ -30,7 +30,7 @@
 
 | Relation reference | Relation Compact Notation                        |
 | ------------------ | ------------------------------------------------ |
-| R01                | User(__id__, username UQ NN, name NN, email UQ NN, hashed_password NN, profile_picture NN, cover_picture NN, phone_number, id_country NN, birthday NN)                     |
+| R01                | User(__id__, username UQ NN, name NN, email UQ NN, hashed_password NN, profile_picture NN, cover_picture NN, phone_number, id_country NN, birthday NN) |
 | R02                | AdminUser(__id__)  |
 | R03                | Advertiser(__id__, company_name NN, id_wallet NN)  |
 | R04                | Wallet(__id__, budget NN) |
@@ -102,10 +102,11 @@
 
 | **Relation reference** | **Relation Name** | **Order of magnitude**        | **Estimated growth** |
 | ------------------ | ------------- | ------------------------- | --------- |
-| R01                | Table1        | units|dozens|hundreds|etc | order per time |
-| R02                | Table2        | units|dozens|hundreds|etc | dozens per month |
-| R03                | Table3        | units|dozens|hundreds|etc | hundreds per day |
-| R04                | Table4        | units|dozens|hundreds|etc | no growth |
+| R01                | User          | 10 k  | 100 / day |
+| R02                | AdminUser     | 10    | no growth |
+| R03                | Advertiser    | 1 k  | 10 / day  |
+| R04                | Wallet        | 1 k  | 10 / day |
+| R05                | Content       | 100 k | 1 k /day |
 
 
 ### 2. Proposed Indices
