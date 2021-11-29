@@ -46,13 +46,21 @@
 | R14                | Message(__id__, message NN, id_user_sender NN, id_user_receiver NN, publish_date)   |
 | R15                | Group(__id__, name NN, description)   |
 | R16                | UserGroupModerator(__id_group NN, id_user_moderator NN__)   |
-| R16                | UserGroupMember(__id_group NN, id_user_moderator NN__)   |
-| R06                | Interest(__id__, name NN, description NN)                     |
-| R09                | PaymentMethod(name NN, company NN, transaction_limit NN CK transaction_limit >= 0) |
-| R11                | Location(__id__, region NN)            |
-| R12                | Country(__id1__, iso_3166 NN, )   |
-| R14                | Text(__id__, )                     |
-| R15                | Video(__id__, )            |
+| R17                | UserGroupMember(__id_group NN, id_user_member NN__)   |
+| R18                | Interest(__id__, name NN, description NN)                     |
+| R19                | InterestUser(__id_interest NN, id_user NN__)                     |
+| R20                | Locale(__id__, region NN, id_country NN)            |
+| R21                | Country(__id__, iso_3166 UQ, name NN)   |
+| R22                | Notification(__id__, id_user NN, read) |
+| R23                | LikeNotification(__id_notification__, id_like NN) |
+| R24                | ReplyNotification(__id_notification__) |
+| R25                | FriendRequestNotification(__id_notification__, id_friend_request NN)  |
+| R26                | CommentReplyNotification(__id_notification__, id_comment NN) |
+| R27                | TextContentReplyNotification(__id_notification__, id_text_content NN) |
+| R28                | PaymentMethod(__id__, name NN, company NN, transaction_limit NN) |
+| R29                | Campaign(__id_media_content__, id_advertiser NN, starting_date NN, finishing_date NN, budget, remaining_budget, impressions, clicks)   |
+| R30                | GameSession(__id__, session_title NN)    |
+| R31                | GameStats(__id_user__, id_game_session NN, score NN)  |
 
 ### 2. Domains
 
