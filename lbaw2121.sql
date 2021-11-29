@@ -38,7 +38,7 @@ DROP TABLE IF EXISTS TextContentReplyNotification CASCADE;
 DROP TABLE IF EXISTS GameSession CASCADE;
 DROP TABLE IF EXISTS GameStats CASCADE;
 
-SET Search.path lbaw2121;
+-- SET Search.path lbaw2121;
 -----------------------------------------
 -- Types
 -----------------------------------------
@@ -48,6 +48,12 @@ SET Search.path lbaw2121;
 -----------------------------------------
 -- Tables
 -----------------------------------------
+
+CREATE TABLE Country (
+   id SERIAL PRIMARY KEY,
+   iso_3166 TEXT UNIQUE,
+   name TEXT NOT NULL
+);
 
 CREATE TABLE Users (
    id SERIAL PRIMARY KEY,
@@ -66,16 +72,22 @@ CREATE TABLE AdminUser (
    id_user INTEGER PRIMARY KEY REFERENCES Users(id) ON UPDATE CASCADE
 );
 
+CREATE TABLE Wallet (
+   id SERIAL PRIMARY KEY,
+   budget FLOAT NOT NULL,
+   CONSTRAINT CHK_budget CHECK (budget >= 0.0)
+);
+
 CREATE TABLE Advertiser (
    id_user INTEGER PRIMARY KEY REFERENCES Users(id) ON UPDATE CASCADE, 
    company_name TEXT NOT NULL,
    id_wallet INTEGER NOT NULL REFERENCES Wallet(id) NOT NULL
 );
 
-CREATE TABLE Wallet (
+CREATE TABLE Groups (
    id SERIAL PRIMARY KEY,
-   budget FLOAT NOT NULL,
-   CONSTRAINT CHK_budget CHECK (budget >= 0.0)
+   name TEXT NOT NULL,
+   description TEXT
 );
 
 CREATE TABLE Content (
@@ -103,6 +115,12 @@ CREATE TABLE TextReply (
    parent_text INTEGER NOT NULL REFERENCES TextContent(id) ON UPDATE CASCADE
 );
 
+CREATE TABLE Locale ( 
+   id SERIAL PRIMARY KEY,
+   region TEXT NOT NULL,
+   id_country INTEGER NOT NULL REFERENCES Country(id) ON UPDATE CASCADE
+);
+
 CREATE TABLE MediaContent (
    id SERIAL PRIMARY KEY,
    description TEXT NOT NULL,
@@ -117,6 +135,7 @@ CREATE TABLE Video (
    alt_text TEXT NOT NULL,
    views INTEGER NOT NULL,        
    id_media_content INTEGER NOT NULL REFERENCES MediaContent(id) ON UPDATE CASCADE,
+   size FLOAT,
    CONSTRAINT CHK_size CHECK (size > 0.0) 
 );
 
@@ -163,11 +182,6 @@ CREATE TABLE Message (  -- Maybe do MessageGroup in future
    publish_date TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
-CREATE TABLE Groups (
-   id SERIAL PRIMARY KEY,
-   name TEXT NOT NULL,
-   description TEXT
-);
 
 CREATE TABLE UserGroupModerator (
    id_group INTEGER NOT NULL REFERENCES Groups(id) ON UPDATE CASCADE,
@@ -193,17 +207,7 @@ CREATE TABLE InterestUser (
    PRIMARY KEY (id_interest, id_user)
 );
 
-CREATE TABLE Locale ( 
-   id SERIAL PRIMARY KEY,
-   region TEXT NOT NULL,
-   id_country INTEGER NOT NULL REFERENCES Locale(id) ON UPDATE CASCADE
-);
 
-CREATE TABLE Country (
-   id SERIAL PRIMARY KEY,
-   iso_3166 TEXT UNIQUE,
-   name TEXT NOT NULL
-);
 
 CREATE TABLE Notification (
    id SERIAL PRIMARY KEY,
@@ -213,7 +217,9 @@ CREATE TABLE Notification (
 
 CREATE TABLE LikeNotification (
    id_notification INTEGER PRIMARY KEY REFERENCES Notification(id) ON UPDATE CASCADE,
-   id_like INTEGER NOT NULL REFERENCES ContentLike(id) ON UPDATE CASCADE
+   id_user INTEGER NOT NULL,
+   id_content INTEGER NOT NULL,
+   FOREIGN KEY (id_user, id_content) REFERENCES ContentLike(id_user, id_content) ON UPDATE CASCADE
 );
 
 CREATE TABLE ReplyNotification (
@@ -240,12 +246,12 @@ CREATE TABLE PaymentMethod (
    name TEXT NOT NULL,
    company TEXT NOT NULL,
    transaction_limit FLOAT,
-   CONSTRAINT CHK_limit CHECK (transation_limit >= 0.0)
+   CONSTRAINT CHK_limit CHECK (transaction_limit >= 0.0)
 );
 
 CREATE TABLE Campaign (
    id_media_content INTEGER PRIMARY KEY REFERENCES MediaContent(id) ON UPDATE CASCADE,
-   id_advertiser INTEGER NOT NULL REFERENCES Advertiser(id) ON UPDATE CASCADE,
+   id_advertiser INTEGER NOT NULL REFERENCES Advertiser(id_user) ON UPDATE CASCADE,
    starting_date TIMESTAMP WITH TIME ZONE NOT NULL,
    finishing_date TIMESTAMP WITH TIME ZONE NOT NULL,
    budget FLOAT,
