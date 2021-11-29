@@ -93,7 +93,7 @@ CREATE TABLE ContentLike (
 );
 
 CREATE TABLE TextContent ( 
-   id SERIAL SERIAL PRIMARY KEY,
+   id SERIAL PRIMARY KEY,
    post_text TEXT NOT NULL,
    id_content INTEGER NOT NULL REFERENCES Content(id) ON UPDATE CASCADE
 );
