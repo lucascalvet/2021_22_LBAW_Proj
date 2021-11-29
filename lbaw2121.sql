@@ -38,7 +38,7 @@ DROP TABLE IF EXISTS TextContentReplyNotification CASCADE;
 DROP TABLE IF EXISTS GameSession CASCADE;
 DROP TABLE IF EXISTS GameStats CASCADE;
 
--- SET Search.path lbaw2121;
+SET Search.path lbaw2121;
 -----------------------------------------
 -- Types
 -----------------------------------------
