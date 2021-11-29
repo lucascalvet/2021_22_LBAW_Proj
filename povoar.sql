@@ -31,7 +31,12 @@
 --LikeNotification: 2
 --ReplyNotification: 2
 --FriendRequestNotification: 2
---CommentReplyNotification: 0
+--CommentReplyNotification: 1
+--TextContentReplyNotification: 1
+--PaymentMethod: 1
+--Campaign: 4
+--GameSession: 2
+--GameStats: 2
 
 --Alpha-3 code
 INSERT INTO Country (id, iso_3166, name) VALUES (1, 'AFG', 'Afghanistan');
@@ -194,17 +199,34 @@ INSERT INTO InterestUser (id_interest, id_user) VALUES ();
 INSERT INTO InterestUser (id_interest, id_user) VALUES ();
 INSERT INTO InterestUser (id_interest, id_user) VALUES ();
 
-INSERT INTO Notification () VALUES ();
-INSERT INTO Notification () VALUES ();
-INSERT INTO Notification () VALUES ();
-INSERT INTO Notification () VALUES ();
-INSERT INTO Notification () VALUES ();
+INSERT INTO Notification (id, id_user) VALUES ();
+INSERT INTO Notification (id, id_user) VALUES ();
+INSERT INTO Notification (id, id_user) VALUES ();
+INSERT INTO Notification (id, id_user) VALUES ();
+INSERT INTO Notification (id, id_user) VALUES ();
 
-INSERT INTO LikeNotification () VALUES ();
-INSERT INTO LikeNotification () VALUES ();
+INSERT INTO LikeNotification (id_notification, id_user, id_content) VALUES ();
+INSERT INTO LikeNotification (id_notification, id_user, id_content) VALUES ();
 
-INSERT INTO ReplyNotification () VALUES ();
-INSERT INTO ReplyNotification () VALUES ();
+INSERT INTO ReplyNotification (id_notification, id_friend_request) VALUES ();
+INSERT INTO ReplyNotification (id_notification, id_friend_request) VALUES ();
 
-INSERT INTO FriendRequestNotification () VALUES ();
-INSERT INTO FriendRequestNotification () VALUES ();
+INSERT INTO FriendRequestNotification (id_notification, id_friend_request) VALUES ();
+INSERT INTO FriendRequestNotification (id_notification, id_friend_request) VALUES ();
+
+INSERT INTO CommentReplyNotification (id_reply_notification, id_comment) VALUES ();
+
+INSERT INTO TextContentReplyNotification (id_reply_notification, id_text_content) VALUES ();
+
+INSERT INTO PaymentMethod (id, name, company, transaction_limit) VALUES ();
+
+INSERT INTO Campaign (id_media_content, id_advertiser, starting_date, finishing_date, budget, remaining_budget, impressions, clicks) VALUES ();
+INSERT INTO Campaign (id_media_content, id_advertiser, starting_date, finishing_date, budget, remaining_budget, impressions, clicks) VALUES ();
+INSERT INTO Campaign (id_media_content, id_advertiser, starting_date, finishing_date, budget, remaining_budget, impressions, clicks) VALUES ();
+INSERT INTO Campaign (id_media_content, id_advertiser, starting_date, finishing_date, budget, remaining_budget, impressions, clicks) VALUES ();
+
+INSERT INTO GameSession (id, session_title) VALUES ();
+INSERT INTO GameSession (id, session_title) VALUES ();
+
+INSERT INTO GameStats (id_user, id_game_session, score) VALUES ();
+INSERT INTO GameStats (id_user, id_game_session, score) VALUES ();

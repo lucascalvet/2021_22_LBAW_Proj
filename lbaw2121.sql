@@ -207,8 +207,6 @@ CREATE TABLE InterestUser (
    PRIMARY KEY (id_interest, id_user)
 );
 
-
-
 CREATE TABLE Notification (
    id SERIAL PRIMARY KEY,
    id_user INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
