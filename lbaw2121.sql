@@ -1,9 +1,46 @@
+-----------------------------------------
+-- Drop old schema
+-----------------------------------------
+
+DROP TABLE IF EXISTS User CASCADE;
+DROP TABLE IF EXISTS AdminUser CASCADE;
+DROP TABLE IF EXISTS Advertiser CASCADE;
+DROP TABLE IF EXISTS Wallet CASCADE;
+DROP TABLE IF EXISTS Content CASCADE;
+DROP TABLE IF EXISTS ContentLike CASCADE;
+DROP TABLE IF EXISTS TextContent CASCADE;
+DROP TABLE IF EXISTS TextReply CASCADE;
+DROP TABLE IF EXISTS MediaContent CASCADE;
+DROP TABLE IF EXISTS Video CASCADE;
+DROP TABLE IF EXISTS Image CASCADE;
+DROP TABLE IF EXISTS Comment CASCADE;
+DROP TABLE IF EXISTS FriendRequest CASCADE;
+DROP TABLE IF EXISTS Message CASCADE;
+DROP TABLE IF EXISTS MessageUser CASCADE;
+DROP TABLE IF EXISTS Group CASCADE;
+DROP TABLE IF EXISTS UserGroupModerator CASCADE;
+DROP TABLE IF EXISTS UserGroupMember CASCADE;
+DROP TABLE IF EXISTS Interest CASCADE;
+DROP TABLE IF EXISTS InterestUser CASCADE;
+DROP TABLE IF EXISTS Locale CASCADE;
+DROP TABLE IF EXISTS Country CASCADE;
+DROP TABLE IF EXISTS PaymentMethod CASCADE;
+DROP TABLE IF EXISTS Campaign CASCADE;
+DROP TABLE IF EXISTS MeetingGame CASCADE;
+DROP TABLE IF EXISTS Notification CASCADE;
+DROP TABLE IF EXISTS LikeNotification CASCADE;
+DROP TABLE IF EXISTS ReplyNotification CASCADE;
+DROP TABLE IF EXISTS FriendRequestNotification CASCADE;
+DROP TABLE IF EXISTS CommentReplyNotification CASCADE;
+DROP TABLE IF EXISTS TextContentReplyNotification CASCADE;
+
+DROP TYPE IF EXISTS video_quality CASCADE;
+
 SET Search.path lbaw2121;
 -----------------------------------------
 -- Types
 -----------------------------------------
 
---CREATE TYPE media AS ENUM ('CD', 'DVD', 'VHS', 'Slides', 'Photos', 'MP3');
 CREATE TYPE video_quality AS ENUM ('480p', '720p', '1080p')
 
 -----------------------------------------
@@ -55,17 +92,17 @@ CREATE TABLE ContentLike (
    CONSTRAINT PK_ContentLike PRIMARY KEY (id_user, id_content)
 );
 
-CREATE TABLE TextContent(  -- text reserved word
+CREATE TABLE TextContent (  -- text reserved word
    id SERIAL SERIAL PRIMARY KEY,
    post_text TEXT NOT NULL,
    id_content INTEGER NOT NULL REFERENCES Content(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE TextReply{
+CREATE TABLE TextReply (
    parent_text INTEGER NOT NULL REFERENCES TextContent(id) ON UPDATE CASCADE,
    child_text INTEGER NOT NULL REFERENCES TextContent(id) ON UPDATE CASCADE,
    CONSTRAINT PK_TextReply PRIMARY KEY (child_text)
-};
+);
 
 CREATE TABLE MediaContent (
    id SERIAL PRIMARY KEY,
@@ -76,7 +113,7 @@ CREATE TABLE MediaContent (
    id_locale INTEGER REFERENCES Locale(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE Video(
+CREATE TABLE Video (
    id SERIAL PRIMARY KEY,
    title TEXT NOT NULL,
    size INTEGER,  --number of seconds?
@@ -86,7 +123,7 @@ CREATE TABLE Video(
    CONSTRAINT CHK_size CHECK (size > 0.0)  --MISSING FOREIGN KEYS
 );
 
-CREATE TABLE Image(
+CREATE TABLE Image (
    id SERIAL PRIMARY KEY,
    alt_text TEXT NOT NULL,
    width INTEGER,
@@ -104,7 +141,7 @@ CREATE TABLE Comment (
    id_media_content INTEGER NOT NULL REFERENCES MediaContent(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE FriendRequest (
+CREATE TABLE FriendRequest (  -- id??
    creation DATE NOT NULL,
    state INT,  -- for not answered/accepted/rejected
    id_user_from INTEGER NOT NULL REFERENCES User(id) ON UPDATE CASCADE,
@@ -119,7 +156,7 @@ CREATE TABLE Message (
    publish_date DATE
 );
 
-CREATE TABLE MessageUser(
+CREATE TABLE MessageUser (
    id_message INTEGER NOT NULL REFERENCES Message(id) ON UPDATE CASCADE,
    id_user_receiver INTEGER NOT NULL REFERENCES User(id) ON UPDATE CASCADE
 );
@@ -130,12 +167,12 @@ CREATE TABLE Group (
    description TEXT
 );
 
-CREATE TABLE UserGroupModerator(
+CREATE TABLE UserGroupModerator (
    id_group INTEGER NOT NULL REFERENCES Group(id) ON UPDATE CASCADE,
    id_user_moderator INTEGER NOT NULL REFERENCES User(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE UserGroupMember(
+CREATE TABLE UserGroupMember (
    id_group INTEGER NOT NULL REFERENCES Group(id) ON UPDATE CASCADE,
    id_user_member INTEGER NOT NULL REFERENCES User(id) ON UPDATE CASCADE
 );
@@ -164,8 +201,37 @@ CREATE TABLE Country (
 );
 
 CREATE TABLE Notification (
-   id_notification SERIAL PRIMARY KEY,
+   id SERIAL PRIMARY KEY,
+   id_user INTEGER NOT NULL REFERENCES User(id) ON UPDATE CASCADE,
    read BOOLEAN
+);
+
+CREATE TABLE LikeNotification (
+   id_notification INTEGER NOT NULL REFERENCES Notification(id) ON UPDATE CASCADE,
+   id_like INTEGER NOT NULL REFERENCES ContentLike(id) ON UPDATE CASCADE,
+   CONSTRAINT PRIMARY KEY (id_notification)
+);
+
+CREATE TABLE ReplyNotification (
+   id_notification INTEGER NOT NULL REFERENCES Notification(id) ON UPDATE CASCADE,
+   CONSTRAINT PRIMARY KEY (id_notification)
+
+);
+
+CREATE TABLE FriendRequestNotification (
+   id_notification INTEGER NOT NULL REFERENCES Notification(id) ON UPDATE CASCADE,
+   id_friend_request INTEGER NOT NULL REFERENCES FriendRequest(id) ON UPDATE CASCADE  -- friend request does not has id!! see later
+   CONSTRAINT PRIMARY KEY (id_notification)
+);
+
+CREATE TABLE CommentReplyNotification (
+   --MISSING REFERENCE TO REPLY nOTIFICATION
+   id_comment INTEGER NOT NULL REFERENCES Comment(id) ON UPDATE CASCADE
+);
+
+CREATE TABLE TextContentReplyNotification (
+   --MISSING REFERENCE TO REPLY nOTIFICATION
+   id_text_content INTEGER NOT NULL REFERENCES TextContent(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE PaymentMethod (
@@ -176,7 +242,7 @@ CREATE TABLE PaymentMethod (
    CONSTRAINT CHK_limit CHECK (transation_limit >= 0.0)
 );
 
-CREATE TABLE Campaign(
+CREATE TABLE Campaign (
    id SERIAL PRIMARY KEY,
    starting_date TIMESTAMP WITH TIME ZONE NOT NULL,
    finishing_date TIMESTAMP WITH TIME ZONE NOT NULL,
