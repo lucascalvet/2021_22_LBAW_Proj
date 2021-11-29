@@ -33,14 +33,14 @@
 | R01                | Users(__id__, username __UK__ __NN__, name __NN__, email __UK__ __NN__, hashed_password __NN__, profile_picture __NN__, cover_picture __NN__, phone_number, id_country → Country __NN__, birthday __NN__)                     |
 | R02                | AdminUser(__id__)  |
 | R03                | Advertiser(__id__, company_name __NN__, id_wallet → Wallet __NN__)  |
-| R04                | Wallet(__id__, budget __NN__) |
+| R04                | Wallet(__id__, budget __NN__ __CK__ budget >= 0.0) |
 | R05                | Content(__id__, publishing_date __NN__, id_group → Group __NN__, id_creator → Users __NN__)            |
 | R06                | ContentLikes(__id_user__ → Users __NN__, __id_content__ → Content __NN__, date) |
 | R07                | TextContent(__id__, post_text __NN__, id_content → Content __NN__)    |
 | R08                | TextReply(__child_text__, parent_text __NN__)    |
 | R09                | MediaContent(__id__, description __NN__, media __NN__, fullscreen, id_content → Content __NN__, id_locale)            |
-| R10                | Video(__id__, title __NN__, size, quality, views, id_media_content → MediaContent __NN__)            |
-| R11                | Image(__id__, alt_text __NN__, width, height, id_media_content → MediaContent __NN__)  |
+| R10                | Video(__id__, title __NN__, size __CK__ size > 0.0, quality, views, id_media_content → MediaContent __NN__)            |
+| R11                | Image(__id__, alt_text __NN__, width __CK__ width > 0, height __CK__ height > 0, id_media_content → MediaContent __NN__)  |
 | R12                | Comment(__id__, comment_text __NN__, comment_date, author → Users __NN__, id_media_content → MediaContent __NN__) |
 | R13                | FriendRequest(__id_user_from__ → Users __NN__, __id_user_to__ → Users __NN__, creation __NN__, state)                     |
 | R14                | Message(__id__, message __NN__, id_user_sender → Users __NN__, id_user_receiver → Users __NN__, publish_date)   |
@@ -51,19 +51,19 @@
 | R19                | InterestUser(__id_interest__ → Interest __NN__, __id_user__ → Users __NN__)                     |
 | R20                | Locale(__id__, region __NN__, id_country → Country __NN__)            |
 | R21                | Country(__id__, iso_3166 __UK__, name __NN__)   |
-| R22                | Notification(__id__, id_user → Users __NN__, read) |
+| R22                | Notification(__id__, id_user → Users __NN__, read __NN__) |
 | R23                | LikeNotification(__id_notification__ → Notification, id_like __NN__) |
 | R24                | ReplyNotification(__id_notification__ → Notification) |
 | R25                | FriendRequestNotification(__id_notification__ → Notification, id_friend_request → FriendRequest __NN__)  |
 | R26                | CommentReplyNotification(__id_notification__ → Notification, id_comment → Comment __NN__) |
 | R27                | TextContentReplyNotification(__id_notification__ → Notification, id_text_content → TextContent __NN__) |
-| R28                | PaymentMethod(__id__, name __NN__, company __NN__, transaction_limit __NN__) |
-| R29                | Campaign(__id_media_content__ → MediaContent, id_advertiser → Advertiser __NN__, starting_date __NN__, finishing_date __NN__, budget, remaining_budget, impressions, clicks)   |
+| R28                | PaymentMethod(__id__, name __NN__, company __NN__, transaction_limit __NN__ __CK__ transaction_limit > 0.0) |
+| R29                | Campaign(__id_media_content__ → MediaContent, id_advertiser → Advertiser __NN__, starting_date __NN__, finishing_date __NN__ __CK__ finishing_date > starting_date, budget, remaining_budget __CK__ remaining_budget <= budget, impressions, clicks)   |
 | R30                | GameSession(__id__, session_title __NN__)    |
 | R31                | GameStats(__id_user__ → Users, id_game_session → GameSession __NN__, score __NN__)  |
 | R32                | AcceptedFriendRequest(__id_friend_request__ → FriendRequest, accepted_date) |
 | R33                | RejectedFriendRequest(__id_friend_request__ → FriendRequest, rejected_date) |
-| R34                | Friends(__id_user1__ → Users, __id_user2__ → Users, CK __id_user1__ > __id_user2__) | 
+| R34                | Friends(__id_user1__ → Users, __id_user2__ → Users, __CK__ id_user1 > id_user2) | 
 
 ### 2. Domains
 
@@ -258,9 +258,10 @@
 
 | **TABLE R21**   | Country       |
 | --------------  | ---                |
-| **Keys**        | { id } |
+| **Keys**        | { id }, {iso_3166} |
 | **Functional Dependencies:** |       |
 | FD2101          | id → {iso_3166, name} |
+| FD2102          | iso_3166 → {id, name} |
 | **Normal Form** | BCNF               |
 
 <br></br>
@@ -372,7 +373,7 @@
 
 <br></br>
 
-| **TABLE R19**   | Friends               |
+| **TABLE R34**   | Friends               |
 | --------------  | ---                |
 | **Keys**        | { id_user1 , id_user2 } |
 | **Functional Dependencies:** |  none |
