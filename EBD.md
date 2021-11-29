@@ -30,12 +30,12 @@
 
 | Relation reference | Relation Compact Notation                        |
 | ------------------ | ------------------------------------------------ |
-| R01                | User(__id__, username UQ NN, name NN, email UQ NN, hashed_password NN, profile_picture NN, cover_picture NN, phone_number, id_country NN, birthday NN)                     |
+| R01                | Users(__id__, username UK NN, name NN, email UK NN, hashed_password NN, profile_picture NN, cover_picture NN, phone_number, id_country NN, birthday NN)                     |
 | R02                | AdminUser(__id__)  |
 | R03                | Advertiser(__id__, company_name NN, id_wallet NN)  |
 | R04                | Wallet(__id__, budget NN) |
 | R05                | Content(__id__, publishing_date NN, id_group, id_creator NN)            |
-| R06                | ContentLikes(__id_user NN, id_content NN__, date) |
+| R06                | ContentLikes(__id_user NN__ → Users, __id_content NN__ → Content, date) |
 | R07                | TextContent(__id__, post_text NN, id_content)    |
 | R08                | TextReply(__child_text__, parent_text NN)    |
 | R09                | MediaContent(__id__, description NN, media NN, fullscreen, id_content NN, id_locale)            |
@@ -50,7 +50,7 @@
 | R18                | Interest(__id__, name NN, description NN)                     |
 | R19                | InterestUser(__id_interest NN, id_user NN__)                     |
 | R20                | Locale(__id__, region NN, id_country NN)            |
-| R21                | Country(__id__, iso_3166 UQ, name NN)   |
+| R21                | Country(__id__, iso_3166 UK, name NN)   |
 | R22                | Notification(__id__, id_user NN, read) |
 | R23                | LikeNotification(__id_notification__, id_like NN) |
 | R24                | ReplyNotification(__id_notification__) |
@@ -77,12 +77,68 @@
 
 | **TABLE R01**   | User               |
 | --------------  | ---                |
-| **Keys**        | { id }, { email }  |
+| **Keys**        | { id }, { email }, { username } |
 | **Functional Dependencies:** |       |
-| FD0101          | id → {email, name} |
-| FD0102          | email → {id, name} |
+| FD0101          | id → {email, username, name, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday} |
+| FD0102          | email → {id, usernamename, name, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday} |
+| FD0103          | username → {id, email, name, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday} |
 | ...             | ...                |
 | **NORMAL FORM** | BCNF               |
+
+| **TABLE R02**   | AdminUser               |
+| --------------  | ---                |
+| **Keys**        | { id } |
+| **Functional Dependencies:** |  none |
+| **NORMAL FORM** | BCNF               |
+
+| **TABLE R03**   | Advertiser           |
+| --------------  | ---                |
+| **Keys**        | { id } |
+| **Functional Dependencies:** |       |
+| FD0301          | id → {company_name, id_wallet} |
+| ...             | ...                |
+| **NORMAL FORM** | BCNF               |
+
+| **TABLE R04**   | Wallet           |
+| --------------  | ---                |
+| **Keys**        | { id } |
+| **Functional Dependencies:** |       |
+| FD0401          | id → {budget} |
+| ...             | ...                |
+| **NORMAL FORM** | BCNF               |
+
+| **TABLE R05**   | Content           |
+| --------------  | ---                |
+| **Keys**        | { id } |
+| **Functional Dependencies:** |       |
+| FD0501          | id → {publishing_date, id_group, id_creator} |
+| ...             | ...                |
+| **NORMAL FORM** | BCNF               |
+
+| **TABLE R06**   | ContentLikes        |
+| --------------  | ---                |
+| **Keys**        | { id_user, id_content } |
+| **Functional Dependencies:** |       |
+| FD0501          | { id_user, id_content } → {date} |
+| ...             | ...                |
+| **NORMAL FORM** | BCNF               |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 > If necessary, description of the changes necessary to convert the schema to BCNF.  
 > Justification of the BCNF.  
