@@ -52,7 +52,7 @@ CREATE TABLE User (
    id SERIAL PRIMARY KEY,
    username TEXT UNIQUE NOT NULL,
    name TEXT NOT NULL,
-   email TEXT NOT NULL CONSTRAINT user_email_uk UNIQUE,
+   email TEXT NOT NULL UNIQUE,
    hashed_password TEXT NOT NULL,
    profile_picture TEXT, --Path can be null it means default photo?
    cover_picture TEXT, --Path
@@ -100,15 +100,14 @@ CREATE TABLE TextContent (  -- text reserved word
 
 CREATE TABLE TextReply (
    parent_text INTEGER NOT NULL REFERENCES TextContent(id) ON UPDATE CASCADE,
-   child_text INTEGER NOT NULL REFERENCES TextContent(id) ON UPDATE CASCADE,
-   CONSTRAINT PK_TextReply PRIMARY KEY (child_text)
+   child_text INTEGER PRIMARY KEY REFERENCES TextContent(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE MediaContent (
    id SERIAL PRIMARY KEY,
    description TEXT NOT NULL,
    media TEXT NOT NULL, --Path
-   fullscreen BOOLEAN -- when null -> false
+   fullscreen BOOLEAN, -- when null -> false
    id_content INTEGER NOT NULL REFERENCES Content(id) ON UPDATE CASCADE,
    id_locale INTEGER REFERENCES Locale(id) ON UPDATE CASCADE
 );
@@ -195,9 +194,9 @@ CREATE TABLE Locale (  -- location seems it is reserved word change it?
 );
 
 CREATE TABLE Country (
-   iso_3166 TEXT NOT NULL UNIQUE ,
-   name TEXT NOT NULL,
-   CONSTRAINT PRIMARY KEY (iso_3166)
+   id SERIAL PRIMARY KEY,
+   iso_3166 TEXT UNIQUE,
+   name TEXT NOT NULL
 );
 
 CREATE TABLE Notification (
@@ -207,36 +206,32 @@ CREATE TABLE Notification (
 );
 
 CREATE TABLE LikeNotification (
-   id_notification INTEGER NOT NULL REFERENCES Notification(id) ON UPDATE CASCADE,
+   id_notification INTEGER PRIMARY KEY REFERENCES Notification(id) ON UPDATE CASCADE,
    id_like INTEGER NOT NULL REFERENCES ContentLike(id) ON UPDATE CASCADE,
-   CONSTRAINT PRIMARY KEY (id_notification)
 );
 
 CREATE TABLE ReplyNotification (
-   id_notification INTEGER NOT NULL REFERENCES Notification(id) ON UPDATE CASCADE,
-   CONSTRAINT PRIMARY KEY (id_notification)
-
+   id_notification INTEGER PRIMARY KEY REFERENCES Notification(id) ON UPDATE CASCADE,
 );
 
 CREATE TABLE FriendRequestNotification (
-   id_notification INTEGER NOT NULL REFERENCES Notification(id) ON UPDATE CASCADE,
+   id_notification INTEGER PRIMARY KEY REFERENCES Notification(id) ON UPDATE CASCADE,
    id_friend_request INTEGER NOT NULL REFERENCES FriendRequest(id) ON UPDATE CASCADE  -- friend request does not has id!! see later
-   CONSTRAINT PRIMARY KEY (id_notification)
 );
 
 CREATE TABLE CommentReplyNotification (
-   --MISSING REFERENCE TO REPLY nOTIFICATION
+   id_reply_notification INTEGER NOT NULL REFERENCES ReplyNotification(id_notification) ON UPDATE CASCADE,
    id_comment INTEGER NOT NULL REFERENCES Comment(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE TextContentReplyNotification (
-   --MISSING REFERENCE TO REPLY nOTIFICATION
+   id_reply_notification INTEGER NOT NULL REFERENCES ReplyNotification(id_notification) ON UPDATE CASCADE,
    id_text_content INTEGER NOT NULL REFERENCES TextContent(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE PaymentMethod (
    id SERIAL PRIMARY KEY,
-   name TEXT NOT NULL PRIMARY KEY,
+   name TEXT NOT NULL,
    company TEXT NOT NULL,
    transaction_limit FLOAT,
    CONSTRAINT CHK_limit CHECK (transation_limit >= 0.0)
@@ -256,12 +251,17 @@ CREATE TABLE Campaign (
    CONSTRAINT CHK_campaign_budgets CHECK (remaining_budget <= budget)
 );
 
-CREATE TABLE MeetingGame (
+CREATE TABLE GameSession (
    id SERIAL PRIMARY KEY,
+   session_title TEXT NOT NULL,
    name TEXT NOT NULL,
-   Type TEXT
 );
 
+CREATE TABLE Stats (
+   score INTEGER NOT NULL,
+   id_user INTEGER PRIMARY KEY REFERENCES User(id) ON UPDATE CASCADE,
+   id_game_session INTEGER NOT NULL REFERENCES GameSession(id) ON UPDATE CASCADE
+);
 
 /*
 CREATE TABLE work (
