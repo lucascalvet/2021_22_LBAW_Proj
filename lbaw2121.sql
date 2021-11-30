@@ -39,6 +39,8 @@ DROP TABLE IF EXISTS GameStats CASCADE;
 DROP TABLE IF EXISTS Friends CASCADE;
 DROP FUNCTION IF EXISTS dateComment CASCADE;
 DROP FUNCTION IF EXISTS dateText CASCADE;
+DROP FUNCTION IF EXISTS textreply_search_update CASCADE;
+DROP FUNCTION IF EXISTS mediacontent_search_update CASCADE;
 
 SET Search.path TO lbaw2121;
 -----------------------------------------
@@ -362,7 +364,6 @@ CREATE INDEX mc_search_idx ON TextReply USING GIN (tsvectors);
 --------------------------------------------
 --TRIGGERS
 --------------------------------------------
-
 --TRIGGER 1
 
 CREATE FUNCTION dateComment() RETURNS TRIGGER LANGUAGE plpgsql AS
@@ -401,7 +402,7 @@ CREATE TRIGGER DateText
 --------------------------------------------
 --TRANSACTIONS
 --------------------------------------------
-
+--TRANSACTION 1
 BEGIN TRANSACTION;
 
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ ONLY;
@@ -419,3 +420,21 @@ ORDER BY Content.publishing_date DESC
 LIMIT 50;
 
 END TRANSACTION;
+
+
+--TRANSACTION 2
+BEGIN TRANSACTION;
+
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
+
+-- Insert MediaContent
+INSERT INTO MediaContent (description, media, fullscreen, id_content, id_locale) 
+ VALUES ($description, $media, $fullscreen, $id_content, $id_locale) ;
+
+-- Insert Video
+INSERT INTO Video (alt_text, views, id_media_content) 
+ VALUES ($alt_text, $views, currval(id_media_content_seq))
+
+END TRANSACTION;
+
+

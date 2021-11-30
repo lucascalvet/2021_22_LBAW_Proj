@@ -235,6 +235,6 @@ INSERT INTO GameStats (id_user, id_game_session, score) VALUES (4, 2, 5);
 INSERT INTO GameStats (id_user, id_game_session, score) VALUES (5, 2, 8);
 INSERT INTO GameStats (id_user, id_game_session, score) VALUES (6, 2, 7);
 
-INSERT INTO Friends (id_user1, id_user2) VALUES (2, 1)
-INSERT INTO Friends (id_user1, id_user2) VALUES (3, 1)
-INSERT INTO Friends (id_user1, id_user2) VALUES (4, 2)
+INSERT INTO Friends (id_user1, id_user2) VALUES (2, 1);
+INSERT INTO Friends (id_user1, id_user2) VALUES (3, 1);
+INSERT INTO Friends (id_user1, id_user2) VALUES (4, 2);

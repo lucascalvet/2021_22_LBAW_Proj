@@ -20,7 +20,7 @@ This artefact contains an overall view of the structure of the data, better visu
 
 ## A5: Relational Schema, validation and schema refinement
 
-This artefact consists of the relational schema, which is a blueprint used in database design to represent the data to be entered into the database and describe how that data is structured in tables. Furthermore, we identify the functional dependencies of each relation with the goal of prefecting the schema as a whole.
+This artefact consists of the relational schema, which is a blueprint used in database design to represent the data to be entered into the database and describe how that data is structured in tables. Furthermore, we identify the functional dependencies of each relation and convert them to BCNF (if needed) with the goal of perfecting the schema as a whole.
 
 ### 1. Relational Schema
 
@@ -382,7 +382,7 @@ Note: Because all relations are in the Boyce–Codd Normal Form (BCNF), the rela
 ## A6: Indexes, triggers, transactions and database population
 
 This artefact encapsulates the physical schema of the database, containing the description and implementation of the indexes, triggers and transactions of the database.
-This artefact also contains the database's workload as well as the complete database creation script, including all SQL necessary to define all integrity constraints, indexes and triggers. Finally, this artefact also includes a separate script with INSERT statements to populate the database.
+This artefact also contains the database creation script with all the SQL code. Finally, this artefact also includes a separate script with INSERT statements to populate the database.
 
 ### 1. Database Workload
 
@@ -569,7 +569,6 @@ CREATE INDEX mc_search_idx ON TextReply USING GIN (tsvectors);
 | **SQL code**               |
 
 ```
-
 CREATE FUNCTION dateComment() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
@@ -615,28 +614,56 @@ CREATE TRIGGER DateText
 
 ### 4. Transactions
 
-| **Transaction**   | TRAN01                    |
-| --------------- | ----------------------------------- |
-| **Description** | Get the count of all text posts, as well as information about the last ones |
-| **Justification**   | The insertion of new rows in the Content table can occur in the middle of the transaction, which may result in the information retrieved in both selects to be different, consequently resulting in a Phantom Read. It's READ ONLY because it only uses Selects.  |
-| **Isolation level** | SERIALIZABLE READ ONLY |
-| Complete SQL Code                                   ||
+| **Transaction**       | TRAN01                                    |
+| ---------------       | -----------------------------------       |
+| **Description**       | Get the count of all text posts, as well as information about the last ones |
+| **Justification**     | The insertion of new rows in the Content table can occur in the middle of the transaction, which may result in the information retrieved in both selects to be different, consequently resulting in a Phantom Read. It's READ ONLY because it only uses Selects.                  |
+| **Isolation level**   | SERIALIZABLE READ ONLY                    |
+| **Complete SQL Code**                                             |
 
 ```
-a
+BEGIN TRANSACTION;
+
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ ONLY;
+
+-- Get the number of text posts
+SELECT COUNT(*)
+FROM TextContent;
+
+-- Get the last 50 text posts
+SELECT username, publishing_date, post_text
+FROM TextContent
+INNER JOIN Content ON Content.id = TextContent.id_content
+INNER JOIN Users ON Users.id = Content.id_creator
+ORDER BY Content.publishing_date DESC
+LIMIT 50;
+
+END TRANSACTION;
 ```
 
 <br></br>
 
-| **Transaction**   | TRAN02                                 |
-| ---------------   | -----------------------------------    |
-| **Description**   | Get the count of all text posts, as well as information about the last ones |
-| **Justification**   | The insertion of new rows in the Content table can occur in the middle of the transaction, which may result in the information retrieved in both selects to be different, consequently resulting in a Phantom Read. It's READ ONLY because it only uses Selects.  |
-| **Isolation level** | SERIALIZABLE READ ONLY |
-| Complete SQL Code                                   ||
+| **Transaction**       | TRAN02                                    |
+| ---------------       | -----------------------------------       |
+| **Description**       | Insert a video                            |
+| **Justification**     | A transaction needs to issue a ROLLBACK if an error occurs (e.g. when the insertion of a book fails). The isolation level is Repeatable Read, because, otherwise, an update of `id_media_content_seq` could happen, due to an insert in the table MediaContent committed by a concurrent transaction, and as a result, inconsistent data would be stored.                                  |
+| **Isolation level**   | REPEATABLE READ                           |
+| **Complete SQL Code**                                             |
 
 ```
-a
+BEGIN TRANSACTION;
+
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
+
+-- Insert MediaContent
+INSERT INTO MediaContent (description, media, fullscreen, id_content, id_locale) 
+ VALUES ($description, $media, $fullscreen, $id_content, $id_locale) ;
+
+-- Insert Video
+INSERT INTO Video (alt_text, views, id_media_content) 
+ VALUES ($alt_text, $views, currval(id_media_content_seq))
+
+END TRANSACTION;
 ```
 
 <br></br>
