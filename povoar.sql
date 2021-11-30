@@ -67,7 +67,7 @@ INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, 
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (3, 'Rivinquister', 'Robert A. West', 'RobertAWest@armyspy.com', 'C95D8CD924E48C3C9433A22EC9D8DD22795866858737248190E73DC48799C017', NULL, NULL, '616-261-7167', 2, '1962-10-20'); --foiKeigio6Qu
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (4, 'Hoppled91', 'Isaac K. Spencer', 'IsaacKSpencer@dayrep.com', '14390CB20A1DC17AA2A1973F220E21104739D51AC67AFF4B1119F20D6D50FDC2', NULL, NULL, '914-964-9238', 2, '1991-8-6'); --Aagh4pe9V
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (5, 'Ingled91', 'Tim K. Gutierrez', 'TimKGutierrez@teleworm.us', '98730C61AA5B1910D64C8F0B18A821EDDB4FFF8C6E6DD7958E0B084C740156AE', NULL, NULL, '270-379-5170', 3, '1991-10-28'); --coh6IkifuNg
-INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (6, 'Daimpas1985', 'William T. Hancock', 'WilliamTHancock@jourrapide.com', '2EABCB5906D8F75EFABFD13A4FF1C0D992AF886F8CBBF32F141C7BA7955F65BE', NULL, NULL, '504-491-4903', 3, '1985-713'); --Eophee9ie
+INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (6, 'Daimpas1985', 'William T. Hancock', 'WilliamTHancock@jourrapide.com', '2EABCB5906D8F75EFABFD13A4FF1C0D992AF886F8CBBF32F141C7BA7955F65BE', NULL, NULL, '504-491-4903', 3, '1985-7-13'); --Eophee9ie
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (7, 'Forneved', 'Paul J. Gillen', 'PaulJGillen@jourrapide.com', '7717344433C8E44299CFED10EF60040CDDAE738398FF45CA18921F383997CF21', NULL, NULL, '203-509-4665', 4, '1947-10-27'); --aith9Esiez
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (8, 'Stoonce', 'Clarence S. Catron', 'ClarenceSCatron@teleworm.us', '91A38859109D26212025860C49D8380697B1EA3AA92FEB8705F85A693AA07B52', NULL, NULL, '406-775-1564', 4, '1995-4-20'); --PoTh2ooxa4
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (9, 'Walcon', 'Susanne M. Miller', 'SusanneMMiller@dayrep.com', '7AA3E41B2285E6455CCD7DFEDC60059060D6BA1D94545EDA5F55A83F41AF25C8', NULL, NULL, '631-444-4388', 5, '1986-11-29'); --Thae5ait
@@ -108,19 +108,19 @@ INSERT INTO Advertiser (id_user, company_name, id_wallet) VALUES (8, 'weons', 8)
 INSERT INTO Advertiser (id_user, company_name, id_wallet) VALUES (9, 'surfarts', 9);
 INSERT INTO Advertiser (id_user, company_name, id_wallet) VALUES (10, 'Diads', 10);
 
-INSERT INTO Groups (id, name, description) VALUES (1, 'Game Development', "Who doens't like games? Join Us");
+INSERT INTO Groups (id, name, description) VALUES (1, 'Game Development', 'Who doens t like games? Join Us');
 INSERT INTO Groups (id, name, description) VALUES (2, 'Motards', 'We love bikes more than ourselves!');
 
-INSERT INTO Content (id, publish_date, id_group, id_creator) VALUES (1, '2021-5-23', NULL, 1);
-INSERT INTO Content (id, publish_date, id_group, id_creator) VALUES (2, '2015-7-28', 2, 2);
-INSERT INTO Content (id, publish_date, id_group, id_creator) VALUES (3, '2020-4-3', NULL, 3);
-INSERT INTO Content (id, publish_date, id_group, id_creator) VALUES (4, '2021-10-12', 1, 4);
-INSERT INTO Content (id, publish_date, id_group, id_creator) VALUES (5, '2019-1-10', NULL, 5);
-INSERT INTO Content (id, publish_date, id_group, id_creator) VALUES (6, '2018-9-20', NULL, 6);
-INSERT INTO Content (id, publish_date, id_group, id_creator) VALUES (7, '2021-5-7', NULL, 7);
-INSERT INTO Content (id, publish_date, id_group, id_creator) VALUES (8, '2020-2-16', 1, 8);
-INSERT INTO Content (id, publish_date, id_group, id_creator) VALUES (9, '2021-6-29', NULL, 9);
-INSERT INTO Content (id, publish_date, id_group, id_creator) VALUES (10, '2020-1-3', NULL, 10);
+INSERT INTO Content (id, publishing_date, id_group, id_creator) VALUES (1, '2021-5-23', NULL, 1);
+INSERT INTO Content (id, publishing_date, id_group, id_creator) VALUES (2, '2015-7-28', 2, 2);
+INSERT INTO Content (id, publishing_date, id_group, id_creator) VALUES (3, '2020-4-3', NULL, 3);
+INSERT INTO Content (id, publishing_date, id_group, id_creator) VALUES (4, '2021-10-12', 1, 4);
+INSERT INTO Content (id, publishing_date, id_group, id_creator) VALUES (5, '2019-1-10', NULL, 5);
+INSERT INTO Content (id, publishing_date, id_group, id_creator) VALUES (6, '2018-9-20', NULL, 6);
+INSERT INTO Content (id, publishing_date, id_group, id_creator) VALUES (7, '2021-5-7', NULL, 7);
+INSERT INTO Content (id, publishing_date, id_group, id_creator) VALUES (8, '2020-2-16', 1, 8);
+INSERT INTO Content (id, publishing_date, id_group, id_creator) VALUES (9, '2021-6-29', NULL, 9);
+INSERT INTO Content (id, publishing_date, id_group, id_creator) VALUES (10, '2020-1-3', NULL, 10);
 
 INSERT INTO ContentLike (date, id_user, id_content) VALUES ('2021-5-23', 1, 1);
 INSERT INTO ContentLike (date, id_user, id_content) VALUES ('2015-7-28', 2, 2);
@@ -139,8 +139,8 @@ INSERT INTO TextContent (id, post_text, id_content) VALUES (3, 'LBAW is the best
 INSERT INTO TextContent (id, post_text, id_content) VALUES (4, 'What is the best football player?', 4);
 INSERT INTO TextContent (id, post_text, id_content) VALUES (5, 'Take it easy, keep calm', 5);
 
-INSERT INTO TextReply (child_text, parent_text) VALUES ('Me too!!', 2);
-INSERT INTO TextReply (child_text, parent_text) VALUES ('I think it is Maradona', 4);
+INSERT INTO TextReply (child_text, parent_text) VALUES (1, 2);
+INSERT INTO TextReply (child_text, parent_text) VALUES (3, 4);
 
 INSERT INTO MediaContent (id, description, media, fullscreen, id_content, id_locale) VALUES (1, 'Just a cute video', '/cute.png', TRUE, 6, 1);
 INSERT INTO MediaContent (id, description, media, fullscreen, id_content, id_locale) VALUES (2, 'BMW', '/moto.jpeg', FALSE, 7, 2);
@@ -219,8 +219,8 @@ INSERT INTO TextContentReplyNotification (id_reply_notification, id_text_content
 
 INSERT INTO PaymentMethod (id, name, company, transaction_limit) VALUES (1, 'PayPal', 'PayPal', 1000);
 
-INSERT INTO Campaign (id_media_content, id_advertiser, starting_date, finishing_date, budget, remaining_budget, impressions, clicks) VALUES (6, 6, '2021-8-23', '2021-10-23', 1200, 700, 10, 5);
-INSERT INTO Campaign (id_media_content, id_advertiser, starting_date, finishing_date, budget, remaining_budget, impressions, clicks) VALUES (7, 7, '2021-4-23', '2021-7-23', 450, 200, 20, 100);
+INSERT INTO Campaign (id_media_content, id_advertiser, starting_date, finishing_date, budget, remaining_budget, impressions, clicks) VALUES (4, 6, '2021-8-23', '2021-10-23', 1200, 700, 10, 5);
+INSERT INTO Campaign (id_media_content, id_advertiser, starting_date, finishing_date, budget, remaining_budget, impressions, clicks) VALUES (5, 7, '2021-4-23', '2021-7-23', 450, 200, 20, 100);
 
 INSERT INTO GameSession (id, session_title) VALUES (1, 'Funny Game');
 INSERT INTO GameSession (id, session_title) VALUES (2, 'Champions');

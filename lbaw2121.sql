@@ -37,6 +37,9 @@ DROP TABLE IF EXISTS CommentReplyNotification CASCADE;
 DROP TABLE IF EXISTS TextContentReplyNotification CASCADE;
 DROP TABLE IF EXISTS GameSession CASCADE;
 DROP TABLE IF EXISTS GameStats CASCADE;
+DROP TABLE IF EXISTS Friends CASCADE;
+DROP FUNCTION IF EXISTS dateComment CASCADE;
+DROP FUNCTION IF EXISTS dateText CASCADE;
 
 SET Search.path TO lbaw2121;
 -----------------------------------------
@@ -133,8 +136,7 @@ CREATE TABLE Video (
    id SERIAL PRIMARY KEY,
    alt_text TEXT NOT NULL,
    views INTEGER NOT NULL,        
-   id_media_content INTEGER NOT NULL REFERENCES MediaContent(id) ON UPDATE CASCADE,
-   CONSTRAINT CHK_size CHECK (size > 0.0) 
+   id_media_content INTEGER NOT NULL REFERENCES MediaContent(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE Image (
@@ -301,29 +303,30 @@ CREATE INDEX end_campaign ON Campaign USING btree (finishing_date);
 CREATE FUNCTION dateComment() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF ((SELECT publishing_date FROM Content WHERE id == NEW.id_media_content)> NEW.comment_date) RAISE EXCEPTION 'Content date greater than Comment date';
+   IF ((SELECT publishing_date FROM Content WHERE id = NEW.id_media_content)> NEW.comment_date) THEN RAISE EXCEPTION 'Content date greater than Comment date';
    END IF;
    RETURN NEW;
 END;
 $$;
 
-CREATE TRIGGER dateComment
+CREATE TRIGGER DateComment
    BEFORE INSERT ON Comment
    EXECUTE PROCEDURE dateComment();
 
 
 --TRIGGER 2
 
-CREAT FUNCTION dateText() RETURNS TRIGGER LANGUAGE plpgsql AS
+CREATE FUNCTION dateText() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF ((SELECT publishing_date FROM Content WHERE id == (SELECT id_content FROM TextContent WHERE id == child_text)) <= (SELECT publishing_date FROM Content WHERE id == (SELECT id_content FROM TextContent WHERE id == parent_text))) RAISE EXCEPTION 'Parent reply date greater than child date';
+   IF ((SELECT publishing_date FROM Content WHERE id = (SELECT id_content FROM TextContent WHERE id = NEW.child_text)) <= (SELECT publishing_date FROM Content WHERE id = (SELECT id_content FROM TextContent WHERE id = NEW.parent_text))) THEN RAISE EXCEPTION 'Parent reply date greater than child date';
    END IF;
+   RETURN NEW;
 END;
 $$;
 
-CREATE TRIGGER dateText
-   BEFORE INSERT TextReply
+CREATE TRIGGER DateText
+   BEFORE INSERT ON TextReply
    EXECUTE PROCEDURE dateText();
 
 -- CREATE FUNCTION frNotification() RETURNS TRIGGER LANGUAGE plpgsql AS
