@@ -95,7 +95,7 @@ CREATE TABLE Groups (
 
 CREATE TABLE Content (
    id SERIAL PRIMARY KEY,
-   publishing_date TIMESTAMP WITH TIME ZONE NOT NULL,
+   publishing_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
    id_group INTEGER REFERENCES Groups(id) ON UPDATE CASCADE,
    id_creator INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE
 );
@@ -111,7 +111,7 @@ CREATE TABLE TextContent (
    id SERIAL PRIMARY KEY,
    post_text TEXT NOT NULL,
    id_content INTEGER NOT NULL REFERENCES Content(id) ON UPDATE CASCADE
-);
+); 
 
 CREATE TABLE TextReply (
    child_text INTEGER PRIMARY KEY REFERENCES TextContent(id) ON UPDATE CASCADE,
@@ -396,45 +396,3 @@ CREATE TRIGGER DateText
    BEFORE INSERT ON TextReply
    FOR EACH ROW
    EXECUTE PROCEDURE dateText();
-
-
-
---------------------------------------------
---TRANSACTIONS
---------------------------------------------
---TRANSACTION 1
-BEGIN TRANSACTION;
-
-SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ ONLY;
-
--- Get the number of text posts
-SELECT COUNT(*)
-FROM TextContent;
-
--- Get the last 50 text posts
-SELECT username, publishing_date, post_text
-FROM TextContent
-INNER JOIN Content ON Content.id = TextContent.id_content
-INNER JOIN Users ON Users.id = Content.id_creator
-ORDER BY Content.publishing_date DESC
-LIMIT 50;
-
-END TRANSACTION;
-
-
---TRANSACTION 2
-BEGIN TRANSACTION;
-
-SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
-
--- Insert MediaContent
-INSERT INTO MediaContent (description, media, fullscreen, id_content, id_locale) 
- VALUES ($description, $media, $fullscreen, $id_content, $id_locale) ;
-
--- Insert Video
-INSERT INTO Video (alt_text, views, id_media_content) 
- VALUES ($alt_text, $views, currval(id_media_content_seq))
-
-END TRANSACTION;
-
-

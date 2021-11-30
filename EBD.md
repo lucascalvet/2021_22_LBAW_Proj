@@ -67,7 +67,6 @@ This artefact consists of the relational schema, which is a blueprint used in da
 | Domain Name | Domain Specification           |
 | ----------- | ------------------------------ |
 | Today	      | DATE DEFAULT CURRENT_DATE      |
-|             |                                |
 
 ### 3. Schema validation
 
