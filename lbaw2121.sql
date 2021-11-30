@@ -209,7 +209,7 @@ CREATE TABLE InterestUser (
 CREATE TABLE Notification (
    id SERIAL PRIMARY KEY,
    id_user INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
-   read BOOLEAN
+   read BOOLEAN NOT NULL
 );
 
 CREATE TABLE LikeNotification (
@@ -243,7 +243,7 @@ CREATE TABLE PaymentMethod (
    name TEXT NOT NULL,
    company TEXT NOT NULL,
    transaction_limit FLOAT,
-   CONSTRAINT CHK_limit CHECK (transaction_limit >= 0.0)
+   CONSTRAINT CHK_limit CHECK (transaction_limit > 0.0)
 );
 
 CREATE TABLE Campaign (
@@ -268,4 +268,11 @@ CREATE TABLE GameStats (
    id_user INTEGER PRIMARY KEY REFERENCES Users(id) ON UPDATE CASCADE,
    id_game_session INTEGER NOT NULL REFERENCES GameSession(id) ON UPDATE CASCADE,
    score INTEGER NOT NULL
+);
+
+CREATE TABLE Friends (
+   id_user1 INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
+   id_user2 INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
+   PRIMARY KEY (id_user1, id_user2),
+   CONSTRAINT CHK_friends CHECK (id_user1 > id_user2) 
 );
