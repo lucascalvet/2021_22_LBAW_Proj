@@ -396,32 +396,26 @@ CREATE TRIGGER DateText
    FOR EACH ROW
    EXECUTE PROCEDURE dateText();
 
--- CREATE FUNCTION frNotification() RETURNS TRIGGER LANGUAGE plpgsql AS
--- $$
--- BEGIN
---    INSERT INTO Notification(id_user) VALUES(NEW.id_receiver);
---    INSERT INTO FriendRequestNotification(id_notification, id_friend_request) VALUES(Notification.id, NEW.id);
-
--- END;
--- $$;
-
--- CREATE TRIGGER FRNotification 
---    AFTER INSERT ON FriendRequest
---    EXECUTE PROCEDURE frNotification();
 
 
--- CREATE FUNCTION loan_item() RETURNS TRIGGER AS
--- $BODY$
--- BEGIN
---         IF EXISTS (SELECT * FROM loan WHERE NEW.id_users = id_users AND end_t > NEW.start_t) THEN
---            RAISE EXCEPTION 'An item can only be loaned to one user at a given moment.';
---         END IF;
---         RETURN NEW;
--- END
--- $BODY$
--- LANGUAGE plpgsql;
+--------------------------------------------
+--TRANSACTIONS
+--------------------------------------------
 
--- CREATE TRIGGER loan_item
---         BEFORE INSERT OR UPDATE ON loan
---         FOR EACH ROW
---         EXECUTE PROCEDURE loan_item();
+BEGIN TRANSACTION;
+
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ ONLY;
+
+-- Get the number of text posts
+SELECT COUNT(*)
+FROM TextContent;
+
+-- Get the last 50 text posts
+SELECT username, publishing_date, post_text
+FROM TextContent
+INNER JOIN Content ON Content.id = TextContent.id_content
+INNER JOIN Users ON Users.id = Content.id_creator
+ORDER BY Content.publishing_date DESC
+LIMIT 50;
+
+END TRANSACTION;
