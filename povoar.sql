@@ -110,6 +110,7 @@ INSERT INTO Advertiser (id_user, company_name, id_wallet) VALUES (10, 'Diads', 1
 
 INSERT INTO Groups (id, name, description) VALUES (1, 'Game Development', 'Who doens t like games? Join Us');
 INSERT INTO Groups (id, name, description) VALUES (2, 'Motards', 'We love bikes more than ourselves!');
+INSERT INTO Groups (id, name, description) VALUES (3, 'Basketball', 'Kobe!!!!!');
 
 INSERT INTO Content (id, publishing_date, id_group, id_creator) VALUES (1, '2021-5-23', NULL, 1);
 INSERT INTO Content (id, publishing_date, id_group, id_creator) VALUES (2, '2015-7-28', 2, 2);
@@ -154,12 +155,14 @@ INSERT INTO Image (id, alt_text, width, height, id_media_content) VALUES (3, 'Me
 
 INSERT INTO Video (id, alt_text, views, id_media_content) VALUES (1, 'Tutorial', 100, 4);
 INSERT INTO Video (id, alt_text, views, id_media_content) VALUES (2, 'Game', 300, 5);
+INSERT INTO Video (id, alt_text, views, id_media_content) VALUES (3, 'Tankinix', 700, 6);
 
 INSERT INTO Comment (id, comment_text, comment_date, author, id_media_content) VALUES (1, 'So cute!', '2021-10-11', 1, 1);
 INSERT INTO Comment (id, comment_text, comment_date, author, id_media_content) VALUES (2, 'Very good brand', '2021-10-12', 2, 2);
 INSERT INTO Comment (id, comment_text, comment_date, author, id_media_content) VALUES (3, 'I do not like that car', '2021-10-13', 3, 3);
 INSERT INTO Comment (id, comment_text, comment_date, author, id_media_content) VALUES (4, 'Great tutorial', '2021-10-14', 4, 4);
 INSERT INTO Comment (id, comment_text, comment_date, author, id_media_content) VALUES (5, 'I play this game all the time', '2021-10-15', 5, 5);
+INSERT INTO Comment (id, comment_text, comment_date, author, id_media_content) VALUES (6, 'Best Dev Interview I have seen!', '2020-05-22', 5, 6);
 
 INSERT INTO FriendRequest (id, creation, id_sender, id_receiver) VALUES (1, '2020-7-23', 1, 2);
 INSERT INTO FriendRequest (id, creation, id_sender, id_receiver) VALUES (2, '2021-3-2', 1, 3);
