@@ -67,12 +67,11 @@ INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, 
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (3, 'Rivinquister', 'Robert A. West', 'RobertAWest@armyspy.com', 'C95D8CD924E48C3C9433A22EC9D8DD22795866858737248190E73DC48799C017', NULL, NULL, '616-261-7167', 2, '1962-10-20'); --foiKeigio6Qu
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (4, 'Hoppled91', 'Isaac K. Spencer', 'IsaacKSpencer@dayrep.com', '14390CB20A1DC17AA2A1973F220E21104739D51AC67AFF4B1119F20D6D50FDC2', NULL, NULL, '914-964-9238', 2, '1991-8-6'); --Aagh4pe9V
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (5, 'Ingled91', 'Tim K. Gutierrez', 'TimKGutierrez@teleworm.us', '98730C61AA5B1910D64C8F0B18A821EDDB4FFF8C6E6DD7958E0B084C740156AE', NULL, NULL, '270-379-5170', 3, '1991-10-28'); --coh6IkifuNg
-INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (6, 'Daimpas1985', 'William T. Hancock', 'WilliamTHancock@jourrapide.com', '2EABCB5906D8F75EFABFD13A4FF1C0D992AF886F8CBBF32F141C7BA7955F65BE', NULL, NULL, '504-491-4903', 3, '1985-713'); --Eophee9ie
+INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (6, 'Daimpas1985', 'William T. Hancock', 'WilliamTHancock@jourrapide.com', '2EABCB5906D8F75EFABFD13A4FF1C0D992AF886F8CBBF32F141C7BA7955F65BE', NULL, NULL, '504-491-4903', 3, '1985-7-13'); --Eophee9ie
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (7, 'Forneved', 'Paul J. Gillen', 'PaulJGillen@jourrapide.com', '7717344433C8E44299CFED10EF60040CDDAE738398FF45CA18921F383997CF21', NULL, NULL, '203-509-4665', 4, '1947-10-27'); --aith9Esiez
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (8, 'Stoonce', 'Clarence S. Catron', 'ClarenceSCatron@teleworm.us', '91A38859109D26212025860C49D8380697B1EA3AA92FEB8705F85A693AA07B52', NULL, NULL, '406-775-1564', 4, '1995-4-20'); --PoTh2ooxa4
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (9, 'Walcon', 'Susanne M. Miller', 'SusanneMMiller@dayrep.com', '7AA3E41B2285E6455CCD7DFEDC60059060D6BA1D94545EDA5F55A83F41AF25C8', NULL, NULL, '631-444-4388', 5, '1986-11-29'); --Thae5ait
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (10, 'Museltole', 'John K. Shuman', 'JohnKShuman@jourrapide.com', '57188DEC4E8D472BCF9287CDAFAEA85852C9761155DA127C4E235B1F35795B51', NULL, NULL, '919-484-3756', 5, '1983-9-22'); --aeGo3yu6Iy
-
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (11, 'Hatecrable2000', 'Jeniffer J. Parsons', 'JenifferJParsons@teleworm.us', 'B49A326321C9AD9DCCF83480F4DBE3212E8BEB7E58F07DFC6FE00C3A1784E59E', NULL, NULL, '814-845-9721', 6, '2000-3-1'); --vu0eiKa7ae
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (12, 'Dights1956', 'Kim B. McClain', 'KimBMcClain@teleworm.us', '6AB2DA5D0F8012A27FE3964337C4614CF129551E124D6AD0AB2F5B6DEFEDCE89', NULL, NULL, '702-243-7350', 6, '1956-12-17'); --ajaiz6Joo
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (13, 'Examated', 'Casey J. Russo', 'CaseyJRusso@jourrapide.com', 'A903139300286AF21144CC0989FFC87438DC0F00E588F0B74C1663CA29DC064B', NULL, NULL, '314-765-9362', 7, '1996-8-24'); --Ui2thoh5
@@ -85,6 +84,7 @@ INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, 
 INSERT INTO Users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (20, 'Miltary58', 'Carmela H. Choi', 'CarmelaHChoi@teleworm.us', '5EA9F7A0826D3C295919D6415E72DC415AF6AF3852ABAABE7D9FB7EC55C6C81E', NULL, NULL, '360-697-3591', 11, '1958-6-2'); --ha6zuoWee
 
 INSERT INTO AdminUser (id_user) VALUES (1);
+INSERT INTO AdminUser (id_user) VALUES (2);
 
 INSERT INTO Wallet (id, budget) VALUES (1, 100);
 INSERT INTO Wallet (id, budget) VALUES (2, 1000);
@@ -174,11 +174,11 @@ INSERT INTO AcceptedFriendRequest (id_friend_request, accepted_date) VALUES (3, 
 INSERT INTO RejectedFriendRequest (id_friend_request, rejected_date) VALUES (4, '2021-10-23');
 INSERT INTO RejectedFriendRequest (id_friend_request, rejected_date) VALUES (5, '2021-7-23');
 
-INSERT INTO Message (id, message, id_user_sender, id_user_receiver, publish_date) VALUES (1, 'Hello', 1, 2, '2021-10-15');
-INSERT INTO Message (id, message, id_user_sender, id_user_receiver, publish_date) VALUES (2, 'Hi', 2, 3, '2021-10-23');
-INSERT INTO Message (id, message, id_user_sender, id_user_receiver, publish_date) VALUES (3, 'Can I ask you something?', 3, 4, '2021-10-27');
-INSERT INTO Message (id, message, id_user_sender, id_user_receiver, publish_date) VALUES (4, 'Hey there!', 4, 5, '2021-10-3');
-INSERT INTO Message (id, message, id_user_sender, id_user_receiver, publish_date) VALUES (5, 'I would like to meet you!', 5, 6, '2021-10-1');
+INSERT INTO Message (id, text, id_user_sender, id_user_receiver, msg_date) VALUES (1, 'Hello', 1, 2, '2021-10-15');
+INSERT INTO Message (id, text, id_user_sender, id_user_receiver, msg_date) VALUES (2, 'Hi', 2, 3, '2021-10-23');
+INSERT INTO Message (id, text, id_user_sender, id_user_receiver, msg_date) VALUES (3, 'Can I ask you something?', 3, 4, '2021-10-27');
+INSERT INTO Message (id, text, id_user_sender, id_user_receiver, msg_date) VALUES (4, 'Hey there!', 4, 5, '2021-10-3');
+INSERT INTO Message (id, text, id_user_sender, id_user_receiver, msg_date) VALUES (5, 'I would like to meet you!', 5, 6, '2021-10-1');
 
 INSERT INTO UserGroupModerator (id_group, id_user_moderator) VALUES (1, 1);
 
@@ -217,7 +217,7 @@ INSERT INTO CommentReplyNotification (id_reply_notification, id_comment) VALUES 
 
 INSERT INTO TextContentReplyNotification (id_reply_notification, id_text_content) VALUES (1, 2);
 
-INSERT INTO PaymentMethod (id, name, company, transaction_limit) VALUES (1, 'PayPal', 'PayPal', 1000);
+INSERT INTO PaymentMethod (id, name, company, transaction_limit) VALUES (1, 'PayPal', 'PayPal', 10000);
 
 INSERT INTO Campaign (id_media_content, id_advertiser, starting_date, finishing_date, budget, remaining_budget, impressions, clicks) VALUES (6, 6, '2021-8-23', '2021-10-23', 1200, 700, 10, 5);
 INSERT INTO Campaign (id_media_content, id_advertiser, starting_date, finishing_date, budget, remaining_budget, impressions, clicks) VALUES (7, 7, '2021-4-23', '2021-7-23', 450, 200, 20, 100);
@@ -231,3 +231,7 @@ INSERT INTO GameStats (id_user, id_game_session, score) VALUES (3, 1, 3);
 INSERT INTO GameStats (id_user, id_game_session, score) VALUES (4, 2, 5);
 INSERT INTO GameStats (id_user, id_game_session, score) VALUES (5, 2, 8);
 INSERT INTO GameStats (id_user, id_game_session, score) VALUES (6, 2, 7);
+
+INSERT INTO Friends (id_user1, id_user2) VALUES (2, 1)
+INSERT INTO Friends (id_user1, id_user2) VALUES (3, 1)
+INSERT INTO Friends (id_user1, id_user2) VALUES (4, 2)

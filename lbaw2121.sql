@@ -18,7 +18,6 @@ DROP TABLE IF EXISTS FriendRequest CASCADE;
 DROP TABLE IF EXISTS AcceptedFriendRequest CASCADE;
 DROP TABLE IF EXISTS RejectedFriendRequest CASCADE;
 DROP TABLE IF EXISTS Message CASCADE;
-DROP TABLE IF EXISTS MessageUser CASCADE;
 DROP TABLE IF EXISTS Groups CASCADE;
 DROP TABLE IF EXISTS UserGroupModerator CASCADE;
 DROP TABLE IF EXISTS UserGroupMember CASCADE;
@@ -37,6 +36,7 @@ DROP TABLE IF EXISTS CommentReplyNotification CASCADE;
 DROP TABLE IF EXISTS TextContentReplyNotification CASCADE;
 DROP TABLE IF EXISTS GameSession CASCADE;
 DROP TABLE IF EXISTS GameStats CASCADE;
+DROP TABLE IF EXISTS Friends CASCADE;
 
 SET Search.path TO lbaw2121;
 -----------------------------------------
@@ -134,7 +134,6 @@ CREATE TABLE Video (
    alt_text TEXT NOT NULL,
    views INTEGER NOT NULL,        
    id_media_content INTEGER NOT NULL REFERENCES MediaContent(id) ON UPDATE CASCADE,
-   CONSTRAINT CHK_size CHECK (size > 0.0) 
 );
 
 CREATE TABLE Image (
@@ -174,10 +173,10 @@ CREATE TABLE RejectedFriendRequest (
 
 CREATE TABLE Message (
    id SERIAL PRIMARY KEY,
-   message TEXT NOT NULL,
+   text TEXT NOT NULL,
    id_user_sender INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
    id_user_receiver INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
-   publish_date TIMESTAMP WITH TIME ZONE NOT NULL
+   msg_date TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
 CREATE TABLE UserGroupModerator (
@@ -207,7 +206,7 @@ CREATE TABLE InterestUser (
 CREATE TABLE Notification (
    id SERIAL PRIMARY KEY,
    id_user INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
-   read BOOLEAN 
+   read BOOLEAN NOT NULL
 );
 
 CREATE TABLE LikeNotification (
@@ -240,7 +239,7 @@ CREATE TABLE PaymentMethod (
    id SERIAL PRIMARY KEY,
    name TEXT NOT NULL,
    company TEXT NOT NULL,
-   transaction_limit FLOAT,
+   transaction_limit FLOAT NOT NULL,
    CONSTRAINT CHK_limit CHECK (transaction_limit > 0.0)
 );
 
@@ -249,8 +248,8 @@ CREATE TABLE Campaign (
    id_advertiser INTEGER NOT NULL REFERENCES Advertiser(id_user) ON UPDATE CASCADE,
    starting_date TIMESTAMP WITH TIME ZONE NOT NULL,
    finishing_date TIMESTAMP WITH TIME ZONE NOT NULL,
-   budget FLOAT,
-   remaining_budget FLOAT,
+   budget FLOAT NOT NULL,
+   remaining_budget FLOAT NOT NULL,
    impressions INTEGER,
    clicks INTEGER,
    CONSTRAINT CHK_campaign_dates CHECK (finishing_date > starting_date),
@@ -279,7 +278,7 @@ CREATE TABLE Friends (
 --------------------------------------------
 --INDEX
 --------------------------------------------
---Performance Indexes
+--Performance Indeces
 
 CREATE INDEX user_content ON Content USING hash (id_creator);
 
@@ -289,8 +288,74 @@ CLUSTER MediaContent USING mediacontent_location;
 CREATE INDEX end_campaign ON Campaign USING btree (finishing_date);
 
 
---Full Text Search Indexes
+--Full Text Search Indeces
 
+-- Add column to TextReply to store computed ts_vectors.
+ALTER TABLE TextReply
+ADD COLUMN tsvectors TSVECTOR;
+
+-- Create a function to automatically update ts_vectors.
+CREATE FUNCTION textreply_search_update() RETURNS TRIGGER AS $$
+BEGIN
+ IF TG_OP = 'INSERT' THEN
+        NEW.tsvectors = (
+         setweight(to_tsvector('english', NEW.child_text), 'A') ||
+         setweight(to_tsvector('english', NEW.parent_text), 'B')
+        );
+ END IF;
+ IF TG_OP = 'UPDATE' THEN
+         IF (NEW.child_text <> OLD.child_text OR NEW.parent_text <> OLD.parent_text) THEN
+           NEW.tsvectors = (
+             setweight(to_tsvector('english', NEW.child_text), 'A') ||
+             setweight(to_tsvector('english', NEW.parent_text), 'B')
+           );
+         END IF;
+ END IF;
+ RETURN NEW;
+END $$
+LANGUAGE plpgsql;
+
+-- Create a trigger before insert or update on TextReply.
+CREATE TRIGGER textreply_search_update
+ BEFORE INSERT OR UPDATE ON TextReply
+ FOR EACH ROW
+ EXECUTE PROCEDURE textreply_search_update();
+
+-- Finally, create a GIN index for ts_vectors.
+CREATE INDEX tr_search_idx ON TextReply USING GIN (tsvectors);
+
+
+-- Add column to MediaContent to store computed ts_vectors.
+ALTER TABLE MediaContent
+ADD COLUMN tsvectors TSVECTOR;
+
+-- Create a function to automatically update ts_vectors.
+CREATE FUNCTION mediacontent_search_update() RETURNS TRIGGER AS $$
+BEGIN
+ IF TG_OP = 'INSERT' THEN
+        NEW.tsvectors = (
+         setweight(to_tsvector('english', NEW.description), 'A')
+        );
+ END IF;
+ IF TG_OP = 'UPDATE' THEN
+         IF (NEW.description  <> OLD.description) THEN
+           NEW.tsvectors = (
+             setweight(to_tsvector('english', NEW.description), 'A')
+           );
+         END IF;
+ END IF;
+ RETURN NEW;
+END $$
+LANGUAGE plpgsql;
+
+-- Create a trigger before insert or update on MediaContent.
+CREATE TRIGGER mediacontent_search_update
+ BEFORE INSERT OR UPDATE ON MediaContent
+ FOR EACH ROW
+ EXECUTE PROCEDURE mediacontent_search_update();
+
+-- Finally, create a GIN index for ts_vectors.
+CREATE INDEX mc_search_idx ON TextReply USING GIN (tsvectors);
 
 --------------------------------------------
 --TRIGGERS
