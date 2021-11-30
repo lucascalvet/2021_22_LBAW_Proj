@@ -140,7 +140,7 @@ INSERT INTO TextContent (id, post_text, id_content) VALUES (4, 'What is the best
 INSERT INTO TextContent (id, post_text, id_content) VALUES (5, 'Take it easy, keep calm', 5);
 
 INSERT INTO TextReply (child_text, parent_text) VALUES (1, 2);
-INSERT INTO TextReply (child_text, parent_text) VALUES (3, 4);
+INSERT INTO TextReply (child_text, parent_text) VALUES (4, 3);
 
 INSERT INTO MediaContent (id, description, media, fullscreen, id_content, id_locale) VALUES (1, 'Just a cute video', '/cute.png', TRUE, 6, 1);
 INSERT INTO MediaContent (id, description, media, fullscreen, id_content, id_locale) VALUES (2, 'BMW', '/moto.jpeg', FALSE, 7, 2);

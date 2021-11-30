@@ -311,6 +311,7 @@ $$;
 
 CREATE TRIGGER DateComment
    BEFORE INSERT ON Comment
+   FOR EACH ROW
    EXECUTE PROCEDURE dateComment();
 
 
@@ -327,6 +328,7 @@ $$;
 
 CREATE TRIGGER DateText
    BEFORE INSERT ON TextReply
+   FOR EACH ROW
    EXECUTE PROCEDURE dateText();
 
 -- CREATE FUNCTION frNotification() RETURNS TRIGGER LANGUAGE plpgsql AS
