@@ -38,11 +38,10 @@ DROP TABLE IF EXISTS TextContentReplyNotification CASCADE;
 DROP TABLE IF EXISTS GameSession CASCADE;
 DROP TABLE IF EXISTS GameStats CASCADE;
 
-SET Search.path lbaw2121;
+SET Search.path TO lbaw2121;
 -----------------------------------------
 -- Types
 -----------------------------------------
-
 
 
 -----------------------------------------
@@ -61,8 +60,8 @@ CREATE TABLE Users (
    name TEXT NOT NULL,
    email TEXT NOT NULL UNIQUE,
    hashed_password TEXT NOT NULL,
-   profile_picture TEXT NOT NULL,
-   cover_picture TEXT NOT NULL, 
+   profile_picture TEXT,
+   cover_picture TEXT,
    phone_number TEXT,
    id_country INTEGER NOT NULL REFERENCES Country(id) ON UPDATE CASCADE, 
    birthday TIMESTAMP WITH TIME ZONE NOT NULL
@@ -135,7 +134,6 @@ CREATE TABLE Video (
    alt_text TEXT NOT NULL,
    views INTEGER NOT NULL,        
    id_media_content INTEGER NOT NULL REFERENCES MediaContent(id) ON UPDATE CASCADE,
-   size FLOAT,
    CONSTRAINT CHK_size CHECK (size > 0.0) 
 );
 
@@ -174,14 +172,13 @@ CREATE TABLE RejectedFriendRequest (
    rejected_date TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
-CREATE TABLE Message (  -- Maybe do MessageGroup in future
+CREATE TABLE Message (
    id SERIAL PRIMARY KEY,
    message TEXT NOT NULL,
    id_user_sender INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
    id_user_receiver INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
    publish_date TIMESTAMP WITH TIME ZONE NOT NULL
 );
-
 
 CREATE TABLE UserGroupModerator (
    id_group INTEGER NOT NULL REFERENCES Groups(id) ON UPDATE CASCADE,
@@ -210,7 +207,7 @@ CREATE TABLE InterestUser (
 CREATE TABLE Notification (
    id SERIAL PRIMARY KEY,
    id_user INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
-   read BOOLEAN NOT NULL
+   read BOOLEAN 
 );
 
 CREATE TABLE LikeNotification (
@@ -219,7 +216,7 @@ CREATE TABLE LikeNotification (
    id_content INTEGER NOT NULL,
    FOREIGN KEY (id_user, id_content) REFERENCES ContentLike(id_user, id_content) ON UPDATE CASCADE
 );
-
+ 
 CREATE TABLE ReplyNotification (
    id_notification INTEGER PRIMARY KEY REFERENCES Notification(id) ON UPDATE CASCADE
 );
@@ -277,3 +274,84 @@ CREATE TABLE Friends (
    PRIMARY KEY (id_user1, id_user2),
    CONSTRAINT CHK_friends CHECK (id_user1 > id_user2) 
 );
+
+
+--------------------------------------------
+--INDEX
+--------------------------------------------
+--Performance Indexes
+
+CREATE INDEX user_content ON Content USING hash (id_creator);
+
+CREATE INDEX mediacontent_location ON MediaContent USING btree (id_locale);
+CLUSTER MediaContent USING mediacontent_location;
+
+CREATE INDEX end_campaign ON Campaign USING btree (finishing_date);
+
+
+--Full Text Search Indexes
+
+
+--------------------------------------------
+--TRIGGERS
+--------------------------------------------
+
+--TRIGGER 1
+
+CREATE FUNCTION dateComment() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   IF ((SELECT publishing_date FROM Content WHERE id == NEW.id_media_content)> NEW.comment_date) RAISE EXCEPTION 'Content date greater than Comment date';
+   END IF;
+   RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER dateComment
+   BEFORE INSERT ON Comment
+   EXECUTE PROCEDURE dateComment();
+
+
+--TRIGGER 2
+
+CREAT FUNCTION dateText() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   IF ((SELECT publishing_date FROM Content WHERE id == (SELECT id_content FROM TextContent WHERE id == child_text)) <= (SELECT publishing_date FROM Content WHERE id == (SELECT id_content FROM TextContent WHERE id == parent_text))) RAISE EXCEPTION 'Parent reply date greater than child date';
+   END IF;
+END;
+$$;
+
+CREATE TRIGGER dateText
+   BEFORE INSERT TextReply
+   EXECUTE PROCEDURE dateText();
+
+-- CREATE FUNCTION frNotification() RETURNS TRIGGER LANGUAGE plpgsql AS
+-- $$
+-- BEGIN
+--    INSERT INTO Notification(id_user) VALUES(NEW.id_receiver);
+--    INSERT INTO FriendRequestNotification(id_notification, id_friend_request) VALUES(Notification.id, NEW.id);
+
+-- END;
+-- $$;
+
+-- CREATE TRIGGER FRNotification 
+--    AFTER INSERT ON FriendRequest
+--    EXECUTE PROCEDURE frNotification();
+
+
+-- CREATE FUNCTION loan_item() RETURNS TRIGGER AS
+-- $BODY$
+-- BEGIN
+--         IF EXISTS (SELECT * FROM loan WHERE NEW.id_users = id_users AND end_t > NEW.start_t) THEN
+--            RAISE EXCEPTION 'An item can only be loaned to one user at a given moment.';
+--         END IF;
+--         RETURN NEW;
+-- END
+-- $BODY$
+-- LANGUAGE plpgsql;
+
+-- CREATE TRIGGER loan_item
+--         BEFORE INSERT OR UPDATE ON loan
+--         FOR EACH ROW
+--         EXECUTE PROCEDURE loan_item();
