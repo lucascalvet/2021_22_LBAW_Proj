@@ -30,7 +30,7 @@
 
 | Relation reference | Relation Compact Notation                        |
 | ------------------ | ------------------------------------------------ |
-| R01                | Users(__id__, username __UK__ __NN__, name __NN__, email __UK__ __NN__, hashed_password __NN__, profile_picture __NN__, cover_picture __NN__, phone_number, id_country → Country __NN__, birthday __NN__)                     |
+| R01                | Users(__id__, username __UK__ __NN__, name __NN__, email __UK__ __NN__, hashed_password __NN__, profile_picture, cover_picture, phone_number, id_country → Country __NN__, birthday __NN__)                     |
 | R02                | AdminUser(__id__)  |
 | R03                | Advertiser(__id__, company_name __NN__, id_wallet → Wallet __NN__)  |
 | R04                | Wallet(__id__, budget __NN__ __CK__ budget >= 0.0) |
@@ -443,26 +443,39 @@
 
 | **Index**           | IDX01                                  |
 | ---                 | ---                                    |
-| **Relation**        | Relation where the index is applied    |
-| **Attribute**       | Attribute where the index is applied   |
-| **Type**            | B-tree, Hash, GiST or GIN              |
-| **Cardinality**     | Attribute cardinality: low/medium/high |
-| **Clustering**      | Clustering of the index                |
-| **Justification**   | Justification for the proposed index   |
-| `SQL code`                                                  ||
+| **Relation**        | Content                                |
+| **Attribute**       | id_creator                             |
+| **Type**            | Hash                                   |
+| **Cardinality**     | Medium                                 |
+| **Clustering**      | No                                     |
+| **Justification**   | Accessing the content posted by a specific user is one of the most important features in a social network and, as such, many queries will filter access to Content by it's creator. For instance this is useful for displaying a user's timeline. It's a hash type index, because we want an exact match when searching for posts from one user. Clustering would be good for performance, but update frequency can be high seeing as an user can, for example, post new content many times a day.             |
+| `SQL code` |`CREATE INDEX user_content ON Content USING hash (id_creator);`|
 
-> Analysis of the impact of the performance indices on specific queries.
-> Include the execution plan before and after the use of indices.
+<br></br>
 
-| **Query**       | SELECT01                               |
-| ---             | ---                                    |
-| **Description** | One sentence describing the query goal |
-| `SQL code`                                              ||
-| **Execution Plan without indices**                      ||
-| `Execution plan`                                        ||
-| **Execution Plan with indices**                         ||
-| `Execution plan`                                        ||
+| **Index**           | IDX02                                  |
+| ---                 | ---                                    |
+| **Relation**        | MediaContent                           |
+| **Attribute**       | id_locale                              |
+| **Type**            | B-tree                                 |
+| **Cardinality**     | Medium                                 |
+| **Clustering**      | Yes                                    |
+| **Justification**   | Wanting to search MediaContent with a particular location tag is also a very common requirement in a social platform. As such we want said filtering to be done as quick as possible. We plan to have the locations on our database since the very start, there will be next to none additions of new locations. With such a low update frequency paired with a medium cardinality, this is a perfect candidate for Clustering.         |
+| `SQL code` |`CREATE INDEX mediacontent_location ON MediaContent USING btree (id_locale); CLUSTER MediaContent USING mediacontent_location;`|
 
+<br></br>
+
+| **Index**           | IDX03                                  |
+| ---                 | ---                                    |
+| **Relation**        | Campaign                               |
+| **Attribute**       | finishing_date                         |
+| **Type**            | B-tree                                 |
+| **Cardinality**     | Medium                                 |
+| **Clustering**      | No                                     |
+| **Justification**   | It's very frequent to access the table "Campaign" for promotions ending on a given date. A B-tree index allows for efficient data range queries based on the finishing_date     |
+| `SQL code` |`CREATE INDEX end_campaign ON Campaign USING btree (finishing_date);`|
+
+<br></br>
 
 #### 2.2. Full-text Search Indices 
 
@@ -473,10 +486,12 @@
 | **Relation**        | Relation where the index is applied    |
 | **Attribute**       | Attribute where the index is applied   |
 | **Type**            | B-tree, Hash, GiST or GIN              |
+| **Cardinality**     | Attribute cardinality: low/medium/high |
 | **Clustering**      | Clustering of the index                |
 | **Justification**   | Justification for the proposed index   |
 | `SQL code`                                                  ||
 
+<br></br>
 
 ### 3. Triggers
  
