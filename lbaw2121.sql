@@ -27,7 +27,6 @@ DROP TABLE IF EXISTS Locale CASCADE;
 DROP TABLE IF EXISTS Country CASCADE;
 DROP TABLE IF EXISTS PaymentMethod CASCADE;
 DROP TABLE IF EXISTS Campaign CASCADE;
-DROP TABLE IF EXISTS MeetingGame CASCADE;
 DROP TABLE IF EXISTS Notification CASCADE;
 DROP TABLE IF EXISTS LikeNotification CASCADE;
 DROP TABLE IF EXISTS ReplyNotification CASCADE;
@@ -303,15 +302,15 @@ CREATE FUNCTION textreply_search_update() RETURNS TRIGGER AS $$
 BEGIN
  IF TG_OP = 'INSERT' THEN
         NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.child_text), 'A') ||
-         setweight(to_tsvector('english', NEW.parent_text), 'B')
+         setweight(to_tsvector('english', (SELECT post_text FROM TextContent WHERE id = NEW.child_text)), 'A') ||
+         setweight(to_tsvector('english', (SELECT post_text FROM TextContent WHERE id = NEW.parent_text)), 'B')
         );
  END IF;
  IF TG_OP = 'UPDATE' THEN
          IF (NEW.child_text <> OLD.child_text OR NEW.parent_text <> OLD.parent_text) THEN
            NEW.tsvectors = (
-             setweight(to_tsvector('english', NEW.child_text), 'A') ||
-             setweight(to_tsvector('english', NEW.parent_text), 'B')
+             setweight(to_tsvector('english', (SELECT post_text FROM TextContent WHERE id = NEW.child_text)), 'A') ||
+             setweight(to_tsvector('english', (SELECT post_text FROM TextContent WHERE id = NEW.parent_text)), 'B')
            );
          END IF;
  END IF;
@@ -425,7 +424,7 @@ END TRANSACTION;
 --TRANSACTION 2
 BEGIN TRANSACTION;
 
-SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
 -- Insert MediaContent
 INSERT INTO MediaContent (description, media, fullscreen, id_content, id_locale) 
