@@ -1,7 +1,3 @@
---SET Search.path lbaw2121;
-
---PRAGMA foreign_keys=ON;
-
 --Country: 11
 --Locale: 11
 --Users: 20
