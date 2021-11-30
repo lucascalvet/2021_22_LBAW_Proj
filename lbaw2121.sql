@@ -135,7 +135,6 @@ CREATE TABLE Video (
    alt_text TEXT NOT NULL,
    views INTEGER NOT NULL,        
    id_media_content INTEGER NOT NULL REFERENCES MediaContent(id) ON UPDATE CASCADE,
-   size FLOAT,
    CONSTRAINT CHK_size CHECK (size > 0.0) 
 );
 
