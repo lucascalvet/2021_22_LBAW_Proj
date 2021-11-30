@@ -562,8 +562,6 @@ CREATE INDEX mc_search_idx ON TextReply USING GIN (tsvectors);
 <br></br>
 
 ### 3. Triggers
- 
-> User-defined functions and trigger procedures that add control structures to the SQL language or perform complex computations, are identified and described to be trusted by the database server. Every kind of function (SQL functions, Stored procedures, Trigger procedures) can take base types, composite types, or combinations of these as arguments (parameters). In addition, every kind of function can return a base type or a composite type. Functions can also be defined to return sets of base or composite values.  
 
 | **Trigger**      | TRIGGER01                              |
 | ---              | ---                                    |
@@ -612,21 +610,31 @@ CREATE TRIGGER dateText
 
 | **Transaction**   | TRAN01                    |
 | --------------- | ----------------------------------- |
-| **Description** | Get the count of all posts, as well as information about the last ones |
+| **Description** | Get the count of all text posts, as well as information about the last ones |
 | **Justification**   | The insertion of new rows in the Content table can occur in the middle of the transaction, which may result in the information retrieved in both selects to be different, consequently resulting in a Phantom Read. It's READ ONLY because it only uses Selects.  |
 | **Isolation level** | SERIALIZABLE READ ONLY |
 | Complete SQL Code                                   ||
 
+```
+a
+```
+
+<br></br>
+
+| **Transaction**   | TRAN02                                 |
+| ---------------   | -----------------------------------    |
+| **Description**   | Get the count of all text posts, as well as information about the last ones |
+| **Justification**   | The insertion of new rows in the Content table can occur in the middle of the transaction, which may result in the information retrieved in both selects to be different, consequently resulting in a Phantom Read. It's READ ONLY because it only uses Selects.  |
+| **Isolation level** | SERIALIZABLE READ ONLY |
+| Complete SQL Code                                   ||
+
+```
+a
+```
+
+<br></br>
 
 ## Annex A. SQL Code
-
-> The database scripts are included in this annex to the EBD component.
-> 
-> The database creation script and the population script should be presented as separate elements.
-> The creation script includes the code necessary to build (and rebuild) the database.
-> The population script includes an amount of tuples suitable for testing and with plausible values for the fields of the database.
->
-> This code should also be included in the group's git repository and links added here.
 
 ### A.1. Database schema
 
