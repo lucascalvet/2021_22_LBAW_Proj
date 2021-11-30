@@ -4,7 +4,7 @@
 
 ## A4: Conceptual Data Model
 
-This artefact contains an overall view of the structure of the data, better visualized in the UML class diagram. We identify the classes in which the data will be stores and the relationships between said classes.
+This artefact contains an overall view of the structure of the data, better visualized in the UML class diagram. We identify the classes in which the data will be stored and the relationships between said classes.
 
 ### 1. Class diagram
 
@@ -571,18 +571,22 @@ CREATE INDEX mc_search_idx ON TextReply USING GIN (tsvectors);
 | **SQL code**               |
 
 ```
+
 CREATE FUNCTION dateComment() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF ((SELECT publishing_date FROM Content WHERE id == NEW.id_media_content)> NEW.comment_date) RAISE EXCEPTION 'Content date greater than Comment date';
+   IF ((SELECT publishing_date FROM Content WHERE id = NEW.id_media_content)> NEW.comment_date) THEN RAISE EXCEPTION 'Content date greater than Comment date';
    END IF;
    RETURN NEW;
 END;
 $$;
 
-CREATE TRIGGER dateComment
+CREATE TRIGGER DateComment
    BEFORE INSERT ON Comment
+   FOR EACH ROW
    EXECUTE PROCEDURE dateComment();
+
+
 ```
 
 <br></br>
@@ -596,14 +600,17 @@ CREATE TRIGGER dateComment
 CREATE FUNCTION dateText() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF ((SELECT publishing_date FROM Content WHERE id == (SELECT id_content FROM TextContent WHERE id == child_text)) <= (SELECT publishing_date FROM Content WHERE id == (SELECT id_content FROM TextContent WHERE id == parent_text))) RAISE EXCEPTION 'Parent reply date greater than child date';
+   IF ((SELECT publishing_date FROM Content WHERE id = (SELECT id_content FROM TextContent WHERE id = NEW.child_text)) <= (SELECT publishing_date FROM Content WHERE id = (SELECT id_content FROM TextContent WHERE id = NEW.parent_text))) THEN RAISE EXCEPTION 'Parent reply date greater than child date';
    END IF;
+   RETURN NEW;
 END;
 $$;
 
-CREATE TRIGGER dateText
-   BEFORE INSERT TextReply
+CREATE TRIGGER DateText
+   BEFORE INSERT ON TextReply
+   FOR EACH ROW
    EXECUTE PROCEDURE dateText();
+
 ```
 
 <br></br>
