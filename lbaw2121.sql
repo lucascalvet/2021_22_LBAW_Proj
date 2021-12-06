@@ -358,7 +358,7 @@ CREATE TRIGGER mediacontent_search_update
  EXECUTE PROCEDURE mediacontent_search_update();
 
 -- Finally, create a GIN index for ts_vectors.
-CREATE INDEX mc_search_idx ON TextReply USING GIN (tsvectors);
+CREATE INDEX mc_search_idx ON MediaContent USING GIN (tsvectors);
 
 --------------------------------------------
 --TRIGGERS
