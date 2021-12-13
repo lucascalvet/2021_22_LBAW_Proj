@@ -1,0 +1,1033 @@
+openapi: 3.0.0
+
+
+info:
+ version: '1.0'
+ title: 'LBAW Social UP Web API'
+ description: 'Web Resources Specification (A7) for Social UP'
+
+servers:
+- url: http://lbaw.fe.up.pt       # tbd
+  description: Production server   # tbd
+
+externalDocs:
+ description: Find more info here.
+ url: https://git.fe.up.pt/lbaw/lbaw2122/lbaw2121/-/wikis/home #incomplete, tbd
+
+tags:
+- name: 'M01: Authentication and Timeline'
+- name: 'M02: Individual Profile'
+- name: 'M03: Search'
+- name: 'M04: View and Create Content'
+- name: 'M05: Messages'
+- name: 'M06: Notifications'
+- name: 'M07: Groups'
+- name: 'M08: Games'
+- name: 'M09: User Administration'
+- name: 'M010: Advertiser'
+- name: 'M011: Static Pages'
+
+paths:
+  /:
+    get:
+      operationId: R0101
+      summary: 'R0101: Login and Home Page'
+      description: 'Provide Login or Home Page (timeline), if the user is already logged in. Access: PUB'
+      tags:
+      - 'M01: AuthenticatRion and Timeline'
+
+      parameters:
+        - in: query
+          name: invalid_login
+          description: Show an invalid login message
+          schema:
+            type: boolean
+          required: false
+
+      responses:
+        '200':
+          description: 'Ok. Show Login or Home UI. US01'
+  
+  /login:
+    post:
+      operationId: R0102
+      summary: 'R0102: Login Action'
+      description: 'Processes the login form submission. Access: USR'
+      tags:
+      - 'M01: Authentication and Timeline'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required:
+                - email
+                - password
+      responses:
+        '302':
+          description: 'Redirect after processing the login credentials.'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Successful authentication. Redirect to user timeline UI. US18'
+                  value: '/'
+                302Error:
+                  description: 'Failed authentication. Redirect to home page.'
+                  value: '/?invalid_login=true'
+
+  /logout:
+    post:
+      operationId: R0103
+      summary: 'R0103: Logout Action'
+      description: 'Logout the current authenticated user. Access: USR'
+      tags:
+      - 'M01: Authentication and Timeline'
+
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+
+      responses:
+        '302':
+          description: 'Redirect after processing logout.'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Successful logout. Redirect to home UI.'
+                  value: '/'
+                302Error:
+                  description: 'Failed logout. Redirect to home UI.'
+                  value: '/'
+
+  /register:
+    get:
+      operationId: R0104
+      summary: 'R0104: View Register Form'
+      description: 'Provide new user registration form. Access: PUB'
+      tags:
+      - 'M01: Authentication and Timeline'
+      
+      parameters:
+        - in: query
+          name: confirm
+          description: Successful registration
+          schema:
+            type: boolean
+          required: false
+        - in: query
+          name: invalid_email
+          description: Show invalid email message
+          schema:
+            type: boolean
+          required: false
+        - in: query
+          name: invalid_username
+          description: Show invalid username message
+          schema:
+            type: boolean
+          required: false
+        - in: query
+          name: invalid_password
+          description: Show invalid password message
+          schema:
+            type: boolean
+          required: false
+        - in: query
+          name: invalid_birthday
+          description: Show invalid birthday message
+          schema:
+            type: boolean
+          required: false
+
+      responses:
+       '200':
+         description: 'Ok. Show sign-up form UI. US09'
+
+    post:
+      operationId: R0105
+      summary: 'R0105: Register Action.'
+      description: 'Processes the new user registration form submission. Access: PUB'
+      tags:
+        - 'M01: Authentication and Timeline'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                username:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                profile_picture:
+                  type: string
+                  format: binary
+                cover_picture:
+                  type: string
+                  format: binary
+                phone_number:
+                  type: string
+                birthday:
+                  type: string
+                  format: date
+              required:
+              - name
+              - username
+              - email
+              - password
+              - birthday
+      responses:
+        '302':
+          description: 'Redirect after processing the new user information.'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Successful authentication. Redirect to user profile.'
+                  value: '/register&confirm=true'
+                302Failure:
+                  description: 'Failed authentication. Redirect to register form.'
+                  value: '/register'
+
+  /users/{id}:
+    get:
+      operationId: R0201
+      summary: 'R0201: View User Profile'
+      description: 'Show the individual user profile. Access: PUB'
+
+      tags:
+      - 'M02: Individual Profile'
+
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+
+      responses:
+       '200':
+         description: 'Ok. Show User Profile UI'
+       '404':
+         description: 'Error. User Profile Not Found UI'
+
+  /users/{id}/edit:
+    get:
+      operationId: R0202
+      summary: 'R0202: View Profile Editor'
+      description: 'Edit profile information. Access: USR'
+
+      tags:
+      - 'M02: Individual Profile'
+
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+
+      responses:
+       '200':
+         description: 'Ok. Show Edit User UI. US15'
+
+    post:
+      operationId: R0203
+      summary: 'R0203: Save Edited Profile'
+      description: 'Save the edited user profile informations. Access: USR'
+      tags:
+      - 'M01: Authentication and Individual Profile'
+
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                username:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                old_password:
+                  type: string
+                  format: password
+                password:
+                  type: string
+                  format: password
+                profile_picture:
+                  type: string
+                  format: binary
+                cover_picture:
+                  type: string
+                  format: binary
+                phone_number:
+                  type: string
+                birthday:
+                  type: string
+                  format: date
+
+      responses:
+        '302':
+          description: 'Redirect after processing profile edition.'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Successful profile edition. Redirect to user profile UI.'
+                  value: '/users/{id}'
+                302Error:
+                  description: 'Failed profile edition. Redirect to user profile UI.'
+                  value: '/users/{id}/edit'
+  
+  /search:
+    get:
+      operationId: R0301
+      summary: 'R0301: Search Page'
+      description: 'Search users or content. Access: PUB.'
+
+      tags:
+        - 'M03: Search'
+
+      responses:
+        '200':
+          description: 'Success. Show search UI. US05'
+
+  /search/users:
+    get:
+      operationId: R0302
+      summary: 'R0302: Search for Users'
+      description: 'Search for users. Access: PUB.'
+
+      tags:
+        - 'M03: Search'
+      
+      parameters:
+        - in: query
+          name: query
+          description: Name of the user to use for full-text search
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: country
+          description: Country of the User
+          schema:
+            type: string
+          required: false
+      
+      responses:
+        '200':
+          description: 'Success. Show search results. US05'
+  
+  /search/content:
+    get:
+      operationId: R0303
+      summary: 'R0303: Search for Content'
+      description: 'Search for content. Access: PUB.'
+      
+      tags:
+        - 'M03: Search'
+      
+      parameters:
+        - in: query
+          name: query
+          description: Content text to use for full-text search
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: type
+          description: Type of content
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: type
+          description: Type of content
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: after_date
+          description: Minimum date
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: before_date
+          description: Maximum date
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: ordering
+          description: Ordering criteria
+          schema:
+            type: string
+          required: false
+      
+      responses:
+        '200':
+          description: 'Success. Show search results. US05'
+
+  /api/search/users:
+    get:
+      operationId: R0304
+      summary: 'R0304: Search Users API'
+      description: 'Searches for users and returns the results as JSON. Access: PUB.'
+
+      tags:
+        - 'M03: Search'
+
+      parameters:
+        - in: query
+          name: query
+          description: Name of the user to use for full-text search
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: country
+          description: Country of the User
+          schema:
+            type: string
+          required: false
+
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    username:
+                      type: string
+                    name:
+                      type: string
+                    profile_picture:
+                      type: string
+                    cover_picture:
+                      type: string
+                    country:
+                      type: string
+                example:
+                  - id: 1
+                    username: Evernshould
+                    name: Evelyn M. Dudley
+                    profile_picture: /data/user/1/profile.jpg
+                    cover_picture: /data/user/1/cover.jpg
+                    country: Afghanistan
+                  - id: 20
+                    username: Miltary58
+                    name: Carmela H. Choi
+                    profile_picture: /data/user/20/profile.jpg
+                    cover_picture: /data/user/20/cover.jpg
+                    country: Portugal
+
+  /api/search/content:
+    get:
+      operationId: R0305
+      summary: 'R0305: Search Content API'
+      description: 'Searches for content and returns the results as JSON. Access: PUB.'
+
+      tags:
+        - 'M03: Search'
+
+      parameters:
+        - in: query
+          name: query
+          description: Content text to use for full-text search
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: type
+          description: Type of content
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: type
+          description: Type of content
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: after_date
+          description: Minimum date
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: before_date
+          description: Maximum date
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: ordering
+          description: Ordering criteria
+          schema:
+            type: string
+          required: false
+
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    creator_id:
+                      type: string
+                    publishing_date:
+                      type: string
+                    post_text:
+                      type: string
+                    description:
+                      type: string
+                    media:
+                      type: string
+                    alt_text:
+                      type: string
+                    views:
+                      type: integer
+                example:
+                  - id: 1
+                    creator_id: 1
+                    publishing_date: 2021-5-23
+                    post_text: Today i made a funny thing!
+                  - id: 6
+                    creator_id: 6
+                    publishing_date: 2018-9-20
+                    description: Just a cute video
+                    media: /data/content/6.mp4
+                    alt_text: Cat sleeping
+                    views: 123
+  
+  /content/{id}:
+    get:
+      operationId: R0401
+      summary: 'R0401: View Content'
+      description: 'Show the Content. Access: PUB'
+      tags:
+        - 'M04: View and Create Content'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+
+      responses:
+        '200':
+          description: 'Success. Show the Content UI'
+
+  /content/create:
+    get:
+      operationId: R0302
+      summary: 'R0302: View Content Creation Form'
+      description: 'Provide new Content Creation Form. Access: USR'
+      tags:
+      - 'M03: View and Create Content'
+
+      responses:
+       '200':
+         description: 'Ok. Show Content Creation Form UI.'
+
+    post:
+      operationId: R0303
+      summary: 'R0303: Create Content'
+      description: 'Processes the Content Creation Form. Access: USR'
+      tags:
+        - 'M03: View and Create Content'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                content-type:
+                  type: boolean #???
+              required:
+              - content-type
+
+      responses:
+        '302':
+          description: 'Redirect after processing the Content Creation Form.'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Type of Content chosen successfully. Redirect to the Content Creation Form of the chosen Type.'
+                  value: '/content/{content-type}/{id}'
+                302Error:
+                  description: 'Failed to choose Type of Content. Redirect to the Content Creation Form.'
+                  value: '/content/create'
+
+  /content/create/text/{id}:
+    get:
+      operationId: R0304
+      summary: 'R0304: View Text Content Creation Form'
+      description: 'Provide new Text Content Creation Form. Access: USR'
+      tags:
+      - 'M03: View and Create Content'
+
+      responses:
+       '200':
+         description: 'Ok. Show Text Content Creation Form UI.'
+
+    post:
+      operationId: R0305
+      summary: 'R0305: Create Text Content'
+      description: 'Processes the Text Content Creation Form. Access: USR'
+      tags:
+        - 'M03: View and Create Content'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                text:
+                  type: string
+              required:
+              - text
+
+      responses:
+        '302':
+          description: 'Redirect after processing the Text Content Creation Form.'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Text Content created successfully. Redirect to the newly created content.'
+                  value: '/content/{id}'
+                302Error:
+                  description: 'Failed to create Text Content. Redirect to the Text Content Creation Form.'
+                  value: '/content/create/text/{id}'
+
+  /content/create/media/{id}:
+    get:
+      operationId: R0306
+      summary: 'R0306: View Media Content Creation Form'
+      description: 'Provide new Media Content Creation Form. Access: USR'
+      tags:
+      - 'M03: View and Create Content'
+
+      responses:
+       '200':
+         description: 'Ok. Show Media Content Creation Form UI.'
+
+    post:
+      operationId: R0307
+      summary: 'R0307: Create Media Content'
+      description: 'Processes the Media Content Creation Form. Access: USR'
+      tags:
+        - 'M03: View and Create Content'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                media:
+                  type: string
+                  format: binary
+                locale:
+                  type: integer #???
+              required:
+              - description
+              - media
+
+      responses:
+        '302':
+          description: 'Redirect after processing the Media Content Creation Form.'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Media Content created successfully. Redirect to the newly created Content.'
+                  value: '/content/{id}'
+                302Error:
+                  description: 'Failed to create Media Content. Redirect to the Media Content Creation Form.'
+                  value: '/content/create/media/{id}' 
+
+  /message/{id}:
+   get:
+     operationId: R0401
+     summary: 'R0401: See Message'
+     description: 'Shows the User the received messages.'
+     tags:
+       - 'M04: Messages'
+     responses:
+       '200':
+         description: 'Ok. Show messages.'
+   post:
+     operationId: R0402
+     summary: 'R0402: Send Message'
+     description: 'Send new message to other User'
+     tags:
+      - 'M04: Messages'
+     parameters:
+      - in: query
+        name: msg
+        description: 'Message to be sent'
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: username
+        description: 'Username of the receiver of the message'
+        schema:
+          type: string
+        required: true
+     responses:
+      '200':
+        description: 'Sucess! Message sent.'
+      '404':
+        description: 'Error. User not found.'
+
+
+  
+  /notifications:
+    get:
+        operationId: R0501
+        summary: 'R0501: User Notifications'
+        description: 'Provide user notifications section. Access: USR'
+        tags:
+        - 'M05: Notifications'
+
+        responses:
+          '200':
+            description: 'Ok. Show user notifications section UI. US19'
+    post:
+      operationId: R0502
+      summary: 'R0502: Clear Notifications.'
+      description: 'Clears all notifications from user notification section. Access: USR'
+      tags:
+        - 'M05: Notifications'
+
+      responses:
+        '302':
+          description: 'Redirect after clearing user notifications'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Successfuly cleared notifications. Redirect to user notifications section.'
+                  value: '/notifications'
+                302Failure:
+                  description: 'Failed to clear notifications. Redirect to user notifications section.'
+                  value: '/notifications'
+
+  /notifications/friend-request:
+    post:
+      operationId: R0503
+      summary: 'R0503: Accept Friend Request through Notification.'
+      description: 'Accepts a friend request through an user notification, from user notifications section. Access: USR'
+      tags:
+        - 'M05: Notifications'
+
+      responses:
+        '302':
+          description: 'Redirect after processing acceptance of the friend request'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Successfuly accepted the friend request. Redirect to user notifications section.'
+                  value: '/notifications'
+                302Failure:
+                  description: 'Failed to accept friend request. Redirect to user notifications section.'
+                  value: '/notifications'
+
+  /notifications/like:
+    post:
+      operationId: R0504
+      summary: 'R0504: Like Content through Notification.'
+      description: 'Likes some content from user notifications section. Access: USR'
+      tags:
+        - 'M05: Notifications'
+
+      responses:
+        '302':
+          description: 'Redirect after processing content like'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Successfuly liked the content the content. Redirect to user notifications section.'
+                  value: '/notifications'
+                302Failure:
+                  description: 'Failed to like the content. Redirect to user notifications section.'
+                  value: '/notifications'
+  
+  /group/{id}:
+    get:
+      operationId: R0601
+      summary: 'R0601: View Group'
+      description: 'Show a Group. Access: GMB'
+      tags:
+        - 'M06: Groups'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+
+      responses:
+        '200':
+          description: 'Success. Show the Group UI'
+  
+  /group/{id}/moderate:
+    get:
+      operationId: R0602
+      summary: 'R0602: View Moderator Page'
+      description: 'Show a Group Moderator Page. Access: GMD'
+      tags:
+        - 'M06: Groups'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+
+      responses:
+        '200':
+          description: 'Success. Show the Group Moderator UI'
+    
+    post:
+      operationId: R0603
+      summary: 'R0603: Apply Moderator settings'
+      description: 'Apply the settings set by a moderator. Access: GMD'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                group_name:
+                  type: string
+                group_description:
+                  type: string
+                group_picture:
+                 type: string
+                 format: binary
+    
+      responses:
+        '302':
+          description: 'Redirect after processing the new settings.'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Successful. Redirect to group page.'
+                  value: '/group/{id}'
+                302Error:
+                  description: 'Failed moderator authentication. Redirect to group page.'
+                  value: '/group/{id}'
+  
+
+  /delete:
+    post:
+      operationId: R0801
+      summary: 'R0801: Delete Account'
+      description: 'Delete a user account'
+      tags:
+        - 'M08: User Administration'
+      parameters:
+        - in: query
+          name: username
+          description: 'Username of the account to be deleted'
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: 'User removed with success.'
+        '401':
+          description: 'Unauthorized. You do not have permissions to remove this user.'
+        '404':
+          description: 'User not found.'
+  
+  /block:
+    post:
+      operationId: R0802
+      summary: 'R0802: Block Account'
+      description: 'Block a user account for unspecified time'
+      tags:
+        - 'M08: User Administration'
+      parameters:
+        - in: query
+          name: username
+          description: 'Username of the account to be blocked'
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: 'Success, the user has been blocked.'
+        '401':
+          description: 'Unauthorized. You do not have permissions to perform this action.'
+        '405':
+          description: 'Method not allowed. This User is already blocked.'
+        '404':
+          description: 'User not found.'
+  /unblock:
+    post:
+      operationId: R0803
+      summary: 'R0803: Unblock Account'
+      description: 'Unblock a user account that was previously blocked by an administrator'
+      tags:
+        - 'M08: User Administration'
+      parameters:
+        - in: query
+          name: username
+          description: 'Username of the account to be unblocked'
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: 'Success, the user has been unblocked.'
+        '401':
+          description: 'Unauthorized. You do not have permissions to perform this action.'
+        '405':
+          description: 'Method not allowed. This User is already unblocked.'
+        '404':
+          description: 'User not found.'
+
+  /about:
+    get:
+      operationId: R1001
+      summary: 'R1001: View About Us page'
+      description: 'Show the About Us page. Access: PUB'
+      tags:
+        - 'M10: Static Pages'
+
+      responses:
+        '200':
+          description: 'Success. Show About Us page'
+
+  /contact:
+    get:
+      operationId: R1002
+      summary: 'R1002: View Contact Us page'
+      description: 'Show the Contact Us page. Access: PUB'
+      tags:
+        - 'M10: Static Pages'
+
+      responses:
+        '200':
+          description: 'Success. Show Contact Us page'
+
+  /features:
+    get:
+      operationId: R1003
+      summary: 'R1003: View Features page'
+      description: 'Show the Features page. Access: PUB'
+      tags:
+        - 'M10: Static Pages'
+
+      responses:
+        '200':
+          description: 'Success. Show Features page'
+
+  /faq:
+    get:
+      operationId: R1004
+      summary: 'R1004: View FAQ page'
+      description: 'Show the FAQ page. Access: PUB'
+      tags:
+        - 'M10: Static Pages'
+
+      responses:
+        '200':
+          description: 'Success. Show FAQ page'
