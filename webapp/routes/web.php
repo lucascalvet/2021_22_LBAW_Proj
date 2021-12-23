@@ -12,6 +12,9 @@
 */
 // Home
 Route::get('/', 'Auth\LoginController@home');
+Route::get('/home', function() {
+    return view('pages/home');
+});
 
 // Cards
 Route::get('cards', 'CardController@list');
