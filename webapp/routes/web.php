@@ -12,9 +12,7 @@
 */
 // Home
 Route::get('/', 'Auth\LoginController@home');
-Route::get('/home', function() {
-    return view('pages/home');
-});
+Route::get('home', 'HomeController@show');
 
 // Cards
 Route::get('cards', 'CardController@list');
