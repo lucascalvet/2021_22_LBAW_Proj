@@ -16,6 +16,9 @@ Route::get('/', 'Auth\LoginController@home');
 // Profile
 Route::get('profile', 'ProfileController@show');
 
+// Notifications
+Route::get('notifications', 'NotificationsController@show');
+
 // API
 Route::put('api/cards', 'CardController@create');
 Route::delete('api/cards/{card_id}', 'CardController@delete');
