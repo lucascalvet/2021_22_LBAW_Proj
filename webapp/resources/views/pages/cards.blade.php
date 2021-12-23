@@ -2,10 +2,8 @@
 
 @section('title', 'Cards')
 
-@include('partials.navbar')
-
 @section('content')
-
+@include('partials.navbar')
 <section id="cards">
   @each('partials.card', $cards, 'card')
   <article class="card">
