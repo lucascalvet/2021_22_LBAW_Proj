@@ -1,7 +1,7 @@
 @php
 $icon_size = 'fs-4';
 $left_links = [
-    "/" => ["title" => "Home", "icon" => "bi bi-house-fill"],
+    "/home" => ["title" => "Home", "icon" => "bi bi-house-fill"],
     "/notifications" => ["title" => "Notifications", "icon" => "bi bi-bell-fill"],
     "search" => ["title" => "Search", "icon" => "bi bi-search"]
 ];
@@ -40,9 +40,9 @@ $right_links = [
                 </li>
                 @endforeach
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center" href="{{ URL::to('user') }}"> <!-- TODO: Update link -->
+                    <a class="nav-link d-flex align-items-center" href="{{ URL::to('profile') }}"> <!-- TODO: Update link -->
                         <i class="bi bi-person-circle {{ $icon_size }}"></i>
-                        <span class="">&nbsp;{{ Auth::user()->name }}</span>
+                        <span class="">&nbsp;JON</span>
                     </a>
                 </li>
             </ul>

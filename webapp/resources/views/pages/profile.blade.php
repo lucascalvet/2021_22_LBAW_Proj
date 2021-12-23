@@ -2,9 +2,9 @@
 
 @section('title', 'Home')
 
-@include('partials.navbar')
-
 @section('content')
+
+@include('partials.navbar')
 
 <section id="profile">
 <div class="container vh-100">
