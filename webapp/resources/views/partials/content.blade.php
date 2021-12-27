@@ -1,173 +1,29 @@
 @php
-$icon_size = 'fs-3';
+$icon_size = "fs-3";
+$profile_pic = "img/profile_pic.png";
+$username = "John Doe";
+$time = "10 days ago";
+$title = "Wari(El)o(n)";
+$n_hearts = "3000";
+$n_comments = "100";
+$n_shares = "100";
+$description = "Description: Elon vestido de Wario porque reasons.";
 
+$video = "";
+$image = "img/cont_elon.jpg";
+
+$example_video = "vid/ex.mp4";
+$example_image = "img/cont_elon.jpg";
 @endphp
-
-<!--
-<div class="card my-3 text-black mx-2" style="width: 20em; height: 38em;">
-    <div class="card-header">
-        <div class="row justify-content-md-center">
-            <div class="col-lg-3">
-                <br>
-                <Here
-            </div>
-            <div class="col-lg-3">
-                <br>
-                <div class="row py-2">
-                Here
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <br>
-                <div class="row py-2 justify-content-md-center text-secondary">
-                Here
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="row justify-content-md-center">
-                    <button type="button" class="btn btn-default" style="width: 3em; height: 2.5em; background-color: rgb(255,255,255);">
-                        <img src="{{asset('img/expand.png')}}" class="w-100 h-100" alt="Expand Button" />
-                    </button>
-                </div>
-                <div class="row mt-1 justify-content-md-center">
-                    <button type="button" class="btn btn-default" style="width: 3em; height: 2.5em; background-color: rgb(255,255,255);">
-                        <img src="{{asset('img/dots.png')}}" class="w-100 h-100" alt="Options Button" />
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card-body">
-        <div class="text-center">
-        Here
-        </div>
-        <div class="row justify-content-md-center">
-        Here
-        </div>
-        <div class="row">
-            <div class="col-lg-3">
-                <div class="row justify-content-md-center">
-                    <button type="button" class="btn btn-default" style="width: 4em; height: 3em; background-color: rgb(255,255,255);">
-                        <img src="{{asset('img/comments.png')}}" class="w-100 h-100" alt="Comments Button" />
-                    </button>
-                </div>
-                <div class="row justify-content-md-center">
-                Here
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="row justify-content-md-center">
-                    <button type="button" class="btn btn-default" style="width: 4em; height: 3em; background-color: rgb(255,255,255);">
-                        <img src="{{asset('img/heart.png')}}" class="w-100 h-100" alt="Heart Button" />
-                    </button>
-                </div>
-                <div class="row justify-content-md-center">
-                Here
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="row justify-content-md-center">
-                    <button type="button" class="btn btn-default" style="width: 4em; height: 3em; background-color: rgb(255,255,255);">
-                        <img src="{{asset('img/share.png')}}" class="w-100 h-100" alt="Share Button" />
-                    </button>
-                </div>
-                <div class="row justify-content-md-center">
-                Here
-                </div>
-            </div>
-        </div>
-        <p class="card-text">Here</p>
-    </div>
-</div>
--->
-
-<!--
-    <div class="card my-3 text-black mx-2" style="width: 20em; height: 38em;">
-                <div class="card-header">
-                    <div class="row justify-content-md-center">
-                        <div class="col-lg-3">
-                            <br>
-                            <img src="{{asset('img/profile_pic.png')}}" class="rounded-circle" style="width: 3em; height: 3em;" alt="Profile Picture" />
-                        </div>
-                        <div class="col-lg-3">
-                            <br>
-                            <div class="row py-2">
-                                Username
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <br>
-                            <div class="row py-2 justify-content-md-center text-secondary">
-                                10 days ago
-                            </div>
-                        </div>
-                        <div class="col-lg-2">
-                            <div class="row justify-content-md-center">
-                                <button type="button" class="btn btn-default" style="width: 3em; height: 2.5em; background-color: rgb(255,255,255);">
-                                    <img src="{{asset('img/expand.png')}}" class="w-100 h-100" alt="Expand Button" />
-                                </button>
-                            </div>
-                            <div class="row mt-1 justify-content-md-center">
-                                <button type="button" class="btn btn-default" style="width: 3em; height: 2.5em; background-color: rgb(255,255,255);">
-                                    <img src="{{asset('img/dots.png')}}" class="w-100 h-100" alt="Options Button" />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="text-center">
-                        <h5>Content Title</h5>
-                    </div>
-                    <div class="row justify-content-md-center">
-                        <video src="{{asset('vid/ex.mp4')}}" controls style="max-width: 18em; max-height: 20em;"></video>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3">
-                            <div class="row justify-content-md-center">
-                                <button type="button" class="btn btn-default" style="width: 4em; height: 3em; background-color: rgb(255,255,255);">
-                                    <img src="{{asset('img/comments.png')}}" class="w-100 h-100" alt="Comments Button" />
-                                </button>
-                            </div>
-                            <div class="row justify-content-md-center">
-                                100
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="row justify-content-md-center">
-                                <button type="button" class="btn btn-default" style="width: 4em; height: 3em; background-color: rgb(255,255,255);">
-                                    <img src="{{asset('img/heart.png')}}" class="w-100 h-100" alt="Heart Button" />
-                                </button>
-                            </div>
-                            <div class="row justify-content-md-center">
-                                200
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="row justify-content-md-center">
-                                <button type="button" class="btn btn-default" style="width: 4em; height: 3em; background-color: rgb(255,255,255);">
-                                    <img src="{{asset('img/share.png')}}" class="w-100 h-100" alt="Share Button" />
-                                </button>
-                            </div>
-                            <div class="row justify-content-md-center">
-                                100
-                            </div>
-                        </div>
-                    </div>
-                    <p class="card-text">Description: Professor do Técnico faz ganda beat com régua</p>
-                </div>
-            </div>
--->
-
 
 <div class="card text-black p-0" style="width: auto; height: auto;">
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <div class="d-sm-block align-self-center">
-                <img src="{{asset('img/profile_pic.png')}}" class="rounded-circle" style="width: 3em; height: 3em;" alt="Profile Picture" />
-                Username
+                <img src="{{asset($profile_pic)}}" class="rounded-circle" style="width: 3em; height: 3em;" alt="Profile Picture" />
+                {{ $username }}
             </div>
-            <div class="d-none d-lg-block text-secondary align-self-center">10 days ago</div>
+            <div class="d-none d-lg-flex text-secondary align-self-center mx-3">{{ $time }}</div>
             <div class="d-sm-block align-self-center"><button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
                     <i class="bi bi-arrows-angle-expand {{ $icon_size }}"></i>
                 </button>
@@ -180,18 +36,26 @@ $icon_size = 'fs-3';
     </div>
     <div class="card-body">
         <div class="text-center">
-            <h5>Content Title</h5>
+            <h5>{{ $title }}</h5>
         </div>
-        <div class="row justify-content-center p-3">
-            <img src="{{asset('img/cont_elon.jpg')}}" style="max-width: 20em; max-height: 30em;"></img>
+        @if ($image != "" || $video != "")
+        <div class="row justify-content-center pt-3">
+            @if ($video != "")
+            <video src="{{asset('vid/ex.mp4')}}" controls style="max-width: 20em; max-height: 30em;"></video>
+            @else
+            <img src="{{asset($image)}}" style="max-width: 20em; max-height: 30em;"></img>
+            @endif
         </div>
-        <div class="row">
+        @else
+        <p class="card-text pt-3" style="max-width: 20em;">{{ $description }}</p>
+        @endif
+        <div class="row pt-3">
             <div class="col-3">
                 <div class="row justify-content-center">
                     <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
                         <i class="bi bi-chat-left-text {{ $icon_size }}"></i>
                     </button>
-                    <span class="text-center">100</span>
+                    <span class="text-center">{{ $n_comments }}</span>
                 </div>
             </div>
             <div class="col-6">
@@ -199,7 +63,7 @@ $icon_size = 'fs-3';
                     <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
                         <i class="bi bi-heart {{ $icon_size }}"></i>
                     </button>
-                    <span class="text-center">3000</span>
+                    <span class="text-center">{{ $n_hearts }}</span>
                 </div>
             </div>
             <div class="col-3">
@@ -207,10 +71,12 @@ $icon_size = 'fs-3';
                     <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
                         <i class="bi bi-share {{ $icon_size }}"></i>
                     </button>
-                    <span class="text-center">100</span>
+                    <span class="text-center">{{ $n_shares }}</span>
                 </div>
             </div>
         </div>
-        <p class="card-text" style="max-width: 20em;">Description: Elon vestido de Wario porque reasons. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</p>
+        @if ($image != "" || $video != "")
+        <p class="card-text" style="max-width: 20em;">{{ $description }}</p>
+        @endif
     </div>
 </div>
