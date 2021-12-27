@@ -182,7 +182,7 @@ $icon_size = 'fs-3';
         <div class="text-center">
             <h5>Content Title</h5>
         </div>
-        <div class="row justify-content-center p-3">
+        <div class="row justify-content-center py-3">
             <img src="{{asset('img/cont_elon.jpg')}}" style="max-width: 20em; max-height: 30em;"></img>
         </div>
         <div class="row">
