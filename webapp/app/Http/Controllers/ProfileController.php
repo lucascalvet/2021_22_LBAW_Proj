@@ -15,4 +15,14 @@ class ProfileController extends Controller
     {
       return view('pages.profile');
     }
+
+     /**
+     * Shows the profile
+     *
+     * @return Response
+     */
+    public function showEdit()
+    {
+      return view('pages.edit_profile');
+    }
 }

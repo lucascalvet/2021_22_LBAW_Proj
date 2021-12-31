@@ -16,6 +16,7 @@ Route::get('home', 'HomeController@show');
 
 // Profile
 Route::get('profile', 'ProfileController@show');
+Route::get('profile/edit', 'ProfileController@showEdit');
 
 // API
 Route::put('api/cards', 'CardController@create');
