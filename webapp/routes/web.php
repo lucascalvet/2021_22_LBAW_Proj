@@ -34,3 +34,6 @@ Route::post('register', 'Auth\RegisterController@register');
 
 //Recover Password
 Route::get('recoverPassword', 'ForgotController@show');
+
+// List Card
+Route::get('listCards', 'ListCardsController@show');
