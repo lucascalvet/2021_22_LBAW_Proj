@@ -14,7 +14,9 @@
         <img class="d-none d-md-block rounded-circle w-25 position-absolute top-100 start-0 translate-middle" style="margin-left: 8em; max-height: 10em; max-width: 10em;" src="https://cdn.awsli.com.br/294/294449/produto/31325624/402d2b8271.jpg"/>
         <img class="d-block d-md-none rounded-circle w-25 position-absolute top-100 start-50 translate-middle" style="max-height: 10em; max-width: 10em;" src="https://cdn.awsli.com.br/294/294449/produto/31325624/402d2b8271.jpg"/>
         <div class="d-flex m-2">
-          <i class="me-auto bi d-block d-md-none bi-pencil-square"></i>
+        <a class="me-auto" href="/profile/edit">
+          <i class="bi d-block d-md-none bi-pencil-square"></i>
+        </a>
           <i class="bi bi-list d-block d-md-none"></i>
         </div>
       </div>
@@ -85,7 +87,9 @@
             </div>
 
             <div class="row d-none d-md-block mt-5 text-end">
-              <i class="bi bi-pencil-square"></i>
+              <a href="/profile/edit">
+                <i class="bi bi-pencil-square"></i>
+              </a>
             </div>
           </div>
         </div>
