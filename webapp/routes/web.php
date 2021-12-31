@@ -16,6 +16,7 @@ Route::get('home', 'HomeController@show');
 
 // Profile
 Route::get('profile', 'ProfileController@show');
+Route::get('profile/edit', 'ProfileController@showEdit');
 
 // API
 Route::put('api/cards', 'CardController@create');
@@ -33,3 +34,6 @@ Route::post('register', 'Auth\RegisterController@register');
 
 //Recover Password
 Route::get('recoverPassword', 'ForgotController@show');
+
+// List Card
+Route::get('listCards', 'ListCardsController@show');
