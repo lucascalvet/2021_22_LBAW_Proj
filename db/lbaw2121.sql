@@ -1,47 +1,50 @@
+DROP SCHEMA IF EXISTS lbaw2121 CASCADE;
+CREATE SCHEMA lbaw2121;
+SET Search_path TO lbaw2121;
+
 -----------------------------------------
 -- Drop old schema
 -----------------------------------------
 
-DROP TABLE IF EXISTS Users CASCADE;
-DROP TABLE IF EXISTS AdminUser CASCADE;
-DROP TABLE IF EXISTS Advertiser CASCADE;
-DROP TABLE IF EXISTS Wallet CASCADE;
-DROP TABLE IF EXISTS Content CASCADE;
-DROP TABLE IF EXISTS ContentLike CASCADE;
-DROP TABLE IF EXISTS TextContent CASCADE;
-DROP TABLE IF EXISTS TextReply CASCADE;
-DROP TABLE IF EXISTS MediaContent CASCADE;
-DROP TABLE IF EXISTS Video CASCADE;
-DROP TABLE IF EXISTS Image CASCADE;
-DROP TABLE IF EXISTS Comment CASCADE;
-DROP TABLE IF EXISTS FriendRequest CASCADE;
-DROP TABLE IF EXISTS AcceptedFriendRequest CASCADE;
-DROP TABLE IF EXISTS RejectedFriendRequest CASCADE;
-DROP TABLE IF EXISTS Message CASCADE;
-DROP TABLE IF EXISTS Groups CASCADE;
-DROP TABLE IF EXISTS UserGroupModerator CASCADE;
-DROP TABLE IF EXISTS UserGroupMember CASCADE;
-DROP TABLE IF EXISTS Interest CASCADE;
-DROP TABLE IF EXISTS InterestUser CASCADE;
-DROP TABLE IF EXISTS Locale CASCADE;
-DROP TABLE IF EXISTS Country CASCADE;
-DROP TABLE IF EXISTS PaymentMethod CASCADE;
-DROP TABLE IF EXISTS Campaign CASCADE;
-DROP TABLE IF EXISTS Notification CASCADE;
-DROP TABLE IF EXISTS LikeNotification CASCADE;
-DROP TABLE IF EXISTS ReplyNotification CASCADE;
-DROP TABLE IF EXISTS FriendRequestNotification CASCADE;
-DROP TABLE IF EXISTS CommentReplyNotification CASCADE;
-DROP TABLE IF EXISTS TextContentReplyNotification CASCADE;
-DROP TABLE IF EXISTS GameSession CASCADE;
-DROP TABLE IF EXISTS GameStats CASCADE;
-DROP TABLE IF EXISTS Friends CASCADE;
-DROP FUNCTION IF EXISTS dateComment CASCADE;
-DROP FUNCTION IF EXISTS dateText CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS admin_user CASCADE;
+DROP TABLE IF EXISTS advertiser CASCADE;
+DROP TABLE IF EXISTS wallet CASCADE;
+DROP TABLE IF EXISTS content CASCADE;
+DROP TABLE IF EXISTS content_like CASCADE;
+DROP TABLE IF EXISTS text_content CASCADE;
+DROP TABLE IF EXISTS text_reply CASCADE;
+DROP TABLE IF EXISTS media_content CASCADE;
+DROP TABLE IF EXISTS video CASCADE;
+DROP TABLE IF EXISTS image CASCADE;
+DROP TABLE IF EXISTS comment CASCADE;
+DROP TABLE IF EXISTS friend_request CASCADE;
+DROP TABLE IF EXISTS accepted_friend_request CASCADE;
+DROP TABLE IF EXISTS rejected_friend_request CASCADE;
+DROP TABLE IF EXISTS message CASCADE;
+DROP TABLE IF EXISTS groups CASCADE;
+DROP TABLE IF EXISTS group_moderator CASCADE;
+DROP TABLE IF EXISTS group_member CASCADE;
+DROP TABLE IF EXISTS interest CASCADE;
+DROP TABLE IF EXISTS user_interest CASCADE;
+DROP TABLE IF EXISTS locale CASCADE;
+DROP TABLE IF EXISTS country CASCADE;
+DROP TABLE IF EXISTS payment_method CASCADE;
+DROP TABLE IF EXISTS campaign CASCADE;
+DROP TABLE IF EXISTS notification CASCADE;
+DROP TABLE IF EXISTS like_notification CASCADE;
+DROP TABLE IF EXISTS reply_notification CASCADE;
+DROP TABLE IF EXISTS friend_request_notification CASCADE;
+DROP TABLE IF EXISTS comment_reply_notification CASCADE;
+DROP TABLE IF EXISTS text_content_reply_notification CASCADE;
+DROP TABLE IF EXISTS game_session CASCADE;
+DROP TABLE IF EXISTS game_stats CASCADE;
+DROP TABLE IF EXISTS friends CASCADE;
+DROP FUNCTION IF EXISTS comment_date CASCADE;
+DROP FUNCTION IF EXISTS text_date CASCADE;
 DROP FUNCTION IF EXISTS textreply_search_update CASCADE;
-DROP FUNCTION IF EXISTS mediacontent_search_update CASCADE;
+DROP FUNCTION IF EXISTS media_content_search_update CASCADE;
 
-SET Search.path TO lbaw2121;
 -----------------------------------------
 -- Types
 -----------------------------------------
@@ -51,347 +54,441 @@ SET Search.path TO lbaw2121;
 -- Tables
 -----------------------------------------
 
-CREATE TABLE Country (
+CREATE TABLE country (
    id SERIAL PRIMARY KEY,
-   iso_3166 TEXT UNIQUE,
+   iso_3166 TEXT  CONSTRAINT country_iso_3166_uk UNIQUE,
    name TEXT NOT NULL
 );
 
-CREATE TABLE Users (
+-- user is a reserved word in PostgreSQL.
+CREATE TABLE users (
    id SERIAL PRIMARY KEY,
-   username TEXT NOT NULL UNIQUE,
+   username TEXT NOT NULL CONSTRAINT user_username_uk UNIQUE,
    name TEXT NOT NULL,
-   email TEXT NOT NULL UNIQUE,
+   email TEXT NOT NULL CONSTRAINT user_email_uk UNIQUE,
    hashed_password TEXT NOT NULL,
    profile_picture TEXT,
    cover_picture TEXT,
    phone_number TEXT,
-   id_country INTEGER NOT NULL REFERENCES Country(id) ON UPDATE CASCADE, 
+   id_country INTEGER NOT NULL REFERENCES country(id) ON UPDATE CASCADE, 
    birthday TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
-CREATE TABLE AdminUser ( 
-   id_user INTEGER PRIMARY KEY REFERENCES Users(id) ON UPDATE CASCADE
+CREATE TABLE admin_user ( 
+   id_user INTEGER PRIMARY KEY REFERENCES users(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE Wallet (
+CREATE TABLE wallet (
    id SERIAL PRIMARY KEY,
    budget FLOAT NOT NULL,
-   CONSTRAINT CHK_budget CHECK (budget >= 0.0)
+   CONSTRAINT budget_ck CHECK (budget >= 0.0)
 );
 
-CREATE TABLE Advertiser (
-   id_user INTEGER PRIMARY KEY REFERENCES Users(id) ON UPDATE CASCADE, 
+CREATE TABLE advertiser (
+   id_user INTEGER PRIMARY KEY REFERENCES users(id) ON UPDATE CASCADE, 
    company_name TEXT NOT NULL,
-   id_wallet INTEGER NOT NULL REFERENCES Wallet(id) NOT NULL
+   id_wallet INTEGER NOT NULL REFERENCES wallet(id) NOT NULL
 );
 
-CREATE TABLE Groups (
+CREATE TABLE groups (
    id SERIAL PRIMARY KEY,
    name TEXT NOT NULL,
    description TEXT
 );
 
-CREATE TABLE Content (
+CREATE TABLE content (
    id SERIAL PRIMARY KEY,
    publishing_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
-   id_group INTEGER REFERENCES Groups(id) ON UPDATE CASCADE,
-   id_creator INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE
+   id_group INTEGER REFERENCES groups(id) ON UPDATE CASCADE,
+   id_creator INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE ContentLike (
-   date TIMESTAMP WITH TIME ZONE NOT NULL,
-   id_user INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
-   id_content INTEGER NOT NULL REFERENCES Content(id),
-   CONSTRAINT PK_ContentLike PRIMARY KEY (id_user, id_content)
+CREATE TABLE content_like (
+   date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
+   id_user INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
+   id_content INTEGER NOT NULL REFERENCES content(id),
+   PRIMARY KEY (id_content, id_user) -- this order is important for retrieving the likes for a certain content
 );
 
-CREATE TABLE TextContent ( 
-   id SERIAL PRIMARY KEY,
-   post_text TEXT NOT NULL,
-   id_content INTEGER NOT NULL REFERENCES Content(id) ON UPDATE CASCADE
-); 
-
-CREATE TABLE TextReply (
-   child_text INTEGER PRIMARY KEY REFERENCES TextContent(id) ON UPDATE CASCADE,
-   parent_text INTEGER NOT NULL REFERENCES TextContent(id) ON UPDATE CASCADE
+CREATE TABLE text_content (
+   id_content INTEGER PRIMARY KEY REFERENCES content(id) ON UPDATE CASCADE,
+   post_text TEXT NOT NULL
 );
 
-CREATE TABLE Locale ( 
+CREATE TABLE text_reply (
+   child_text INTEGER PRIMARY KEY REFERENCES text_content(id_content) ON UPDATE CASCADE,
+   parent_text INTEGER NOT NULL REFERENCES text_content(id_content) ON UPDATE CASCADE
+);
+
+CREATE TABLE locale ( 
    id SERIAL PRIMARY KEY,
    region TEXT NOT NULL,
-   id_country INTEGER NOT NULL REFERENCES Country(id) ON UPDATE CASCADE
+   id_country INTEGER NOT NULL REFERENCES country(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE MediaContent (
-   id SERIAL PRIMARY KEY,
+CREATE TABLE media_content (
+   id_content INTEGER PRIMARY KEY REFERENCES content(id) ON UPDATE CASCADE,
    description TEXT NOT NULL,
    media TEXT NOT NULL,
+   alt_text TEXT,
    fullscreen BOOLEAN NOT NULL,
-   id_content INTEGER NOT NULL REFERENCES Content(id) ON UPDATE CASCADE,
-   id_locale INTEGER REFERENCES Locale(id) ON UPDATE CASCADE
+   id_locale INTEGER REFERENCES locale(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE Video (
-   id SERIAL PRIMARY KEY,
-   alt_text TEXT NOT NULL,
-   views INTEGER NOT NULL,        
-   id_media_content INTEGER NOT NULL REFERENCES MediaContent(id) ON UPDATE CASCADE
+CREATE TABLE video (
+   id_media_content INTEGER PRIMARY KEY REFERENCES media_content(id_content) ON UPDATE CASCADE,
+   title TEXT NOT NULL,
+   views INTEGER NOT NULL
 );
 
-CREATE TABLE Image (
-   id SERIAL PRIMARY KEY,
-   alt_text TEXT NOT NULL,
-   width INTEGER,
-   height INTEGER,
-   id_media_content INTEGER NOT NULL REFERENCES MediaContent(id) ON UPDATE CASCADE,
-   CONSTRAINT CHK_width CHECK (width > 0.0),
-   CONSTRAINT CHK_heigh CHECK (height > 0.0)
+CREATE TABLE image (
+   id_media_content INTEGER PRIMARY KEY REFERENCES media_content(id_content) ON UPDATE CASCADE,
+   width INTEGER NOT NULL,
+   height INTEGER NOT NULL,
+   CONSTRAINT width_ck CHECK (width > 0.0),
+   CONSTRAINT heigh_ck CHECK (height > 0.0)
 );
 
-CREATE TABLE Comment (
+CREATE TABLE comment (
    id SERIAL PRIMARY KEY,
    comment_text TEXT NOT NULL,
-   comment_date TIMESTAMP WITH TIME ZONE NOT NULL,
-   author INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
-   id_media_content INTEGER NOT NULL REFERENCES MediaContent(id) ON UPDATE CASCADE
+   comment_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
+   author INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
+   id_media_content INTEGER NOT NULL REFERENCES media_content(id_content) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE FriendRequest (
+CREATE TABLE friend_request (
    id SERIAL PRIMARY KEY,
-   creation TIMESTAMP WITH TIME ZONE NOT NULL,
-   id_sender INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
-   id_receiver INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE
+   creation_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
+   id_sender INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
+   id_receiver INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE AcceptedFriendRequest (
-   id_friend_request INTEGER PRIMARY KEY REFERENCES FriendRequest(id) ON UPDATE CASCADE,
-   accepted_date TIMESTAMP WITH TIME ZONE NOT NULL
+CREATE TABLE accepted_friend_request (
+   id_friend_request INTEGER PRIMARY KEY REFERENCES friend_request(id) ON UPDATE CASCADE,
+   accepted_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
 );
 
-CREATE TABLE RejectedFriendRequest (
-   id_friend_request INTEGER PRIMARY KEY REFERENCES FriendRequest(id) ON UPDATE CASCADE,
-   rejected_date TIMESTAMP WITH TIME ZONE NOT NULL
+CREATE TABLE rejected_friend_request (
+   id_friend_request INTEGER PRIMARY KEY REFERENCES friend_request(id) ON UPDATE CASCADE,
+   rejected_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
 );
 
-CREATE TABLE Message (
+CREATE TABLE message (
    id SERIAL PRIMARY KEY,
    text TEXT NOT NULL,
-   id_user_sender INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
-   id_user_receiver INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
-   msg_date TIMESTAMP WITH TIME ZONE NOT NULL
+   id_user_sender INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
+   id_user_receiver INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
+   msg_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
 );
 
-CREATE TABLE UserGroupModerator (
-   id_group INTEGER NOT NULL REFERENCES Groups(id) ON UPDATE CASCADE,
-   id_user_moderator INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
+CREATE TABLE group_moderator (
+   id_group INTEGER NOT NULL REFERENCES groups(id) ON UPDATE CASCADE,
+   id_user_moderator INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
    PRIMARY KEY (id_group, id_user_moderator)
 );
 
-CREATE TABLE UserGroupMember (
-   id_group INTEGER NOT NULL REFERENCES Groups(id) ON UPDATE CASCADE,
-   id_user_member INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
+CREATE TABLE group_member (
+   id_group INTEGER NOT NULL REFERENCES groups(id) ON UPDATE CASCADE,
+   id_user_member INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
    PRIMARY KEY (id_group, id_user_member)
 );
 
-CREATE TABLE Interest (
+CREATE TABLE interest (
    id SERIAL PRIMARY KEY,
    name TEXT NOT NULL,
    description TEXT NOT NULL
 );
 
-CREATE TABLE InterestUser (
-   id_interest INTEGER NOT NULL REFERENCES Interest(id) ON UPDATE CASCADE,
-   id_user INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
-   PRIMARY KEY (id_interest, id_user)
+CREATE TABLE user_interest (
+   id_interest INTEGER NOT NULL REFERENCES interest(id) ON UPDATE CASCADE,
+   id_user INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
+   PRIMARY KEY (id_user, id_interest)
 );
 
-CREATE TABLE Notification (
+CREATE TABLE notification (
    id SERIAL PRIMARY KEY,
-   id_user INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
+   id_user INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
    read BOOLEAN NOT NULL
 );
 
-CREATE TABLE LikeNotification (
-   id_notification INTEGER PRIMARY KEY REFERENCES Notification(id) ON UPDATE CASCADE,
+CREATE TABLE like_notification (
+   id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,
    id_user INTEGER NOT NULL,
    id_content INTEGER NOT NULL,
-   FOREIGN KEY (id_user, id_content) REFERENCES ContentLike(id_user, id_content) ON UPDATE CASCADE
+   FOREIGN KEY (id_user, id_content) REFERENCES content_like(id_user, id_content) ON UPDATE CASCADE
 );
  
-CREATE TABLE ReplyNotification (
-   id_notification INTEGER PRIMARY KEY REFERENCES Notification(id) ON UPDATE CASCADE
+CREATE TABLE reply_notification (
+   id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE FriendRequestNotification (
-   id_notification INTEGER PRIMARY KEY REFERENCES Notification(id) ON UPDATE CASCADE,
-   id_friend_request INTEGER NOT NULL REFERENCES FriendRequest(id) ON UPDATE CASCADE 
+CREATE TABLE friend_request_notification (
+   id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,
+   id_friend_request INTEGER NOT NULL REFERENCES friend_request(id) ON UPDATE CASCADE 
 );
 
-CREATE TABLE CommentReplyNotification (
-   id_reply_notification INTEGER PRIMARY KEY REFERENCES ReplyNotification(id_notification) ON UPDATE CASCADE,
-   id_comment INTEGER NOT NULL REFERENCES Comment(id) ON UPDATE CASCADE
+CREATE TABLE comment_reply_notification (
+   id_reply_notification INTEGER PRIMARY KEY REFERENCES reply_notification(id_notification) ON UPDATE CASCADE,
+   id_comment INTEGER NOT NULL REFERENCES comment(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE TextContentReplyNotification (
-   id_reply_notification INTEGER PRIMARY KEY REFERENCES ReplyNotification(id_notification) ON UPDATE CASCADE,
-   id_text_content INTEGER NOT NULL REFERENCES TextContent(id) ON UPDATE CASCADE
+CREATE TABLE text_content_reply_notification (
+   id_reply_notification INTEGER PRIMARY KEY REFERENCES reply_notification(id_notification) ON UPDATE CASCADE,
+   id_text_content INTEGER NOT NULL REFERENCES text_content(id_content) ON UPDATE CASCADE
 );
 
-CREATE TABLE PaymentMethod (
+CREATE TABLE payment_method (
    id SERIAL PRIMARY KEY,
    name TEXT NOT NULL,
    company TEXT NOT NULL,
    transaction_limit FLOAT NOT NULL,
-   CONSTRAINT CHK_limit CHECK (transaction_limit > 0.0)
+   CONSTRAINT transaction_limit_ck CHECK (transaction_limit > 0.0)
 );
 
-CREATE TABLE Campaign (
-   id_media_content INTEGER PRIMARY KEY REFERENCES MediaContent(id) ON UPDATE CASCADE,
-   id_advertiser INTEGER NOT NULL REFERENCES Advertiser(id_user) ON UPDATE CASCADE,
+CREATE TABLE campaign (
+   id_media_content INTEGER PRIMARY KEY REFERENCES media_content(id_content) ON UPDATE CASCADE,
+   id_advertiser INTEGER NOT NULL REFERENCES advertiser(id_user) ON UPDATE CASCADE,
    starting_date TIMESTAMP WITH TIME ZONE NOT NULL,
    finishing_date TIMESTAMP WITH TIME ZONE NOT NULL,
    budget FLOAT NOT NULL,
    remaining_budget FLOAT NOT NULL,
    impressions INTEGER,
    clicks INTEGER,
-   CONSTRAINT CHK_campaign_dates CHECK (finishing_date > starting_date),
-   CONSTRAINT CHK_campaign_budgets CHECK (remaining_budget <= budget)
+   CONSTRAINT campaign_dates_ck CHECK (finishing_date > starting_date),
+   CONSTRAINT campaign_budget_ck CHECK (remaining_budget <= budget)
 );
 
-CREATE TABLE GameSession (
+CREATE TABLE game_session (
    id SERIAL PRIMARY KEY,
    session_title TEXT NOT NULL
 );
 
-CREATE TABLE GameStats (
-   id_user INTEGER PRIMARY KEY REFERENCES Users(id) ON UPDATE CASCADE,
-   id_game_session INTEGER NOT NULL REFERENCES GameSession(id) ON UPDATE CASCADE,
+CREATE TABLE game_stats (
+   id_user INTEGER PRIMARY KEY REFERENCES users(id) ON UPDATE CASCADE,
+   id_game_session INTEGER NOT NULL REFERENCES game_session(id) ON UPDATE CASCADE,
    score INTEGER NOT NULL
 );
 
-CREATE TABLE Friends (
-   id_user1 INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
-   id_user2 INTEGER NOT NULL REFERENCES Users(id) ON UPDATE CASCADE,
+CREATE TABLE friends (
+   id_user1 INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
+   id_user2 INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
    PRIMARY KEY (id_user1, id_user2),
-   CONSTRAINT CHK_friends CHECK (id_user1 > id_user2) 
+   CONSTRAINT friend_diff_ck CHECK (id_user1 <> id_user2) 
 );
-
 
 --------------------------------------------
 --INDEX
 --------------------------------------------
---Performance Indeces
+--Performance Indexes
 
-CREATE INDEX user_content ON Content USING hash (id_creator);
+-- IDX01
+CREATE INDEX user_content ON content USING hash (id_creator);
 
-CREATE INDEX mediacontent_location ON MediaContent USING btree (id_locale);
-CLUSTER MediaContent USING mediacontent_location;
+-- IDX02
+CREATE INDEX mediacontent_location ON media_content USING btree (id_locale);
+CLUSTER media_content USING mediacontent_location;
 
-CREATE INDEX end_campaign ON Campaign USING btree (finishing_date);
+-- IDX03
+CREATE INDEX end_campaign ON campaign USING btree (finishing_date);
 
 
---Full Text Search Indeces
+--Full Text Search Indexes
 
--- Add column to TextReply to store computed ts_vectors.
-ALTER TABLE TextReply
+-- IDX 11
+-- Add column to text_content to store computed ts_vectors.
+ALTER TABLE text_content
 ADD COLUMN tsvectors TSVECTOR;
 
 -- Create a function to automatically update ts_vectors.
-CREATE FUNCTION textreply_search_update() RETURNS TRIGGER AS $$
+CREATE FUNCTION text_content_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
 BEGIN
- IF TG_OP = 'INSERT' THEN
-        NEW.tsvectors = (
-         setweight(to_tsvector('english', (SELECT post_text FROM TextContent WHERE id = NEW.child_text)), 'A') ||
-         setweight(to_tsvector('english', (SELECT post_text FROM TextContent WHERE id = NEW.parent_text)), 'B')
-        );
- END IF;
- IF TG_OP = 'UPDATE' THEN
-         IF (NEW.child_text <> OLD.child_text OR NEW.parent_text <> OLD.parent_text) THEN
-           NEW.tsvectors = (
-             setweight(to_tsvector('english', (SELECT post_text FROM TextContent WHERE id = NEW.child_text)), 'A') ||
-             setweight(to_tsvector('english', (SELECT post_text FROM TextContent WHERE id = NEW.parent_text)), 'B')
-           );
-         END IF;
- END IF;
- RETURN NEW;
-END $$
-LANGUAGE plpgsql;
+   IF TG_OP = 'INSERT' THEN
+      NEW.tsvectors = (
+         setweight(to_tsvector('english', NEW.post_text), 'A')
+      );
+   END IF;
+   IF TG_OP = 'UPDATE' THEN
+      IF (NEW.post_text <> OLD.post_text) THEN
+         NEW.tsvectors = (
+            setweight(to_tsvector('english', NEW.post_text), 'A')
+         );
+      END IF;
+   END IF;
+   RETURN NEW;
+END
+$$;
 
--- Create a trigger before insert or update on TextReply.
-CREATE TRIGGER textreply_search_update
- BEFORE INSERT OR UPDATE ON TextReply
- FOR EACH ROW
- EXECUTE PROCEDURE textreply_search_update();
+-- Create a trigger before insert or update on text_content.
+CREATE TRIGGER text_content_search_update
+   BEFORE INSERT OR UPDATE ON text_content
+   FOR EACH ROW
+   EXECUTE PROCEDURE text_content_search_update();
 
 -- Finally, create a GIN index for ts_vectors.
-CREATE INDEX tr_search_idx ON TextReply USING GIN (tsvectors);
+CREATE INDEX text_content_search_idx ON text_content USING GIN (tsvectors);
 
 
--- Add column to MediaContent to store computed ts_vectors.
-ALTER TABLE MediaContent
+-- IDX12
+-- Add column to media_content to store computed ts_vectors.
+ALTER TABLE media_content
 ADD COLUMN tsvectors TSVECTOR;
 
 -- Create a function to automatically update ts_vectors.
-CREATE FUNCTION mediacontent_search_update() RETURNS TRIGGER AS $$
+CREATE FUNCTION media_content_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
 BEGIN
- IF TG_OP = 'INSERT' THEN
-        NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.description), 'A')
-        );
- END IF;
- IF TG_OP = 'UPDATE' THEN
-         IF (NEW.description  <> OLD.description) THEN
-           NEW.tsvectors = (
-             setweight(to_tsvector('english', NEW.description), 'A')
-           );
-         END IF;
- END IF;
- RETURN NEW;
-END $$
-LANGUAGE plpgsql;
+   IF TG_OP = 'INSERT' THEN
+      NEW.tsvectors = (
+         setweight(to_tsvector('english', NEW.description), 'A') ||
+         setweight(to_tsvector('english', NEW.alt_text), 'B')
+      );
+   END IF;
+   IF TG_OP = 'UPDATE' THEN
+      IF (NEW.description <> OLD.description OR NEW.alt_text <> OLD.alt_text) THEN
+         NEW.tsvectors = (
+            setweight(to_tsvector('english', NEW.description), 'A') ||
+            setweight(to_tsvector('english', NEW.alt_text), 'B')
+         );
+      END IF;
+   END IF;
+   RETURN NEW;
+END
+$$;
 
--- Create a trigger before insert or update on MediaContent.
-CREATE TRIGGER mediacontent_search_update
- BEFORE INSERT OR UPDATE ON MediaContent
- FOR EACH ROW
- EXECUTE PROCEDURE mediacontent_search_update();
+-- Create a trigger before insert or update on media_content.
+CREATE TRIGGER media_content_search_update
+   BEFORE INSERT OR UPDATE ON media_content
+   FOR EACH ROW
+   EXECUTE PROCEDURE media_content_search_update();
 
 -- Finally, create a GIN index for ts_vectors.
-CREATE INDEX mc_search_idx ON MediaContent USING GIN (tsvectors);
+CREATE INDEX media_content_search_idx ON media_content USING GIN (tsvectors);
+
+
+-- IDX 13
+-- Add column to video to store computed ts_vectors.
+ALTER TABLE video
+ADD COLUMN tsvectors TSVECTOR;
+
+-- Create a function to automatically update ts_vectors.
+CREATE FUNCTION video_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   IF TG_OP = 'INSERT' THEN
+      NEW.tsvectors = (
+         setweight(to_tsvector('english', NEW.title), 'A')
+      );
+   END IF;
+   IF TG_OP = 'UPDATE' THEN
+      IF (NEW.title <> OLD.title) THEN
+         NEW.tsvectors = (
+            setweight(to_tsvector('english', NEW.title), 'A')
+         );
+      END IF;
+   END IF;
+   RETURN NEW;
+END
+$$;
+
+-- Create a trigger before insert or update on video.
+CREATE TRIGGER video_search_update
+   BEFORE INSERT OR UPDATE ON video
+   FOR EACH ROW
+   EXECUTE PROCEDURE video_search_update();
+
+-- Finally, create a GIN index for ts_vectors.
+CREATE INDEX video_search_idx ON video USING GIN (tsvectors);
+
 
 --------------------------------------------
 --TRIGGERS
 --------------------------------------------
 --TRIGGER 1
 
-CREATE FUNCTION dateComment() RETURNS TRIGGER LANGUAGE plpgsql AS
+CREATE FUNCTION comment_date() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF ((SELECT publishing_date FROM Content WHERE id = NEW.id_media_content)> NEW.comment_date) THEN RAISE EXCEPTION 'Content date greater than Comment date';
+   IF ((SELECT publishing_date FROM content WHERE id = NEW.id_media_content) > NEW.comment_date) THEN RAISE EXCEPTION 'content date greater than comment date';
    END IF;
    RETURN NEW;
 END;
 $$;
 
-CREATE TRIGGER DateComment
-   BEFORE INSERT ON Comment
+CREATE TRIGGER comment_date
+   BEFORE INSERT OR UPDATE ON comment
    FOR EACH ROW
-   EXECUTE PROCEDURE dateComment();
+   EXECUTE PROCEDURE comment_date();
 
 
 --TRIGGER 2
 
-CREATE FUNCTION dateText() RETURNS TRIGGER LANGUAGE plpgsql AS
+CREATE FUNCTION text_date() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF ((SELECT publishing_date FROM Content WHERE id = (SELECT id_content FROM TextContent WHERE id = NEW.child_text)) <= (SELECT publishing_date FROM Content WHERE id = (SELECT id_content FROM TextContent WHERE id = NEW.parent_text))) THEN RAISE EXCEPTION 'Parent reply date greater than child date';
+   IF ((SELECT publishing_date FROM content WHERE id = NEW.child_text) <= (SELECT publishing_date FROM content WHERE id = NEW.parent_text)) THEN RAISE EXCEPTION 'Parent reply date greater than child date';
    END IF;
    RETURN NEW;
 END;
 $$;
 
-CREATE TRIGGER DateText
-   BEFORE INSERT ON TextReply
+CREATE TRIGGER text_date
+   BEFORE INSERT OR UPDATE ON text_reply
    FOR EACH ROW
-   EXECUTE PROCEDURE dateText();
+   EXECUTE PROCEDURE text_date();
+
+
+--TRIGGER 3
+
+CREATE FUNCTION friendship() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   IF EXISTS (SELECT * FROM friends WHERE id_user1 = NEW.id_user2 AND id_user2 = NEW.id_user1) THEN RAISE EXCEPTION 'This friend relationship is already defined.';
+   END IF;
+   RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER friendship
+   BEFORE INSERT OR UPDATE ON friends
+   FOR EACH ROW
+   EXECUTE PROCEDURE friendship();
+
+--TRIGGER 4
+
+CREATE FUNCTION text_content_disjoint() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   IF EXISTS (SELECT * FROM media_content WHERE id_content = NEW.id_content) THEN RAISE EXCEPTION 'Content is already a media content.';
+   END IF;
+   RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER text_content_disjoint
+   BEFORE INSERT ON text_content
+   FOR EACH ROW
+   EXECUTE PROCEDURE text_content_disjoint();
+
+--TRIGGER 5
+
+CREATE FUNCTION media_content_disjoint() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   IF EXISTS (SELECT * FROM text_content WHERE id_content = NEW.id_content) THEN RAISE EXCEPTION 'Content is already a text content.';
+   END IF;
+   RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER media_content_disjoint
+   BEFORE INSERT ON media_content
+   FOR EACH ROW
+   EXECUTE PROCEDURE media_content_disjoint();
+
+--------------------------------------------
+
+--Create anonymous user (shared user for deleted accounts)
+INSERT INTO country (id, iso_3166, name) VALUES (0, '', '');
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (0, 'anonymous', 'Anonymous User', 'support@socialup.com', '', NULL, NULL, NULL, 0, '1970-1-1');
