@@ -491,4 +491,6 @@ CREATE TRIGGER media_content_disjoint
 
 --Create anonymous user (shared user for deleted accounts)
 INSERT INTO country (id, iso_3166, name) VALUES (0, '', '');
+SELECT setval('country_id_seq', (SELECT max(id) FROM country));
 INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (0, 'anonymous', 'Anonymous User', 'support@socialup.com', '', NULL, NULL, NULL, 0, '1970-1-1');
+SELECT setval('users_id_seq', (SELECT max(id) FROM users));
