@@ -1,9 +1,16 @@
+@php 
+$icon_size = 'fs-3';
+$link_back = "/post/" . $post->id;
+$user = auth()->user();
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
 <section class="vh-100 bg-dark overflow-auto">
     <div class="container h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
+            @if ($user->id == $post->user_id)
             <div class="col-12 col-md-9 col-lg-7 col-xl-6">
                 <div class="card rounded-3">
                     <div class="card-body p-5">
@@ -46,8 +53,10 @@
                             <div class="form-check d-flex justify-content-center mb-5">
                             </div>
 
-                            <div class="d-flex justify-content-center mb-3">
-                                <button type="submit" class="btn btn-outline-secondary btn-lg bg-dark text-white">Change Post</button>
+                            <div class="d-flex justify-content-around mb-3">
+                                <button type="submit" class="btn btn-outline-danger btn-lg text-dark">Change Post</button>
+                                <!-- <i class="bi bi-arrow-left-circle-fill {{ $icon_size }}"></i> -->
+                                <a href="{{ $link_back }}"><button type="button" class="btn btn-outline-secondary btn-lg bg-dark text-white">Discard Changes</button></i></a>
                             </div>
 
 
@@ -59,6 +68,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </section>
