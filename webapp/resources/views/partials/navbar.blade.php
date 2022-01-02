@@ -54,6 +54,24 @@ $right_links = [
           </li>
         @endauth
         {{-- TODO: Button for non-authenticated --}}
+        <li class="nav-item  d-flex align-items-center">
+          <a class="nav-link" href='/profile'>
+            <!-- TODO: Update link -->
+            <i class="bi bi-person-circle {{ $icon_size }}"></i>
+            <span class="">&nbsp;Anonymous</span>
+          </a>
+          <div class="dropdown">
+            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfileA" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownProfileA">
+              <a class="dropdown-item" href="/login">Login</a>
+              <a class="dropdown-item" href="/register">Register</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+          </div>
+        </li>
       </ul>
     </div>
   </div>
