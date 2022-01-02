@@ -12,7 +12,7 @@
     background-color: rgba(255, 255, 255, 0.5);
 }
 
-.custom-tab {
+.custom-tab-left {
     background: transparent !important;
     color: black !important;
     border-top: 0;
@@ -22,9 +22,25 @@
     border-radius: 0px !important;
 }
 
-.custom-tab.active {
+.custom-tab-left.active {
     background: transparent !important;
     color: white !important;
     border-left: 2px solid white !important;
+    border-radius: 0px !important;
+}
+.custom-tab-bottom {
+    background: transparent !important;
+    color: black !important;
+    border-top: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: 2px solid black !important;
+    border-radius: 0px !important;
+}
+
+.custom-tab-bottom.active {
+    background: transparent !important;
+    color: white !important;
+    border-bottom: 2px solid white !important;
     border-radius: 0px !important;
 }
