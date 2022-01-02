@@ -44,34 +44,46 @@ $right_links = [
             </a>
           </li>
         @endforeach
+        @if (Auth::check())
         @auth
-          <li class="nav-item">
+          <li class="nav-item d-flex align-items-center">
             <a class="nav-link d-flex align-items-center" href="{{ URL::to('user') }}">
               <!-- TODO: Update link -->
               <i class="bi bi-person-circle {{ $icon_size }}"></i>
               <span class="">&nbsp;{{ Auth::user()->name }}</span>
             </a>
+            <div class="dropdown">
+            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfile" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            </button>
+            <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownProfile">
+              <a class="dropdown-item" href="/profile">Profile</a>
+              <a class="dropdown-item" href="/edit_profile">Edit Profile</a>
+              <div class="dropdown-divider"></div>
+              <form method="POST" action="{{ route('logout') }}">
+                <a class="dropdown-item" href="#">Logout</a>
+              </form>
+            </div>
+          </div>
           </li>
         @endauth
+        @else
         {{-- TODO: Button for non-authenticated --}}
         <li class="nav-item  d-flex align-items-center">
-          <a class="nav-link" href='/profile'>
+          <a class="nav-link" href='/login'>
             <!-- TODO: Update link -->
             <i class="bi bi-person-circle {{ $icon_size }}"></i>
-            <span class="">&nbsp;Anonymous</span>
+            <span class="">&nbsp;Guest</span>
           </a>
           <div class="dropdown">
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfileA" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfile" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             </button>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownProfileA">
-              <a class="dropdown-item" href="/login">Login</a>
-              <a class="dropdown-item" href="/register">Register</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Separated link</a>
+            <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownProfile">
+              <a class="dropdown-item" href="login">Login</a>
+              <a class="dropdown-item" href="register">Register</a>
             </div>
           </div>
         </li>
+        @endif
       </ul>
     </div>
   </div>
