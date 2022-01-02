@@ -89,7 +89,7 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        Post::truncate();
+        //Post::truncate();
         //this gives us the currently logged in user
         $user = $request->user();
         $post = new Post;
