@@ -12,6 +12,12 @@
     background-color: rgba(255, 255, 255, 0.5);
 }
 
+
+.dropdown-menu-right {
+    right: 0;
+    left: auto;
+}
+
 .custom-tab-left {
     background: transparent !important;
     color: black !important;
@@ -42,3 +48,4 @@
     border-bottom: 2px solid white !important;
     border-radius: 0px !important;
 }
+
