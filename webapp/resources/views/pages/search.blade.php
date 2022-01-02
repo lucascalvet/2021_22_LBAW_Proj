@@ -42,11 +42,9 @@
                 <button class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
                 <lable class="align-items-center pt-2">137 results found</lable>
             </div>
-            <div class="card w-100 m-3 p-2 bg-white">
-                <p>there</p>
-                <p>are</p>
-                <p>things</p>
-                <p>inside</p>
+            <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
+                @include('partials.listCards',['username'=>'John Doe', 'description'=>'Studied at FEUP, currently working on fixing is life.', 'comment'=>'Son of a gun','days_ago'=>'3 hours ago'])
+                @include('partials.listCards',['username'=>'Jane Doe', 'description'=>'Maried to the other guy.', 'comment'=>'Carne','days_ago'=>'yesterday'])
             </div>
           </div>
           {{-- <div class="col-1 m-3">
@@ -85,11 +83,8 @@
             <button class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
             <lable class="align-items-center pt-2">137 results found</lable>
           </div>
-          <div class="card w-100 m-3 p-2 bg-white">
-            <p>there</p>
-            <p>are</p>
-            <p>things</p>
-            <p>inside</p>
+          <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
+            @include('partials.listCards',['username'=>'John Doe', 'description'=>'Studied at FEUP, currently working on fixing is life.', 'comment'=>'Son of a gun','days_ago'=>'3 hours ago'])
           </div>
         </div>
       </div>

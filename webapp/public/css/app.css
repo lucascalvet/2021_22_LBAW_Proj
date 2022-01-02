@@ -15,7 +15,7 @@
 .custom-tab-left {
     background: transparent !important;
     color: black !important;
-    border-top: 0;
+    border-top: none;
     border-bottom: none;
     border-right: none;
     border-left: 2px solid black !important;
@@ -23,10 +23,8 @@
 }
 
 .custom-tab-left.active {
-    background: transparent !important;
     color: white !important;
     border-left: 2px solid white !important;
-    border-radius: 0px !important;
 }
 .custom-tab-bottom {
     background: transparent !important;
