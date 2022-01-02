@@ -54,7 +54,7 @@
       </div>
 
       <!--Mobile View-->
-      <div class="d-block d-md-none text-center">
+      <div class="d-block d-md-none">
         <div class="d-flex justify-content-center">
           <ul class="nav nav-pills" id="pills-tab" role="tablist">
             <li class="nav-item">
