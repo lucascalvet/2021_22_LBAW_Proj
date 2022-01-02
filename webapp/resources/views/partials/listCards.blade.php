@@ -1,10 +1,3 @@
-@extends('layouts.app')
-
-@section('title', 'Cards')
-
-@section('content')
-
-
 
 <!-- 
 <div class="card m-3 list-group"> -->
@@ -28,4 +21,3 @@
         </div>
     </a>
 
-@endsection
