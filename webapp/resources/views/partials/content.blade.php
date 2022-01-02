@@ -14,7 +14,11 @@ $image = "img/cont_elon.jpg";
 
 $example_video = "vid/ex.mp4";
 $example_image = "img/cont_elon.jpg";
+
+$post = App\Models\Post::find(1);
 @endphp
+
+
 
 <div class="card text-black p-0" style="width: auto; height: auto;">
     <div class="card-header">
@@ -36,7 +40,7 @@ $example_image = "img/cont_elon.jpg";
     </div>
     <div class="card-body">
         <div class="text-center">
-            <h5>{{ $title }}</h5>
+            <h5>{{ $post->title }}</h5>
         </div>
         @if ($image != "" || $video != "")
         <div class="row justify-content-center pt-3">
