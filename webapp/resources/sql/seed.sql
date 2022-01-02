@@ -32,6 +32,13 @@ INSERT INTO users VALUES (
   '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
 ); -- Password is 1234. Generated using Hash::make('1234')
 
+INSERT INTO users VALUES (
+  DEFAULT,
+  'Koala',
+  'koala@example.com',
+  '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
+); -- Password is 1234. Generated using Hash::make('1234')
+
 INSERT INTO cards VALUES (DEFAULT, 'Things to do', 1);
 INSERT INTO items VALUES (DEFAULT, 1, 'Buy milk');
 INSERT INTO items VALUES (DEFAULT, 1, 'Walk the dog', true);
