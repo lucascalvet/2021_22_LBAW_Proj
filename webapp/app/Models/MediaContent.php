@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class MediaContent extends Model
 {
     use HasFactory;
-<<<<<<< HEAD
 
     /**
      * The table associated with the model.
@@ -63,6 +62,4 @@ class MediaContent extends Model
     {
         return $this->morphTo(null, null, 'id');
     }
-=======
->>>>>>> cd6e3c7 (Updated models)
 }
