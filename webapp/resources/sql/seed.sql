@@ -72,6 +72,7 @@ CREATE TABLE users (
    phone_number TEXT,
    id_country INTEGER NOT NULL REFERENCES country(id) ON UPDATE CASCADE, 
    birthday TIMESTAMP WITH TIME ZONE NOT NULL,
+   description TEXT,
    remember_token TEXT
 );
 
@@ -101,7 +102,8 @@ CREATE TABLE content (
    id SERIAL PRIMARY KEY,
    publishing_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
    id_group INTEGER REFERENCES groups(id) ON UPDATE CASCADE,
-   id_creator INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE
+   id_creator INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
+   contentable_type TEXT
 );
 
 CREATE TABLE content_like (
@@ -133,7 +135,8 @@ CREATE TABLE media_content (
    media TEXT NOT NULL,
    alt_text TEXT,
    fullscreen BOOLEAN NOT NULL,
-   id_locale INTEGER REFERENCES locale(id) ON UPDATE CASCADE
+   id_locale INTEGER REFERENCES locale(id) ON UPDATE CASCADE,
+   media_contentable_type TEXT
 );
 
 CREATE TABLE video (
@@ -456,6 +459,7 @@ CREATE TRIGGER friendship
    FOR EACH ROW
    EXECUTE PROCEDURE friendship();
 
+
 --TRIGGER 4
 
 CREATE FUNCTION text_content_disjoint() RETURNS TRIGGER LANGUAGE plpgsql AS
@@ -463,12 +467,13 @@ $$
 BEGIN
    IF EXISTS (SELECT * FROM media_content WHERE id_content = NEW.id_content) THEN RAISE EXCEPTION 'Content is already a media content.';
    END IF;
+   UPDATE content SET contentable_type = 'App\Models\TextContent' WHERE content.id = NEW.id_content;
    RETURN NEW;
 END;
 $$;
 
 CREATE TRIGGER text_content_disjoint
-   BEFORE INSERT ON text_content
+   BEFORE INSERT OR UPDATE ON text_content
    FOR EACH ROW
    EXECUTE PROCEDURE text_content_disjoint();
 
@@ -479,14 +484,53 @@ $$
 BEGIN
    IF EXISTS (SELECT * FROM text_content WHERE id_content = NEW.id_content) THEN RAISE EXCEPTION 'Content is already a text content.';
    END IF;
+   UPDATE content SET contentable_type = 'App\Models\MediaContent' WHERE content.id = NEW.id_content;
    RETURN NEW;
 END;
 $$;
 
 CREATE TRIGGER media_content_disjoint
-   BEFORE INSERT ON media_content
+   BEFORE INSERT OR UPDATE ON media_content
    FOR EACH ROW
    EXECUTE PROCEDURE media_content_disjoint();
+
+
+
+--TRIGGER 6
+
+CREATE FUNCTION image_disjoint() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   IF EXISTS (SELECT * FROM video WHERE id_media_content = NEW.id_media_content) THEN RAISE EXCEPTION 'Media is already a video.';
+   END IF;
+   UPDATE media_content SET media_contentable_type = 'App\Models\Image' WHERE media_content.id_content = NEW.id_media_content;
+   RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER image_disjoint
+   BEFORE INSERT OR UPDATE ON image
+   FOR EACH ROW
+   EXECUTE PROCEDURE image_disjoint()
+
+--TRIGGER 7
+
+CREATE FUNCTION video_disjoint() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   IF EXISTS (SELECT * FROM image WHERE id_media_content = NEW.id_media_content) THEN RAISE EXCEPTION 'Media is already a image.';
+   END IF;
+   UPDATE media_content SET media_contentable_type = 'App\Models\Video' WHERE media_content.id_content = NEW.id_media_content;
+   RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER video_disjoint
+   BEFORE INSERT OR UPDATE ON video
+   FOR EACH ROW
+   EXECUTE PROCEDURE video_disjoint()
+
+
 
 --------------------------------------------
 
