@@ -41,6 +41,7 @@ Route::delete('content/delete/{id}', 'ContentController@destroy')->name('content
 // Profile
 Route::get('profile/{user}', 'ProfileController@show')->name('profile');
 Route::get('profile/{user}/edit', 'ProfileController@showEdit')->name('profile.edit');
+Route::get('profile/{user}/save', 'ProfileController@save')->name('profile.save');
 
 // Adiministration
 Route::get('admin', 'AdminController@show')->name('admin');

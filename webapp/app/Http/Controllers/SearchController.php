@@ -42,4 +42,5 @@ class SearchController extends Controller
       return view('pages.search', ['posts' => [], 'type' => 'post']);
     }
   }
+
 }

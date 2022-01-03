@@ -17,6 +17,13 @@ class ProfileController extends Controller
     {
       $user = User::find($userId);
 
+      $user->name = request()->name;
+      $user->birthday = request()->birthday;
+      $user->email = request()->email;
+      $user->description = request()->description;
+      $user->password = request()->password;
+      $user->phone_number = request()->phone;
+
       return view('pages.profile', [
         'user' => $user,
       ]);
@@ -32,6 +39,16 @@ class ProfileController extends Controller
       $user = User::find($userId);
 
       return view('pages.edit_profile', [
+        'user' => $user,
+      ]);
+    }
+
+    public function save(){
+      $user = User::find($userId);
+
+
+
+      return view('pages.profile', [
         'user' => $user,
       ]);
     }
