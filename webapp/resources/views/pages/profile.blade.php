@@ -10,14 +10,14 @@
   <div class="container-fluid vh-100 overflow-hidden" style="padding: 0em; margin: 0em;">
       <!--Cover Photo-->
       <div class="row h-25 m-0 mb-4 justify-content-center bg-secondary position-relative">
-        <img class="rounded h-100 p-0" style="object-fit: none;" src="https://www.akamai.com/content/dam/site/im-demo/perceptual-standard.jpg?imbypass=true"/>
-        <img class="d-none d-md-block rounded-circle w-25 position-absolute top-100 start-0 translate-middle" style="margin-left: 8em; max-height: 10em; max-width: 10em;" src="https://cdn.awsli.com.br/294/294449/produto/31325624/402d2b8271.jpg"/>
-        <img class="d-block d-md-none rounded-circle w-25 position-absolute top-100 start-50 translate-middle" style="max-height: 10em; max-width: 10em;" src="https://cdn.awsli.com.br/294/294449/produto/31325624/402d2b8271.jpg"/>
+        <img class="rounded h-100 p-0" style="object-fit: none;" src="{{$user->cover_picture}}"/>
+        <img class="d-none d-md-block rounded-circle w-25 position-absolute top-100 start-0 translate-middle" style="margin-left: 8em; max-height: 10em; max-width: 10em;" src="{{$user->profile_picture}}"/>
+        <img class="d-block d-md-none rounded-circle w-25 position-absolute top-100 start-50 translate-middle" style="max-height: 10em; max-width: 10em;" src="{{$user->profile_picture}}"/>
         <div class="d-flex m-2">
-        <a class="me-auto" href="/profile/edit">
+        <a class="me-auto" href="/profile/{{$user->id}}/edit">
           <i class="bi d-block d-md-none bi-pencil-square"></i>
         </a>
-          <i class="bi bi-list d-block d-md-none"></i>
+          <i class="bi bi-three-dots d-block d-md-none"></i>
         </div>
       </div>
 
@@ -26,17 +26,18 @@
         <div class="row gx-5 me-2" style="margin-left: 3em;">
           <!--User Info-->
           <div class="col-4 mt-5">
-            <h2 class="pt-4">User Name</h2>
+            <h2 class="pt-4">{{$user->username}}</h2>
 
             <div class="d-flex">
               <div class="pb-2 pe-2"><strong>120</strong></div>
               friends
               </div>
 
-            <div class="pb-2">Description</div>
-            <div class="pb-2">Birthday</div>
-            <div class="pb-2">Email</div>
-            <div class="pb-2 mb-4">Phone Number</div>
+            <div class="pb-2">{{$user->name}}</div>
+            <div class="pb-2">{{$user->description}}</div>
+            <div class="pb-2">{{$user->birthday}}</div>
+            <div class="pb-2">{{$user->email}}</div>
+            <div class="pb-2 mb-4">{{$user->phone_number}}</div>
 
             <div class="row">
               <h5 class="text-center">Interests</h5>
@@ -72,22 +73,17 @@
 
             <!--Actual Content for md screen and beyond-->
             <div class="row text-light d-flex">
-              <div class="col-4  p-md-1 p-lg-2">
-                <div class="p-5 h-50 m-lg-4 m-md-2 ms-lg-1 me-lg-1 bg-secondary shadow rounded-3">Content 1</div>
-                <div class="p-5 h-50 m-lg-4 m-md-2 ms-lg-1 me-lg-1 bg-secondary shadow rounded-3">Content 2</div>
-              </div>
-              <div class="col-4 p-md-1 p-lg-2">
-                <div class="p-5 h-50 m-lg-4 m-md-2 ms-lg-1 me-lg-1 bg-secondary shadow rounded-3">Content 3</div>
-                <div class="p-5 h-50 m-lg-4 m-md-2 ms-lg-1 me-lg-1 bg-secondary shadow rounded-3">Content 4</div>
-              </div>
-              <div class="col-4 p-md-1 p-lg-2">
-                <div class="p-5 h-50 m-lg-4 m-md-2 ms-lg-1 me-lg-1 bg-secondary shadow rounded-3">Content 5</div>
-                <div class="p-5 h-50 m-lg-4 m-md-2 ms-lg-1 me-lg-1 bg-secondary shadow rounded-3">Content 6</div>
+              <div class="d-flex p-md-1 p-lg-2 flex-wrap justify-content-evenly">
+                @foreach($user->contents as $post)
+                  <div class="col-4">
+                      <div class="p-5 m-2 mx-1 bg-secondary shadow rounded-3"> @include('partials.mini_post', ['username' => $user->username, 'location'=>'$post->location', 'date' => '$post->$publishing_date', 'image_src'=>'$post->$path'])</div>
+                  </div>
+                @endforeach
               </div>
             </div>
 
             <div class="row d-none d-md-block mt-5 text-end">
-              <a href="/profile/edit">
+              <a href="/profile/{{$user->id}}/edit">
                 <i class="bi bi-pencil-square"></i>
               </a>
             </div>
@@ -98,17 +94,18 @@
       <!--Mobile View-->
       <div class="d-block d-md-none text-center">
         <div class="mt-5">
-          <h2 class="pt-5">User Name</h2>
+          <h2 class="pt-5">{{$user->username}}</h2>
 
           <div class="d-flex justify-content-center">
             <div class="pb-2 pe-2"><strong>120</strong></div>
             friends
           </div>
 
-          <div class="pb-2">Description</div>
-          <div class="pb-2">Birthday</div>
-          <div class="pb-2">Email</div>
-          <div class="pb-2 mb-4">Phone Number</div>
+          <div class="pb-2">{{$user->name}}</div>
+          <div class="pb-2">{{$user->description}}</div>
+          <div class="pb-2">{{$user->birthday}}</div>
+          <div class="pb-2">{{$user->email}}</div>
+          <div class="pb-2 mb-4">{{$user->phone_number}}</div>
 
           <div class="row">
             <h5>Interests</h5>

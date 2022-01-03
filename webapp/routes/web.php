@@ -14,8 +14,14 @@
 Route::get('/', 'HomeController@show')->name('home');
 
 // Profile
-Route::get('profile', 'ProfileController@show');
-Route::get('profile/edit', 'ProfileController@showEdit');
+Route::get('profile/{user}', 'ProfileController@show');
+Route::get('profile/{user}/edit', 'ProfileController@showEdit');
+
+// Adiministration
+Route::get('admin', 'AdminController@show');
+Route::get('admin/accounts', 'AdminController@showAccounts');
+Route::get('admin/posts', 'AdminController@showPosts');
+Route::get('admin/statistics', 'AdminController@showStatistics');
 
 // API
 Route::put('api/cards', 'CardController@create');

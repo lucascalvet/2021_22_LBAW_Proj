@@ -1,7 +1,7 @@
-<div class="p-1 h-50 m-lg-4 m-md-2 ms-lg-1 me-lg-1 bg-secondary shadow rounded-3 d-none d-md-block">
+<div style="background-image: '{{ $image_src }}';">
     <div class="d-flex text-light">
-        <div class="me-auto m-2">Usernam</div>
-        <div class="m-2">Location</div>
+        <div class="me-auto m-2">{{$username}}</div>
+        <div class="m-2">{{$location}}</div>
     </div>
 
     <div class="d-flex">
@@ -16,7 +16,7 @@
             <i class="bi bi-chat-quote-fill"></i>
             <div class="d-flex w-100">
                 <div class="me-auto">count</div>
-                <div class="text-light">Time</div>
+                <div class="text-light">{{$date}}</div>
             </div>
         </div>
     </div>

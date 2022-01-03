@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\User;
+
 class ProfileController extends Controller
 {
      /**
@@ -11,9 +13,13 @@ class ProfileController extends Controller
      *
      * @return Response
      */
-    public function show()
+    public function show($userId)
     {
-      return view('pages.profile');
+      $user = User::find($userId);
+
+      return view('pages.profile', [
+        'user' => $user,
+      ]);
     }
 
      /**
@@ -21,8 +27,12 @@ class ProfileController extends Controller
      *
      * @return Response
      */
-    public function showEdit()
+    public function showEdit($userId)
     {
-      return view('pages.edit_profile');
+      $user = User::find($userId);
+
+      return view('pages.edit_profile', [
+        'user' => $user,
+      ]);
     }
 }
