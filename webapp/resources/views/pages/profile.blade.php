@@ -14,7 +14,7 @@
         <img class="d-none d-md-block rounded-circle w-25 position-absolute top-100 start-0 translate-middle" style="margin-left: 8em; max-height: 10em; max-width: 10em;" src="{{$user->profile_picture}}"/>
         <img class="d-block d-md-none rounded-circle w-25 position-absolute top-100 start-50 translate-middle" style="max-height: 10em; max-width: 10em;" src="{{$user->profile_picture}}"/>
         <div class="d-flex m-2">
-        <a class="me-auto" href="/profile/{{$user->id}}/edit">
+        <a class="me-auto" href=" {{ route('profile', [user => Auth::User()->id]) }}">
           <i class="bi d-block d-md-none bi-pencil-square"></i>
         </a>
           <i class="bi bi-three-dots d-block d-md-none"></i>
@@ -83,7 +83,7 @@
             </div>
 
             <div class="row d-none d-md-block mt-5 text-end">
-              <a href="/profile/{{$user->id}}/edit">
+              <a href="{{ route('profile.edit', [user => Auth::User()->id]) }}">
                 <i class="bi bi-pencil-square"></i>
               </a>
             </div>

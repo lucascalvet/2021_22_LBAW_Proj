@@ -12,7 +12,7 @@
         <div class="d-flex align-items-end mb-4 ps-0">
             <h2 class="me-4 mt-5">Administration</h2>
             <h3 class="me-4 mt-5 me-auto">Statistics</h3>
-            <a href="\admin">
+            <a href="{{ route('admin') }}">
                 <i class="bi bi-arrow-left-circle-fill"></i>
             </a>
         </div>

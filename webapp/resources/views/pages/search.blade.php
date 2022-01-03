@@ -7,7 +7,8 @@
 @include('partials.navbar')
 
 <section id="profile">
-  <div class="container-fluid vh-100 overflow-hidden" style="padding: 0em;padding-top: 5em; margin: 0em; background-color: #afafaf">
+  <div class="container-fluid vh-100 overflow-auto" style="padding: 0em;padding-top: 5em; margin: 0em; background-color: #afafaf">
+    <!--<h1 class="ms-3 me-4 mt-0 text-light fw-bold">Search</h1>-->
         <!--Computer View-->
       <div class="d-none d-md-block">
         <div class="row" style="margin-left: 3em;">
@@ -42,11 +43,11 @@
             </div>
             <div class=" ms-3 d-flex justify-content-between">
                 <button class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
-                <label class="align-items-center pt-2">137 results found</label>
+                <label class="align-items-center pt-2">{{ count($users) }} results found</label>
             </div>
             <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
               @foreach($users as $user)
-                @include('partials.listCards',['username'=>$user->username, 'description'=>'Studied at FEUP, currently working on fixing is life.', 'comment'=>'Son of a gun','days_ago'=>'3 hours ago'])
+                @include('partials.listCards',['username'=>$user->username, 'description'=>$user->description, 'comment'=>$user->email,'days_ago'=>"User"])
               @endforeach
             </div>
           </div>

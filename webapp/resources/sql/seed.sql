@@ -70,13 +70,13 @@ CREATE TABLE users (
    profile_picture TEXT,
    cover_picture TEXT,
    phone_number TEXT,
-   id_country INTEGER NOT NULL REFERENCES country(id) ON UPDATE CASCADE, 
+   id_country INTEGER NOT NULL REFERENCES country(id) ON UPDATE CASCADE,
    birthday TIMESTAMP WITH TIME ZONE NOT NULL,
    description TEXT,
    remember_token TEXT
 );
 
-CREATE TABLE admin_user ( 
+CREATE TABLE admin_user (
    id_user INTEGER PRIMARY KEY REFERENCES users(id) ON UPDATE CASCADE
 );
 
@@ -87,7 +87,7 @@ CREATE TABLE wallet (
 );
 
 CREATE TABLE advertiser (
-   id_user INTEGER PRIMARY KEY REFERENCES users(id) ON UPDATE CASCADE, 
+   id_user INTEGER PRIMARY KEY REFERENCES users(id) ON UPDATE CASCADE,
    company_name TEXT NOT NULL,
    id_wallet INTEGER NOT NULL REFERENCES wallet(id) NOT NULL
 );
@@ -123,7 +123,7 @@ CREATE TABLE text_reply (
    parent_text INTEGER NOT NULL REFERENCES text_content(id_content) ON UPDATE CASCADE
 );
 
-CREATE TABLE locale ( 
+CREATE TABLE locale (
    id SERIAL PRIMARY KEY,
    region TEXT NOT NULL,
    id_country INTEGER NOT NULL REFERENCES country(id) ON UPDATE CASCADE
@@ -222,14 +222,14 @@ CREATE TABLE like_notification (
    id_content INTEGER NOT NULL,
    FOREIGN KEY (id_user, id_content) REFERENCES content_like(id_user, id_content) ON UPDATE CASCADE
 );
- 
+
 CREATE TABLE reply_notification (
    id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE friend_request_notification (
    id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,
-   id_friend_request INTEGER NOT NULL REFERENCES friend_request(id) ON UPDATE CASCADE 
+   id_friend_request INTEGER NOT NULL REFERENCES friend_request(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE comment_reply_notification (
@@ -278,7 +278,7 @@ CREATE TABLE friends (
    id_user1 INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
    id_user2 INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
    PRIMARY KEY (id_user1, id_user2),
-   CONSTRAINT friend_diff_ck CHECK (id_user1 <> id_user2) 
+   CONSTRAINT friend_diff_ck CHECK (id_user1 <> id_user2)
 );
 
 --------------------------------------------
@@ -497,7 +497,7 @@ CREATE TRIGGER media_content_disjoint
 
 
 --TRIGGER 6
-
+/*
 CREATE FUNCTION image_disjoint() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
@@ -530,14 +530,14 @@ CREATE TRIGGER video_disjoint
    FOR EACH ROW
    EXECUTE PROCEDURE video_disjoint()
 
-
+*/
 
 --------------------------------------------
 
 --Create anonymous user (shared user for deleted accounts)
 INSERT INTO country (id, iso_3166, name) VALUES (1, '', '');
 SELECT setval('country_id_seq', (SELECT max(id) FROM country));
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (1, 'anonymous', 'Anonymous User', 'support@socialup.com', '', NULL, NULL, NULL, 1, '1970-1-1');
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday, description) VALUES (1, 'anonymous', 'Anonymous User', 'support@socialup.com', '', NULL, NULL, NULL, 1, '1970-1-1', 'A random test user description');
 SELECT setval('users_id_seq', (SELECT max(id) FROM users));
 
 --Alpha-3 code

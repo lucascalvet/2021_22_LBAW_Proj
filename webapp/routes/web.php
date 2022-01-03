@@ -39,11 +39,11 @@ Route::patch('content/media/edit/{id}','MediaContentController@update')->name('m
 Route::delete('content/delete/{id}', 'ContentController@destroy')->name('content.destroy');
 
 // Profile
-Route::get('profile/{user}', 'ProfileController@show');
-Route::get('profile/{user}/edit', 'ProfileController@showEdit');
+Route::get('profile/{user}', 'ProfileController@show')->name('profile');
+Route::get('profile/{user}/edit', 'ProfileController@showEdit')->name('profile.edit');
 
 // Adiministration
-Route::get('admin', 'AdminController@show');
+Route::get('admin', 'AdminController@show')->name('admin');
 Route::get('admin/accounts', 'AdminController@showAccounts');
 Route::get('admin/posts', 'AdminController@showPosts');
 Route::get('admin/statistics', 'AdminController@showStatistics');
