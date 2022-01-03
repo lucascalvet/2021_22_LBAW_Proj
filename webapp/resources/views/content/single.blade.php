@@ -21,9 +21,9 @@ $time = '10 days ago';
 
     <div>
       @if ($content->contentable instanceof App\Models\MediaContent)
-        <p>{{ $content->contentable->description }}</p>
+        <div>{{ $content->contentable->description }}</div>
       @else
-        <p>{{ $content->contentable->post_text }}</p>
+        <div>{{ $content->contentable->post_text }}</div>
       @endif
     </div>
 
