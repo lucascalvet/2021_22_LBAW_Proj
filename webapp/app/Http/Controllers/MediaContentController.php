@@ -23,9 +23,17 @@ class MediaContentController extends Controller
 
     public function destroy($id)
     {
+        $mediacontent = MediaContent::find($id);
         $content = Content::find($id);
-        $content->delete();
-        return redirect()->route('home');
+        $content->id_creator = 1;
+        $mediacontent->alt_text = "[Removed]";
+        $mediacontent->media = "";
+        $mediacontent->description = "[Removed]";
+        $content->save();
+        $mediacontent->save();
+        //return redirect()->route('home');
+        return view('content.single', ['content' => $content]);
+
     }
 
     protected function validator(Request $request)
@@ -51,7 +59,6 @@ class MediaContentController extends Controller
     public function update(Request $request, $id)
     {
         $mediacontent = MediaContent::find($id);
-        $content = Content::find($id);
 
         $mediacontent->description = $request->description;
         $mediacontent->media = $request->file('media')->store('media', ['disk' => 'my_files']);
@@ -73,23 +80,29 @@ class MediaContentController extends Controller
         $mediacontent->media = $request->file('media')->store('media', ['disk' => 'my_files']);
 
         $mediacontent->alt_text = $request->alt_text;
+        $mediacontent->fullscreen = false;
 
         $content->save();
+
+        $mediacontent->id_content = $content->id;
+
         $mediacontent->save();
 
         if(strstr(mime_content_type($mediacontent->media), "video/")){
             $video = new Video;
             $video->views = 0;
             $video->title = "Title";
+            $video->id_media_content = $mediacontent->id_content;
             $video->save();
         }
         else if(strstr(mime_content_type($mediacontent->media), "image/")){
             $image = new Image;
             $image->width = 1;
-            $image->heigth = 1;
+            $image->height = 1;
+            $image->id_media_content = $mediacontent->id_content;
             $image->save();
         }
     
-        return view('content.single', ['content' => $content]);
+        return redirect()->route('content.show', ['id' => $content->id]);
     }
 }

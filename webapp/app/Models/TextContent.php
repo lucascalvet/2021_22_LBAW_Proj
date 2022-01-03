@@ -23,6 +23,8 @@ class TextContent extends Model
      */
     protected $primaryKey = 'id_content';
 
+    //public $incrementing = true;
+
     /**
      * Indicates if the model should be timestamped.
      *

@@ -30,8 +30,10 @@ class ContentController extends Controller
 
     public function destroy($id)
     {
+        
         abort_if(is_null($content = Content::find($id)), 404);
 
+        /*
         if ($content->contentable instanceof \App\Models\TextContent) {
             $content->contentable->delete();
         } else if ($content->contentable instanceof \App\Models\MediaContent) {
@@ -40,8 +42,18 @@ class ContentController extends Controller
         }
 
         $content->delete();
+        */
+
+        if ($content->contentable instanceof \App\Models\TextContent) {
+
+            return (new TextContentController)->destroy($id);
+        } else if ($content->contentable instanceof \App\Models\MediaContent) {
+            return (new MediaContentController)->destroy($id);
+        }
 
         return redirect()->route('home');
+
+
     }
 
     protected function validator(Request $request)
