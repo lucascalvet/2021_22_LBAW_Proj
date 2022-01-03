@@ -67,9 +67,6 @@ Route::get('recoverPassword', 'ForgotController@show');
 
 // List Card
 Route::get('listCards', 'ListCardsController@show');
-<<<<<<< HEAD
 
 //Search
 Route::get('search', 'SearchController@show');
-=======
->>>>>>> 8d79cee (Updated routes)
