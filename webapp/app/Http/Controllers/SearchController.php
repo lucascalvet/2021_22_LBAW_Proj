@@ -4,24 +4,43 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\User;
+use App\Models\MediaContent;
+
 class SearchController extends Controller
 {
-    public function show()
-    {
-      return view('pages.search');
-    }
+     public function searchUsers(){
 
-  //   {{-- public function search(Request $request){
-  //     // Get the search value from the request
-  //     $search = $request->input('search');
-  
-  //     // Search in the title and body columns from the posts table
-  //     $posts = User::query()
-  //         ->where('name', 'LIKE', "%{$search}%")
-  //         ->orWhere('email', 'LIKE', "%{$search}%")
-  //         ->get();
-  
-  //     // Return the search view with the resluts compacted
-  //     return view('search', compact('users'));
-  // } --}}
+      $search = request()->query('search');
+
+      if($search){
+        $users = User::where('name', 'LIKE', "%{$search}%")->orWhere('username', 'LIKE', "%{$search}%")->orWhere('email', 'LIKE', "%{$search}%")->get();
+
+        return view('pages.search', [
+          'users' => $users,
+          'type' => 'user',
+        ]);
+      }
+      else{
+        return view('pages.search', ['users' => [], 'type' => 'user']);
+      }
+  }
+
+  public function searchPosts(){
+
+    $search = request()->query('search');
+
+    if($search){
+      $posts = MediaContent::where('description', 'LIKE', "%{$search}%")->get();
+
+      return view('pages.search', [
+        'posts' => $posts,
+        'type' => 'post',
+      ]);
+    }
+    else{
+      return view('pages.search', ['posts' => [], 'type' => 'post']);
+    }
+  }
+
 }

@@ -31,9 +31,10 @@ Route::delete('content/delete/{id}', 'ContentController@destroy')->name('content
 // Profile
 Route::get('profile/{user}', 'ProfileController@show')->name('profile');
 Route::get('profile/{user}/edit', 'ProfileController@showEdit')->name('profile.edit');
+Route::get('profile/{user}/save', 'ProfileController@save')->name('profile.save');
 
 // Adiministration
-Route::get('admin', 'AdminController@show');
+Route::get('admin', 'AdminController@show')->name('admin');
 Route::get('admin/accounts', 'AdminController@showAccounts');
 Route::get('admin/posts', 'AdminController@showPosts');
 Route::get('admin/statistics', 'AdminController@showStatistics');
@@ -58,8 +59,10 @@ Route::get('recoverPassword', 'ForgotController@show');
 // List Card
 Route::get('listCards', 'ListCardsController@show');
 
-// Search
-Route::get('search', 'SearchController@show')->name('search');
+//Search
+Route::get('search/users', 'SearchController@searchUsers')->name('search.users');
+Route::get('search/content', 'SearchController@searchPosts')->name('search.content');
+Route::get('search', 'SearchController@searchUsers')->name('search');
 
 // Notifications
 Route::get('/notifications', 'HomeController@show')->name('notifications');

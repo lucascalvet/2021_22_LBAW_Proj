@@ -35,4 +35,19 @@ class ProfileController extends Controller
         'user' => $user,
       ]);
     }
+
+    public function save($userId){
+      $user = User::find($userId);
+
+      $user->name = request()->name;
+      $user->birthday = request()->birthday;
+      $user->email = request()->email;
+      $user->description = request()->description;
+      $user->password = request()->password;
+      $user->phone_number = request()->phone;
+
+      return view('pages.profile', [
+        'user' => $user,
+      ]);
+    }
 }

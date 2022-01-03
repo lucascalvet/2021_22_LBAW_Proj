@@ -11,24 +11,31 @@
 <div class="container vh-100">
       <h1 class="text-light pt-5 fw-bold">Editing Profile</h1>
       <div class="row gx-5">
+        <form class="input-group" action="{{ route('profile.save', ['user' => Auth::User()->id]) }}" method="GET">
           <div class="col-6">
-            <label for="input-edit-name" class="form-label ps-3 mt-2 mb-0 fw-bold">Name</label>
-            <input id="input-edit-name" type="text" class="form-control" placeholder="{{$user->name}}" aria-label="Name"/>
 
-            <label for="input-edit-email" class="form-label ps-3 mt-2 mb-0 fw-bold">Email</label>
-            <input id="input-edit-email" type="email" class="form-control" placeholder="{{$user->email}}" aria-label="Email"/>
 
-            <label for="input-edit-phone" class="form-label ps-3 mt-2 mb-0 fw-bold">Phone Number</label>
-            <input id="input-edit-phone" type="text" class="form-control" placeholder="{{$user->phone_numer}}" aria-label="Phone Number"/>
+            <label for="name" class="form-label ps-3 mt-2 mb-0 fw-bold">Name</label>
+            <input id="name" name="name" type="text" class="form-control" placeholder="{{$user->name}}" aria-label="Name"/>
 
-            <label for="input-edit-birthday" class="form-label ps-3 mt-2 mb-0 fw-bold">Birthday</label>
-            <input id="input-edit-birthday" type="date" class="form-control" placeholder="{{$user->birthday}}" aria-label="Birthday"/>
+            <label for="email" class="form-label ps-3 mt-2 mb-0 fw-bold">Email</label>
+            <input id="email" name="email" type="email" class="form-control" placeholder="{{$user->email}}" aria-label="Email"/>
 
-            <label for="input-edit-password" class="form-label ps-3 mt-2 mb-0 fw-bold">Password</label>
-            <input id="input-edit-password" type="password" class="form-control" placeholder="{{$user->pasword}}" aria-label="Password"/>
+            <label for="phone" class="form-label ps-3 mt-2 mb-0 fw-bold">Phone Number</label>
+            <input id="phone" name="phone" type="text" class="form-control" placeholder="{{$user->phone_numer}}" aria-label="Phone Number"/>
 
-            <label for="input-edit-description" class="form-label ps-3 mt-2 mb-0 fw-bold">Description</label>
-            <input id="input-edit-description" type="text" class="form-control pb-5" placeholder="{{$user->description}}" aria-label="Description"/>
+            <label for="birthday" class="form-label ps-3 mt-2 mb-0 fw-bold">Birthday</label>
+            <input id="birthday" name="birthday" type="date" class="form-control" placeholder="{{$user->birthday}}" aria-label="Birthday"/>
+
+            <label for="password" class="form-label ps-3 mt-2 mb-0 fw-bold">Password</label>
+            <input id="password" name="password" type="password" class="form-control" placeholder="{{$user->pasword}}" aria-label="Password"/>
+
+            <label for="description" class="form-label ps-3 mt-2 mb-0 fw-bold">Description</label>
+            <input id="description" name="description" type="text" class="form-control pb-5" placeholder="{{$user->description}}" aria-label="Description"/>
+
+            <input type="submit" class="form-control" id="floatingInput" value="Save">
+
+
           </div>
 
           <div class="col-6 text-center">
@@ -78,10 +85,15 @@
             </div>
 
           </div>
-          <row class="d-flex justify-content-center mt-4">
-            <button type="submit" class="btn btn-secondary w-25">Save</button>
-          </row>
+
+          <div class="d-flex justify-content-center mt-4">
+              <!--<button type="submit" class="btn btn-secondary w-25">Save</button>-->
+          </div>
       </div>
+        </form>
+
+
+
     </div>
 </section>
 
