@@ -25,8 +25,7 @@ INSERT INTO locale (id, region, id_country) VALUES (10, 'Saint John', 10);
 INSERT INTO locale (id, region, id_country) VALUES (11, 'Porto', 11);
 SELECT setval('locale_id_seq', (SELECT max(id) FROM locale));
 
---passwords in sha256
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (2, 'Prabovers', 'David N. Thomas', 'DavidNThomas@jourrapide.com', 'F59B7176818F1BFEA97A9FF8FDC6F04DC5CC6615CF9EA0E3F509481F2E786FB0', NULL, NULL, '561-883-6567', 1, '1988-2-13'); --Ahn5ieze0oKoh
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (2, 'Prabovers', 'David N. Thomas', 'user@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', NULL, NULL, '561-883-6567', 12, '1988-2-13'); --1234
 INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (3, 'Rivinquister', 'Robert A. West', 'RobertAWest@armyspy.com', 'C95D8CD924E48C3C9433A22EC9D8DD22795866858737248190E73DC48799C017', NULL, NULL, '616-261-7167', 2, '1962-10-20'); --foiKeigio6Qu
 INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (4, 'Hoppled91', 'Isaac K. Spencer', 'IsaacKSpencer@dayrep.com', '14390CB20A1DC17AA2A1973F220E21104739D51AC67AFF4B1119F20D6D50FDC2', NULL, NULL, '914-964-9238', 2, '1991-8-6'); --Aagh4pe9V
 INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (5, 'Ingled91', 'Tim K. Gutierrez', 'TimKGutierrez@teleworm.us', '98730C61AA5B1910D64C8F0B18A821EDDB4FFF8C6E6DD7958E0B084C740156AE', NULL, NULL, '270-379-5170', 3, '1991-10-28'); --coh6IkifuNg
@@ -46,10 +45,11 @@ INSERT INTO users (id, username, name, email, hashed_password, profile_picture, 
 INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (19, 'Ourne2001', 'Scott K. Goode', 'ScottKGoode@teleworm.us', '2E9C55D0178C30680ECDC2E30D209D118C1D5DA961E70982BA3BAE805867B3F0', NULL, NULL, '352-431-8723', 10, '2001-4-13'); --Igeki6weip
 INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (20, 'Miltary58', 'Carmela H. Choi', 'CarmelaHChoi@teleworm.us', '5EA9F7A0826D3C295919D6415E72DC415AF6AF3852ABAABE7D9FB7EC55C6C81E', NULL, NULL, '360-697-3591', 11, '1958-6-2'); --ha6zuoWee
 INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (21, 'Evernshould', 'Evelyn M. Dudley', 'EvelynMDudley@rhyta.com', '6D11B2A042B62DCC2CB661382637D178C07C4056A22730E223CFF92D2059EA9B', NULL, NULL, '561-265-2290', 12, '1956-3-4'); --ieSuo8Quu
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (22, 'admin', 'SU Admin', 'admin@socialup.com', '$2y$10$EOAidWrMdRctCQLsICSVXuLvTEquByvzlAMbd31Vm7io4r3O5xJy6', NULL, NULL, '931234567', 11, '1990-5-7'); --admin
 SELECT setval('users_id_seq', (SELECT max(id) FROM users));
 
-INSERT INTO admin_user (id_user) VALUES (1);
-INSERT INTO admin_user (id_user) VALUES (2);
+INSERT INTO admin_user (id_user) VALUES (21);
+INSERT INTO admin_user (id_user) VALUES (22);
 
 INSERT INTO wallet (id, budget) VALUES (1, 100);
 INSERT INTO wallet (id, budget) VALUES (2, 1000);
