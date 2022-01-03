@@ -16,13 +16,13 @@
           <div class="col-2 m-3">
             <ul class="nav nav-pills flex-column" id="pills-tab" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active custom-tab-left" id="list-all-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-all">All</a>
+                <a class="nav-link custom-tab-left" id="list-all-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-all">All</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link custom-tab-left" id="list-posts-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-posts">Posts</a>
+                <a class="nav-link custom-tab-left" id="list-posts-list" data-bs-toggle="tab" href="{{ route('search.content') }}" role="tab" aria-controls="list-posts"><a href="{{ route('search.content') }}">Posts</a></a>
               </li>
               <li class="nav-item">
-                <a class="nav-link custom-tab-left" id="list-people-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-people">People</a>
+                <a class="nav-link active custom-tab-left" id="list-people-list" data-bs-toggle="tab" href="{{ route('search.users') }}" role="tab" aria-controls="list-people"><a href="{{ route('search.users') }}">People</a></a>
               </li>
               <li class="nav-item">
                 <a class="nav-link custom-tab-left" id="list-groups-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-groups">Groups</a>
@@ -36,19 +36,35 @@
           <!--Search Bar-->
           <div class="col-8">
             <div class="form-floating m-3 w-100">
-              <form class="input-group" action="{{ route('search') }}" method="GET">
+              @if ($type == 'user')
+                  <form class="input-group" action="{{ route('search.users') }}" method="GET">
+                @elseif ($type == 'post')
+                  <form class="input-group" action="{{ route('search.content') }}" method="GET">
+                @endif
+
                 <input type="text" class="form-control" id="floatingInput" name="search" placeholder="">
                 <label for="floatingInput"><i class="bi bi-search"></i></label>
               </form>
             </div>
             <div class=" ms-3 d-flex justify-content-between">
                 <button class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
-                <label class="align-items-center pt-2">{{ count($users) }} results found</label>
+                @if ($type == 'user')
+                  <label class="align-items-center pt-2">{{ count($users) }} results found</label>
+                @elseif ($type == 'post')
+                  <label class="align-items-center pt-2">{{ count($posts) }} results found</label>
+                @endif
             </div>
             <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
-              @foreach($users as $user)
-                @include('partials.listCards',['username'=>$user->username, 'description'=>$user->description, 'comment'=>$user->email,'days_ago'=>"User"])
-              @endforeach
+
+              @if ($type == 'user')
+                @foreach($users as $user)
+                  @include('partials.listCards', ['username'=>$user->username, 'description'=>$user->description, 'comment'=>$user->email, 'days_ago'=>"User"])
+                @endforeach
+              @elseif ($type == 'post')
+                @foreach($posts as $post)
+                  @include('partials.listCards', ['username'=>"Post", 'description'=>$post->description, 'comment'=>"", 'days_ago'=>"Post"])
+                @endforeach
+              @endif
             </div>
           </div>
           {{-- <div class="col-1 m-3">
@@ -85,7 +101,7 @@
           </div>
           <div class=" ms-3 d-flex justify-content-between">
             <button class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
-            <lable class="align-items-center pt-2">137 results found</lable>
+            <label class="align-items-center pt-2">137 results found</label>
           </div>
           <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
             @include('partials.listCards',['username'=>'John Doe', 'description'=>'Studied at FEUP, currently working on fixing is life.', 'comment'=>'Son of a gun','days_ago'=>'3 hours ago'])
