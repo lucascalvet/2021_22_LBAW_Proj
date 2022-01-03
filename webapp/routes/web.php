@@ -13,7 +13,7 @@ use App\Http\Controllers\PostController;
 */
 // Home
 Route::get('/', 'Auth\LoginController@home');
-Route::get('home', 'HomeController@show');
+Route::get('home', 'HomeController@show')->name('pages.home');
 
 //Posts
 Route::get('post/create', 'PostController@create')->middleware('auth');
@@ -22,6 +22,7 @@ Route::get('post/list','PostController@index')->middleware('auth')->name('posts.
 Route::get('post/{id}','PostController@show')->name('posts.single');
 Route::get('post/edit/{id}','PostController@edit')->middleware('auth')->name('post.edit');
 Route::patch('post/edit/{id}','PostController@update')->name('posts.update');
+Route::delete('/post/{id}', 'PostController@destroy')->name('posts.destroy');
 
 // Profile
 Route::get('profile', 'ProfileController@show');

@@ -19,9 +19,16 @@ class PostController extends Controller
         return view('posts.edit', ['post' => $post]);
     }
 
-    protected function validator(array $data)
+    public function destroy(Post $post, $id)
     {
-        return Validator::make($data, [
+        $post = $post->withId($id)->first();
+        $post->delete();
+        return redirect()->route('pages.home');
+    }
+
+    protected function validator(Request $request)
+    {
+        return $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:64000',
             'media' => 'file|mimetypes:image/jpeg,image/png,image/gif,video/webm,video/mp4',
@@ -37,7 +44,6 @@ class PostController extends Controller
     public function show(Post $post, $id)
     {
         $post = $post->withId($id)->first();
-
         return view('posts.single', ['post' => $post]);
     }
 
@@ -50,64 +56,37 @@ class PostController extends Controller
 
     public function update(Request $request, $id)
     {
-        //Post::truncate();
-        //this gives us the currently logged in user
-
-        /*
-        $this->validate(request(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed'
-        ];*/
         $post = Post::find($id);
         $post->title = $request->title;
         $post->description = $request->description;
 
 
-        //$path = $request->file('media')->store('media', ['disk' => 'my_files']);
-        //$request->media = $path;
-
-         
-        //this fetches all the post data from the form
-        //we can post all the data from post and not get an error
-        // because laravel handles this in Post model through fillable array
-        //Laravel will only save the data from the key that is in the fillables array
-
-        //$formData = $request->all();
-
         if ($request->hasFile('media')){
             $post->media = $request->file('media')->store('media', ['disk' => 'my_files']);
         }
-        else{
+
+        if($post->media == null){
             $post->media = "none";
         }
 
         $post->save();
 
-        return redirect()->route('posts.list');
+        return view('posts.single', ['post' => $post]);
     }
 
     public function store(Request $request)
     {
         //Post::truncate();
+
         //this gives us the currently logged in user
         $user = $request->user();
+
+        //$valid_request = $this->validator($request);
+
         $post = new Post;
         $post->user_id = $user->id;
         $post->title = $request->title;
         $post->description = $request->description;
-
-
-        //$path = $request->file('media')->store('media', ['disk' => 'my_files']);
-        //$request->media = $path;
-
-         
-        //this fetches all the post data from the form
-        //we can post all the data from post and not get an error
-        // because laravel handles this in Post model through fillable array
-        //Laravel will only save the data from the key that is in the fillables array
-
-        //$formData = $request->all();
 
         if ($request->hasFile('media')){
             $post->media = $request->file('media')->store('media', ['disk' => 'my_files']);
@@ -118,6 +97,11 @@ class PostController extends Controller
 
         $post->save();
         
+        //this fetches all the post data from the form
+        //we can post all the data from post and not get an error
+        // because laravel handles this in Post model through fillable array
+        //Laravel will only save the data from the key that is in the fillables array
+        //$formData = $request->all();
 
         // we need a seo bot readable url, this will create a slug based on title
         //$formData['slug'] = str_slug($request->get('id'));
@@ -126,14 +110,6 @@ class PostController extends Controller
         //meaning the id of user is automatically populated and saved in the user_id column of posts table
         //$user->posts()->create($formData);
 
-        //return "Post successfully saved";
-        /*return Post::create([
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'media' => ($data['media']),
-        ]);
-        */
-
-        return redirect()->route('posts.list');
+        return view('posts.single', ['post' => $post]);
     }
 }

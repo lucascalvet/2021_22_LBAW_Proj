@@ -25,6 +25,7 @@ CREATE TABLE items (
   done BOOLEAN NOT NULL DEFAULT FALSE
 );
 
+
 INSERT INTO users VALUES (
   DEFAULT,
   'John Doe',

@@ -1,7 +1,7 @@
 @php
 $icon_size = 'fs-4';
 $left_links = [
-    '/' => ['title' => 'Home', 'icon' => 'bi bi-house-fill'],
+    '/home' => ['title' => 'Home', 'icon' => 'bi bi-house-fill'],
     '/notifications' => ['title' => 'Notifications', 'icon' => 'bi bi-bell-fill'],
     'search' => ['title' => 'Search', 'icon' => 'bi bi-search'],
 ];
@@ -32,7 +32,7 @@ $right_links = [
       </ul>
     </div>
     <a class="order-first flex-grow-1 flex-sm-grow-0 text-center order-sm-0 d-sm-block navbar-brand fs-3 fw-bold mx-2 py-0"
-      href="{{ URL::to('/') }}">Social UP</a>
+      href="{{ URL::to('/home') }}">Social UP</a>
     <div class="collapse multi-collapse navbar-collapse" id="rightIcons">
       <ul class="container-fluid px-0 align-items-sm-center navbar-nav justify-content-sm-evenly">
         @foreach ($right_links as $link => $props)
