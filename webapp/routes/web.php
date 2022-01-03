@@ -11,8 +11,7 @@
 |
 */
 // Home
-Route::get('/', 'Auth\LoginController@home');
-Route::get('home', 'HomeController@show');
+Route::get('/', 'HomeController@show')->name('home');
 
 // Profile
 Route::get('profile', 'ProfileController@show');
