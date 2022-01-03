@@ -70,13 +70,13 @@ CREATE TABLE users (
    profile_picture TEXT,
    cover_picture TEXT,
    phone_number TEXT,
-   id_country INTEGER NOT NULL REFERENCES country(id) ON UPDATE CASCADE, 
+   id_country INTEGER NOT NULL REFERENCES country(id) ON UPDATE CASCADE,
    birthday TIMESTAMP WITH TIME ZONE NOT NULL,
    description TEXT,
    remember_token TEXT
 );
 
-CREATE TABLE admin_user ( 
+CREATE TABLE admin_user (
    id_user INTEGER PRIMARY KEY REFERENCES users(id) ON UPDATE CASCADE
 );
 
@@ -87,7 +87,7 @@ CREATE TABLE wallet (
 );
 
 CREATE TABLE advertiser (
-   id_user INTEGER PRIMARY KEY REFERENCES users(id) ON UPDATE CASCADE, 
+   id_user INTEGER PRIMARY KEY REFERENCES users(id) ON UPDATE CASCADE,
    company_name TEXT NOT NULL,
    id_wallet INTEGER NOT NULL REFERENCES wallet(id) NOT NULL
 );
@@ -123,7 +123,7 @@ CREATE TABLE text_reply (
    parent_text INTEGER NOT NULL REFERENCES text_content(id_content) ON UPDATE CASCADE
 );
 
-CREATE TABLE locale ( 
+CREATE TABLE locale (
    id SERIAL PRIMARY KEY,
    region TEXT NOT NULL,
    id_country INTEGER NOT NULL REFERENCES country(id) ON UPDATE CASCADE
@@ -222,14 +222,14 @@ CREATE TABLE like_notification (
    id_content INTEGER NOT NULL,
    FOREIGN KEY (id_user, id_content) REFERENCES content_like(id_user, id_content) ON UPDATE CASCADE
 );
- 
+
 CREATE TABLE reply_notification (
    id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE friend_request_notification (
    id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,
-   id_friend_request INTEGER NOT NULL REFERENCES friend_request(id) ON UPDATE CASCADE 
+   id_friend_request INTEGER NOT NULL REFERENCES friend_request(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE comment_reply_notification (
@@ -278,7 +278,7 @@ CREATE TABLE friends (
    id_user1 INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
    id_user2 INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
    PRIMARY KEY (id_user1, id_user2),
-   CONSTRAINT friend_diff_ck CHECK (id_user1 <> id_user2) 
+   CONSTRAINT friend_diff_ck CHECK (id_user1 <> id_user2)
 );
 
 --------------------------------------------
@@ -286,40 +286,76 @@ CREATE TABLE friends (
 --------------------------------------------
 --Performance Indexes
 
--- IDX01
+-- IDX 1
 CREATE INDEX user_content ON content USING hash (id_creator);
 
--- IDX02
+-- IDX 2
 CREATE INDEX mediacontent_location ON media_content USING btree (id_locale);
 CLUSTER media_content USING mediacontent_location;
 
--- IDX03
+-- IDX 3
 CREATE INDEX end_campaign ON campaign USING btree (finishing_date);
 
 
 --Full Text Search Indexes
 
--- IDX 11
--- Add column to text_content to store computed ts_vectors.
-ALTER TABLE text_content
+-- IDX 4
+-- Add column to content to store computed ts_vectors.
+ALTER TABLE content
 ADD COLUMN tsvectors TSVECTOR;
+
+-- Create a function to automatically update ts_vectors.
+CREATE FUNCTION content_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   -- Text Content ts_vectors updater
+   IF (EXISTS (SELECT id_content FROM text_content WHERE id_content = NEW.id)) THEN
+      NEW.tsvectors = (
+         setweight(to_tsvector('english', coalesce((SELECT post_text FROM text_content WHERE id_content = NEW.id), '')), 'A')
+      );
+   END IF;
+
+   -- Media Content ts_vectors updater
+   IF (EXISTS (SELECT id_content FROM media_content WHERE id_content = NEW.id)) THEN
+
+      -- Video content ts_vectors updater
+      IF (EXISTS (SELECT id_media_content FROM video WHERE id_media_content = NEW.id)) THEN
+         NEW.tsvectors = (
+            setweight(to_tsvector('english', coalesce((SELECT title FROM video WHERE id_media_content = NEW.id), '')), 'A') ||
+            setweight(to_tsvector('english', coalesce((SELECT description FROM media_content WHERE id_content = NEW.id), '')), 'B') ||
+            setweight(to_tsvector('english', coalesce((SELECT alt_text FROM media_content WHERE id_content = NEW.id), '')), 'C')
+         );
+      -- Image content ts_vectors updater
+      ELSE
+         NEW.tsvectors = (
+            setweight(to_tsvector('english', coalesce((SELECT description FROM media_content WHERE id_content = NEW.id), '')), 'A') ||
+            setweight(to_tsvector('english', coalesce((SELECT alt_text FROM media_content WHERE id_content = NEW.id), '')), 'B')
+         );
+      END IF;
+   END IF;
+
+   RETURN NEW;
+END
+$$;
+
+-- Create a trigger before insert or update on content.
+CREATE TRIGGER content_search_update
+   BEFORE UPDATE ON content
+   FOR EACH ROW
+   EXECUTE PROCEDURE content_search_update();
+
+-- Finally, create a GIN index for ts_vectors.
+CREATE INDEX content_search_idx ON content USING GIN (tsvectors);
+
+-- IDX 5
 
 -- Create a function to automatically update ts_vectors.
 CREATE FUNCTION text_content_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF TG_OP = 'INSERT' THEN
-      NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.post_text), 'A')
-      );
-   END IF;
-   IF TG_OP = 'UPDATE' THEN
-      IF (NEW.post_text <> OLD.post_text) THEN
-         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.post_text), 'A')
-         );
-      END IF;
-   END IF;
+   UPDATE content
+   SET tsvectors = ''
+   WHERE id = NEW.id_content;
    RETURN NEW;
 END
 $$;
@@ -330,33 +366,16 @@ CREATE TRIGGER text_content_search_update
    FOR EACH ROW
    EXECUTE PROCEDURE text_content_search_update();
 
--- Finally, create a GIN index for ts_vectors.
-CREATE INDEX text_content_search_idx ON text_content USING GIN (tsvectors);
 
-
--- IDX12
--- Add column to media_content to store computed ts_vectors.
-ALTER TABLE media_content
-ADD COLUMN tsvectors TSVECTOR;
+-- IDX 6
 
 -- Create a function to automatically update ts_vectors.
 CREATE FUNCTION media_content_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF TG_OP = 'INSERT' THEN
-      NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.description), 'A') ||
-         setweight(to_tsvector('english', NEW.alt_text), 'B')
-      );
-   END IF;
-   IF TG_OP = 'UPDATE' THEN
-      IF (NEW.description <> OLD.description OR NEW.alt_text <> OLD.alt_text) THEN
-         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.description), 'A') ||
-            setweight(to_tsvector('english', NEW.alt_text), 'B')
-         );
-      END IF;
-   END IF;
+   UPDATE content
+   SET tsvectors = ''
+   WHERE id = NEW.id_content;
    RETURN NEW;
 END
 $$;
@@ -367,31 +386,16 @@ CREATE TRIGGER media_content_search_update
    FOR EACH ROW
    EXECUTE PROCEDURE media_content_search_update();
 
--- Finally, create a GIN index for ts_vectors.
-CREATE INDEX media_content_search_idx ON media_content USING GIN (tsvectors);
 
-
--- IDX 13
--- Add column to video to store computed ts_vectors.
-ALTER TABLE video
-ADD COLUMN tsvectors TSVECTOR;
+-- IDX 7
 
 -- Create a function to automatically update ts_vectors.
 CREATE FUNCTION video_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF TG_OP = 'INSERT' THEN
-      NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.title), 'A')
-      );
-   END IF;
-   IF TG_OP = 'UPDATE' THEN
-      IF (NEW.title <> OLD.title) THEN
-         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.title), 'A')
-         );
-      END IF;
-   END IF;
+   UPDATE content
+   SET tsvectors = ''
+   WHERE id = NEW.id_media_content;
    RETURN NEW;
 END
 $$;
@@ -401,9 +405,6 @@ CREATE TRIGGER video_search_update
    BEFORE INSERT OR UPDATE ON video
    FOR EACH ROW
    EXECUTE PROCEDURE video_search_update();
-
--- Finally, create a GIN index for ts_vectors.
-CREATE INDEX video_search_idx ON video USING GIN (tsvectors);
 
 
 --------------------------------------------
