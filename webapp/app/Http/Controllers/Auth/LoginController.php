@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 36dcc5656110720bacabd49333b2f2110a1e60fd
 
 class LoginController extends Controller
 {

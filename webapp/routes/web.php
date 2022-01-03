@@ -24,6 +24,14 @@ Route::get('post/edit/{id}','PostController@edit')->middleware('auth')->name('po
 Route::patch('post/edit/{id}','PostController@update')->name('posts.update');
 Route::delete('/post/{id}', 'PostController@destroy')->name('posts.destroy');
 
+//Posts
+Route::get('post/create', 'PostController@create')->middleware('auth');
+Route::post('post','PostController@store')->middleware('auth')->name('post');
+Route::get('post/list','PostController@index')->middleware('auth')->name('posts.list');
+Route::get('post/{id}','PostController@show')->name('posts.single');
+Route::get('post/edit/{id}','PostController@edit')->middleware('auth')->name('post.edit');
+Route::patch('post/edit/{id}','PostController@update')->name('posts.update');
+
 // Profile
 Route::get('profile', 'ProfileController@show');
 Route::get('profile/edit', 'ProfileController@showEdit');

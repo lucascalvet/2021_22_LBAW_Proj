@@ -20,7 +20,6 @@ $time = "10 days ago";
 @include('partials.navbar')
 
 @section('content')
-
 <div class="row">
     <h1>{{ $post->title }}</h1>
     <div>
@@ -44,7 +43,6 @@ $time = "10 days ago";
             <button type="submit" value="Delete" class="btn btn-outline-danger btn-lg text-dark">Delete Post</button>
         </form>
         @endif
-        <!-- <i class="bi bi-arrow-left-circle-fill {{ $icon_size }}"></i> -->
     </div>
 </div>
 
