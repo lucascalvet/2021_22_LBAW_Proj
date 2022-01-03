@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\PostController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,11 +10,12 @@ use App\Http\Controllers\PostController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 // Home
-Route::get('/', 'Auth\LoginController@home');
-Route::get('home', 'HomeController@show')->name('pages.home');
+Route::get('/', 'HomeController@show')->name('pages.home');
 
 //Posts
+/*
 Route::get('post/create', 'PostController@create')->middleware('auth');
 Route::post('post','PostController@store')->middleware('auth')->name('post');
 Route::get('post/list','PostController@index')->middleware('auth')->name('posts.list');
@@ -23,14 +23,20 @@ Route::get('post/{id}','PostController@show')->name('posts.single');
 Route::get('post/edit/{id}','PostController@edit')->middleware('auth')->name('post.edit');
 Route::patch('post/edit/{id}','PostController@update')->name('posts.update');
 Route::delete('/post/{id}', 'PostController@destroy')->name('posts.destroy');
+*/
 
-//Posts
-Route::get('post/create', 'PostController@create')->middleware('auth');
-Route::post('post','PostController@store')->middleware('auth')->name('post');
-Route::get('post/list','PostController@index')->middleware('auth')->name('posts.list');
-Route::get('post/{id}','PostController@show')->name('posts.single');
-Route::get('post/edit/{id}','PostController@edit')->middleware('auth')->name('post.edit');
-Route::patch('post/edit/{id}','PostController@update')->name('posts.update');
+//Content
+Route::get('content/text/create', 'TextContentController@create')->middleware('auth')->name('textcontent.make');
+Route::get('content/media/create', 'MediaContentController@create')->middleware('auth')->name('mediacontent.make');
+Route::post('content/text/create','TextContentController@store')->middleware('auth')->name('textcontent.create');
+Route::post('content/media/create','MediaContentController@store')->middleware('auth')->name('mediacontent.create');
+Route::get('content/list','ContentController@index')->middleware('auth')->name('content.list');
+Route::get('content/{id}','ContentController@show')->name('content.show');
+Route::get('content/text/edit/{id}','TextContentController@edit')->middleware('auth')->name('textcontent.edit');
+Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit');
+Route::patch('content/text/edit/{id}','TextContentController@update')->name('textcontent.update');
+Route::patch('content/media/edit/{id}','MediaContentController@update')->name('mediacontent.update');
+Route::delete('content/delete/{id}', 'ContentController@destroy')->name('content.destroy');
 
 // Profile
 Route::get('profile/{user}', 'ProfileController@show');

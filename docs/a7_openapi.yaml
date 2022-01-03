@@ -621,7 +621,7 @@ paths:
                   description: 'Failed to choose Type of Content. Redirect to the Content Creation Form.'
                   value: '/content/create'
 
-  /content/create/text/{id}:
+  /content/create/text:
     get:
       operationId: R0304
       summary: 'R0304: View Text Content Creation Form'
@@ -669,7 +669,7 @@ paths:
                   description: 'Failed to create Text Content. Redirect to the Text Content Creation Form.'
                   value: '/content/create/text/{id}'
 
-  /content/create/media/{id}:
+  /content/create/media:
     get:
       operationId: R0306
       summary: 'R0306: View Media Content Creation Form'

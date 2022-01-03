@@ -4,10 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\TextContent;
-use App\Models\MediaContent;
 
-class Content extends Model
+class Image extends Model
 {
     use HasFactory;
 
@@ -16,7 +14,14 @@ class Content extends Model
      *
      * @var string
      */
-    protected $table = 'content';
+    protected $table = 'image';
+
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id_media_content';
 
     /**
      * Indicates if the model should be timestamped.
@@ -30,22 +35,13 @@ class Content extends Model
      *
      * @var array
      */
-    protected $fillable = ['id_creator'];
+    protected $fillable = ['width', 'height'];
 
     /**
-     * The contents published by this user.
+     * Get the image's content.
      */
-    public function creator()
+    public function content()
     {
-        return $this->belongsTo(User::class, 'id_creator');
+        return $this->morphOne(MediaContent::class, 'media_contentable');
     }
-    
-    /**
-     * Get the specific content.
-     */
-    public function contentable()
-    {
-        return $this->morphTo(null, null, 'id');
-    }
-
 }

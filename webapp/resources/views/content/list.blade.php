@@ -11,11 +11,15 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($posts as $post)
+            @foreach($contents as $content)
                 <tr>
-                    <td><a href="{{ $post->url }}" target="_blank">{{ $post->title }}</a></td>
-                    <td>{{ $post->description }}</td>
-                    <td><a href="{{ $post->edit_url }}">Edit</a></td>
+                    <td><a href="{{ $content->url }}" target="_blank">Title</a></td>
+                    @if ($content->contentable instanceof App\Models\TextContent)
+                    <td>{{ $content->contentable->post_text }}</td>
+                    @else
+                    <td>{{ $content->contentable->description }}</td>
+                    @endif
+                    <td><a href="{{ $content->edit_url }}">Edit</a></td>
                 </tr>
             @endforeach
             </tbody>
