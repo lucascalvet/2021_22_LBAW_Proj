@@ -12,7 +12,7 @@
 */
 
 // Home
-Route::get('/', 'HomeController@show')->name('pages.home');
+Route::get('/', 'HomeController@show')->name('home');
 
 //Posts
 /*
@@ -67,6 +67,9 @@ Route::get('recoverPassword', 'ForgotController@show');
 
 // List Card
 Route::get('listCards', 'ListCardsController@show');
+<<<<<<< HEAD
 
 //Search
 Route::get('search', 'SearchController@show');
+=======
+>>>>>>> 8d79cee (Updated routes)
