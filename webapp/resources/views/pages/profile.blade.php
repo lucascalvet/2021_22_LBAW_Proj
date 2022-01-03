@@ -14,7 +14,7 @@
         <img class="d-none d-md-block rounded-circle w-25 position-absolute top-100 start-0 translate-middle" style="margin-left: 8em; max-height: 10em; max-width: 10em;" src="{{$user->profile_picture}}"/>
         <img class="d-block d-md-none rounded-circle w-25 position-absolute top-100 start-50 translate-middle" style="max-height: 10em; max-width: 10em;" src="{{$user->profile_picture}}"/>
         <div class="d-flex m-2">
-        <a class="me-auto" href=" {{ route('profile', [user => Auth::User()->id]) }}">
+        <a class="me-auto" href=" {{ route('profile', ['user' => Auth::User()->id]) }}">
           <i class="bi d-block d-md-none bi-pencil-square"></i>
         </a>
           <i class="bi bi-three-dots d-block d-md-none"></i>
@@ -76,14 +76,14 @@
               <div class="d-flex p-md-1 p-lg-2 flex-wrap justify-content-evenly">
                 @foreach($user->contents as $post)
                   <div class="col-4">
-                      <div class="p-5 m-2 mx-1 bg-secondary shadow rounded-3"> @include('partials.mini_post', ['username' => $user->username, 'location'=>$post->location, 'date' => $post->publishing_date, 'image_src'=>$post->$path])</div>
+                      <div class="p-5 m-2 mx-1 bg-secondary shadow rounded-3"> @include('partials.mini_post', ['username' => $user->username, 'location'=>$post->location, 'date' => $post->publishing_date, 'image_src'=>""])</div>
                   </div>
                 @endforeach
               </div>
             </div>
 
             <div class="row d-none d-md-block mt-5 text-end">
-              <a href="{{ route('profile.edit', [user => Auth::User()->id]) }}">
+              <a href="{{ route('profile.edit', ['user' => Auth::User()->id]) }}">
                 <i class="bi bi-pencil-square"></i>
               </a>
             </div>

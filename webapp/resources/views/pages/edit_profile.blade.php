@@ -11,8 +11,9 @@
 <div class="container vh-100">
       <h1 class="text-light pt-5 fw-bold">Editing Profile</h1>
       <div class="row gx-5">
+        <form class="input-group" action="{{ route('profile.save', ['user' => Auth::User()->id]) }}" method="GET">
           <div class="col-6">
-            <form class="input-group" action="{{ route('profile.save', [user => Auth::User()->id]) }}" method="GET">
+
 
             <label for="name" class="form-label ps-3 mt-2 mb-0 fw-bold">Name</label>
             <input id="name" name="name" type="text" class="form-control" placeholder="{{$user->name}}" aria-label="Name"/>
@@ -33,7 +34,7 @@
             <input id="description" name="description" type="text" class="form-control pb-5" placeholder="{{$user->description}}" aria-label="Description"/>
 
             <input type="submit" class="form-control" id="floatingInput" value="Save">
-          </form>
+
 
           </div>
 
@@ -84,10 +85,15 @@
             </div>
 
           </div>
+
           <div class="d-flex justify-content-center mt-4">
               <!--<button type="submit" class="btn btn-secondary w-25">Save</button>-->
           </div>
       </div>
+        </form>
+
+
+
     </div>
 </section>
 
