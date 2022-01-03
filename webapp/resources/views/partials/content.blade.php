@@ -23,13 +23,13 @@ $link_view = route('content.show', ['id' => $content->id]);
 @endphp
 
 
-<div class="card text-black p-0" style="width: 19em; max-height: 35em; height: auto; overflow-y: auto;">
+<div class="card text-black p-0" style="width: 19em; height: 30em; overflow-y: auto;">
   <div class="card-header">
     <div class="d-flex flex-row justify-content-between">
       <div class="d-sm-block">
         <img src="{{ asset($profile_pic) }}" class="rounded-circle align-self-center" style="width: 3em; height: 3em;"
           alt="Profile Picture" />
-        <span class="align-self-centre" style="overflow: hidden; text-overflow: ellipsis;">{{ $content->creator->name }}</span>
+        <span class="align-self-centre" style="">{{ $content->creator->name }}</span>
       </div>
 
       <div class="d-sm-flex align-self-center">
@@ -58,7 +58,7 @@ $link_view = route('content.show', ['id' => $content->id]);
     <div class="text-center">
       <h5>Title</h5>
     </div>
-    {{-- @if ($content->contentable instanceof App\Models\MediaContent)
+    @if ($content->contentable instanceof App\Models\MediaContent)
       <div class="row justify-content-center pt-3">
         @if ($content->contentable->media_contentable instanceof App\Models\Video)
           <video src="{{ asset($content->contentable->media) }}" class="align-self-centre" controls
@@ -68,11 +68,11 @@ $link_view = route('content.show', ['id' => $content->id]);
             style="max-width: 20em; max-height: 30em;"></img>
         @endif
       </div>
-    @else --}}
+    @else
     @if ($content->contentable instanceof App\Models\TextContent)
       <p class="card-text pt-3" style="max-width: 20em;">{{ $content->contentable->post_text }}</p>
     @endif
-    {{-- @endif --}}
+    @endif
     <div class="row pt-3">
       <div class="col-3">
         <div class="row justify-content-center">

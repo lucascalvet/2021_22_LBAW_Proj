@@ -13,7 +13,7 @@ $link_create_media = route('mediacontent.make');
 
 @section('content')
   @include('partials.navbar')
-  <div class="row vh-100 overflow-hidden bg-dark text-white" style="padding: 0em; margin: 0em;">
+  <div class="row h-100 overflow-auto bg-dark text-white" style="padding: 0em; margin: 0em;">
     <div class="col-3 d-sm-flex d-md-flex d-lg-none">
       <nav class="d-flex flex-column">
         <div class="d-flex flex-row my-3">

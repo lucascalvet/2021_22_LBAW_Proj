@@ -21,10 +21,17 @@ class TextContentController extends Controller
 
     public function destroy($id)
     {
+        $textcontent = TextContent::find($id);
         $content = Content::find($id);
+        $content->id_creator = 1;
+        $textcontent->post_text = "[Removed]";
+
+        $content->save();
+        $textcontent->save();
         
-        $content->delete();
-        return redirect()->route('home');
+        //$content->delete();
+        //return redirect()->route('home');
+        return view('content.single', ['content' => $content]);
     }
 
     protected function validator(Request $request)
@@ -71,8 +78,11 @@ class TextContentController extends Controller
         $textcontent->post_text = $request->post_text;
 
         $content->save();
+
+        $textcontent->id_content = $content->id;
+
         $textcontent->save();
     
-        return view('content.single', ['content' => $content]);
+        return redirect()->route('content.show', ['id' => $content->id]);
     }
 }
