@@ -71,7 +71,8 @@ CREATE TABLE users (
    cover_picture TEXT,
    phone_number TEXT,
    id_country INTEGER NOT NULL REFERENCES country(id) ON UPDATE CASCADE, 
-   birthday TIMESTAMP WITH TIME ZONE NOT NULL
+   birthday TIMESTAMP WITH TIME ZONE NOT NULL,
+   remember_token TEXT
 );
 
 CREATE TABLE admin_user ( 

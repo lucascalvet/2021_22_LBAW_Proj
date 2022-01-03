@@ -13,22 +13,22 @@
       <div class="row gx-5">
           <div class="col-6">
             <label for="input-edit-name" class="form-label ps-3 mt-2 mb-0 fw-bold">Name</label>
-            <input id="input-edit-name" type="text" class="form-control" placeholder="Name" aria-label="Username"/>
+            <input id="input-edit-name" type="text" class="form-control" placeholder="{{$user->name}}" aria-label="Name"/>
 
-            <label for="input-edit-name" class="form-label ps-3 mt-2 mb-0 fw-bold">Email</label>
-            <input id="input-edit-name" type="text" class="form-control" placeholder="Email" aria-label="Username"/>
+            <label for="input-edit-email" class="form-label ps-3 mt-2 mb-0 fw-bold">Email</label>
+            <input id="input-edit-email" type="email" class="form-control" placeholder="{{$user->email}}" aria-label="Email"/>
 
-            <label for="input-edit-name" class="form-label ps-3 mt-2 mb-0 fw-bold">Phone Number</label>
-            <input id="input-edit-name" type="text" class="form-control" placeholder="Phone Number" aria-label="Username"/>
+            <label for="input-edit-phone" class="form-label ps-3 mt-2 mb-0 fw-bold">Phone Number</label>
+            <input id="input-edit-phone" type="text" class="form-control" placeholder="{{$user->phone_numer}}" aria-label="Phone Number"/>
 
-            <label for="input-edit-name" class="form-label ps-3 mt-2 mb-0 fw-bold">Birthday</label>
-            <input id="input-edit-name" type="text" class="form-control" placeholder="Birthday" aria-label="Username"/>
+            <label for="input-edit-birthday" class="form-label ps-3 mt-2 mb-0 fw-bold">Birthday</label>
+            <input id="input-edit-birthday" type="date" class="form-control" placeholder="{{$user->birthday}}" aria-label="Birthday"/>
 
-            <label for="input-edit-name" class="form-label ps-3 mt-2 mb-0 fw-bold">Password</label>
-            <input id="input-edit-name" type="text" class="form-control" placeholder="Password" aria-label="Username"/>
+            <label for="input-edit-password" class="form-label ps-3 mt-2 mb-0 fw-bold">Password</label>
+            <input id="input-edit-password" type="password" class="form-control" placeholder="{{$user->pasword}}" aria-label="Password"/>
 
-            <label for="input-edit-name" class="form-label ps-3 mt-2 mb-0 fw-bold">Description</label>
-            <input id="input-edit-name" type="text" class="form-control pb-5" placeholder="Description" aria-label="Username"/>
+            <label for="input-edit-description" class="form-label ps-3 mt-2 mb-0 fw-bold">Description</label>
+            <input id="input-edit-description" type="text" class="form-control pb-5" placeholder="{{$user->description}}" aria-label="Description"/>
           </div>
 
           <div class="col-6 text-center">
@@ -36,13 +36,40 @@
             <h3 class="mt-3 mb-3 fw-bold">Profile picture</h3>
             <div class="d-flex justify-content-center">
               <div class="bg-white rounded-circle p-5" style="max-width: 7em; max-height: 7em;">
-                <i class="bi bi-images"></i>
+                <img id="img-profile-picture" style="display: none;">  <!--FIXME: the image uploaded overloads the circle div-->
+                <div id="d-profile-picture" style="object-fit: none;">
+                  <label for="input-edit-profile-picture"><i class="bi bi-images"></i></label>
+                  <input type="file" id="input-edit-profile-picture" onchange='
+                      document.getElementById("d-profile-picture").style.display="none";
+
+                      let file = this.files[0];
+
+                      let url = window.URL.createObjectURL(file);
+
+                      console.log(url);
+
+                      let img = document.getElementById("img-profile-picture");
+
+                      img.src = url;
+
+                      img.onload = function () {
+                        window.URL.revokeObjectURL(this.src);
+                      };
+
+                      document.getElementById("img-profile-picture").style.display="block";
+
+                      ' name="profile_picture" style="display: none;">
+                </div>
               </div>
             </div>
 
             <h3 class="mt-4 mb-3 fw-bold">Cover picture</h3>
-            <div class="bg-white rounded-3 p-5">
-              <i class="bi bi-images"></i>
+            <div class="bg-white rounded-3 p-5">  <!--FIXME: do the same thing as the profile picture input-->
+              <img id="img-cover-picture" class="d-none">
+              <div id="d-cover-picture">
+                <label for="input-edit-cover-picture"><i class="bi bi-images"></i></label>
+                <input type="file" id="input-edit-cover-picture" name="cover_picture" style="display: none;">
+              </div>
             </div>
 
             <h4 class="mt-4 mb-3 fw-bold">Interests</h4>
@@ -57,5 +84,10 @@
       </div>
     </div>
 </section>
+
+<script type="text/javascript">
+
+
+</script>
 
 @endsection

@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'username', 'name', 'email', 'hashed_password', 'phone_number', 'birthday', 'id_country',
     ];
 
     /**
@@ -27,19 +27,29 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'hashed_password', 'remember_token',
     ];
 
     /**
-     * The cards this user owns.
+     * Get the password for the user.
+     *
+     * @return string
      */
-    public function cards()
+    public function getAuthPassword()
     {
-        return $this->hasMany('App\Models\Card');
+        return $this->hashed_password;
     }
+
+    /**
+     * The contents published by this user.
+     */
 
     public function posts()
     {
         return $this->hasMany(Post::class);
+
+    public function contents()
+    {
+        return $this->hasMany(Content::class, 'id_creator');
     }
 }
