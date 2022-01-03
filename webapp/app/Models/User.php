@@ -43,12 +43,6 @@ class User extends Authenticatable
     /**
      * The contents published by this user.
      */
-
-    public function posts()
-    {
-        return $this->hasMany(Post::class);
-    }
-
     public function contents()
     {
         return $this->hasMany(Content::class, 'id_creator');
