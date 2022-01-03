@@ -35,16 +35,19 @@
           <!--Search Bar-->
           <div class="col-8">
             <div class="form-floating m-3 w-100">
-                <input type="search" class="form-control" id="floatingInput" placeholder="">
+              <form class="input-group" action="{{ route('search') }}" method="GET">
+                <input type="text" class="form-control" id="floatingInput" name="search" placeholder="">
                 <label for="floatingInput"><i class="bi bi-search"></i></label>
+              </form>
             </div>
             <div class=" ms-3 d-flex justify-content-between">
                 <button class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
-                <lable class="align-items-center pt-2">137 results found</lable>
+                <label class="align-items-center pt-2">137 results found</label>
             </div>
             <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
-                @include('partials.listCards',['username'=>'John Doe', 'description'=>'Studied at FEUP, currently working on fixing is life.', 'comment'=>'Son of a gun','days_ago'=>'3 hours ago'])
-                @include('partials.listCards',['username'=>'Jane Doe', 'description'=>'Maried to the other guy.', 'comment'=>'Carne','days_ago'=>'yesterday'])
+              @foreach($users as $user)
+                @include('partials.listCards',['username'=>$user->username, 'description'=>'Studied at FEUP, currently working on fixing is life.', 'comment'=>'Son of a gun','days_ago'=>'3 hours ago'])
+              @endforeach
             </div>
           </div>
           {{-- <div class="col-1 m-3">

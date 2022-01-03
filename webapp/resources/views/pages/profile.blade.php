@@ -76,7 +76,7 @@
               <div class="d-flex p-md-1 p-lg-2 flex-wrap justify-content-evenly">
                 @foreach($user->contents as $post)
                   <div class="col-4">
-                      <div class="p-5 m-2 mx-1 bg-secondary shadow rounded-3"> @include('partials.mini_post', ['username' => $user->username, 'location'=>'$post->location', 'date' => '$post->$publishing_date', 'image_src'=>'$post->$path'])</div>
+                      <div class="p-5 m-2 mx-1 bg-secondary shadow rounded-3"> @include('partials.mini_post', ['username' => $user->username, 'location'=>$post->location, 'date' => $post->publishing_date, 'image_src'=>$post->$path])</div>
                   </div>
                 @endforeach
               </div>

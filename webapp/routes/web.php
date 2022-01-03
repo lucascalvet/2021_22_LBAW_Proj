@@ -69,4 +69,4 @@ Route::get('recoverPassword', 'ForgotController@show');
 Route::get('listCards', 'ListCardsController@show');
 
 //Search
-Route::get('search', 'SearchController@show');
+Route::get('search', 'SearchController@search')->name('search');
