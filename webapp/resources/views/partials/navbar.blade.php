@@ -1,8 +1,8 @@
 @php
 $icon_size = 'fs-4';
 $left_links = [
-    '/home' => ['title' => 'Home', 'icon' => 'bi bi-house-fill'],
-    '/notifications' => ['title' => 'Notifications', 'icon' => 'bi bi-bell-fill'],
+    'home' => ['title' => 'Home', 'icon' => 'bi bi-house-fill'],
+    'notifications' => ['title' => 'Notifications', 'icon' => 'bi bi-bell-fill'],
     'search' => ['title' => 'Search', 'icon' => 'bi bi-search'],
 ];
 $right_links = [
@@ -20,10 +20,10 @@ $right_links = [
     </button>
     <div class="collapse multi-collapse navbar-collapse" id="leftIcons">
       <ul class="container-fluid px-0 align-items-sm-center navbar-nav justify-content-sm-evenly">
-        @foreach ($left_links as $link => $props)
+        @foreach ($left_links as $page => $props)
           <li class="nav-item">
-            <a class="nav-link {{ request()->is($link) ? 'active' : '' }}"
-              {{ request()->is($link) ? 'aria-current="page"' : '' }} href="{{ URL::to($link) }}">
+            <a class="nav-link {{ Route::currentRouteName() == $page ? 'active' : '' }}"
+              {{ request()->is($page) ? 'aria-current="page"' : '' }} href="{{ route($page) }}">
               <i class="{{ $props['icon'] }} {{ $icon_size }}" aria-label="{{ $props['title'] }}"></i>
               <span class="d-sm-none">{{ $props['title'] }}</span>
             </a>
@@ -32,59 +32,61 @@ $right_links = [
       </ul>
     </div>
     <a class="order-first flex-grow-1 flex-sm-grow-0 text-center order-sm-0 d-sm-block navbar-brand fs-3 fw-bold mx-2 py-0"
-      href="{{ URL::to('/home') }}">Social UP</a>
+      href="{{ route('home') }}">Social UP</a>
     <div class="collapse multi-collapse navbar-collapse" id="rightIcons">
       <ul class="container-fluid px-0 align-items-sm-center navbar-nav justify-content-sm-evenly">
-        @foreach ($right_links as $link => $props)
+        @foreach ($right_links as $page => $props)
           <li class="nav-item">
-            <a class="nav-link {{ request()->is($link) ? 'active' : '' }}"
-              {{ request()->is($link) ? 'aria-current="page"' : '' }} href="{{ URL::to($link) }}">
+            <a class="nav-link {{ Route::currentRouteName() == $page ? 'active' : '' }}"
+              {{ request()->is($page) ? 'aria-current="page"' : '' }} href="{{ route($page) }}">
               <i class="{{ $props['icon'] }} {{ $icon_size }}" aria-label="{{ $props['title'] }}"></i>
               <span class="d-sm-none">{{ $props['title'] }}</span>
             </a>
           </li>
         @endforeach
-        @if (Auth::check())
         @auth
           <li class="nav-item d-flex align-items-center">
-            <a class="nav-link d-flex align-items-center" href="{{ URL::to('user') }}">
-              <!-- TODO: Update link -->
+            <a class="nav-link d-flex align-items-center" href="{{ route('profile', ['user' => Auth::user()->id]) }}">
               <i class="bi bi-person-circle {{ $icon_size }}"></i>
               <span class="">&nbsp;{{ Auth::user()->name }}</span>
             </a>
             <div class="dropdown">
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfile" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            </button>
-            <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownProfile">
-              <a class="dropdown-item" href="/profile">Profile</a>
-              <a class="dropdown-item" href="/edit_profile">Edit Profile</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-              <form id="logout-form" action="{{ route('logout') }}" method="GET" style="display: none;">
-                {{ csrf_field() }}
-              </form>
+              <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfile"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              </button>
+              <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownProfile">
+                <a class="dropdown-item" href="{{ route('profile', ['user' => Auth::user()->id]) }}">Profile</a>
+                <a class="dropdown-item" href="{{ route('profile.edit', ['user' => Auth::user()->id]) }}">Edit
+                  Profile</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ route('logout') }}"
+                  onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                <form id="logout-form" action="{{ route('logout') }}" method="GET" style="display: none;">
+                  {{ csrf_field() }}
+                </form>
+
+              </div>
             </div>
-          </div>
           </li>
         @endauth
-        @else
-        {{-- TODO: Button for non-authenticated --}}
-        <li class="nav-item  d-flex align-items-center">
-          <a class="nav-link" href='/login'>
-            <!-- TODO: Update link -->
-            <i class="bi bi-person-circle {{ $icon_size }}"></i>
-            <span class="">&nbsp;Guest</span>
-          </a>
-          <div class="dropdown">
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfile" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            </button>
-            <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownProfile">
-              <a class="dropdown-item" href="login">Login</a>
-              <a class="dropdown-item" href="register">Register</a>
+        @guest
+          {{-- Button for non-authenticated --}}
+          <li class="nav-item  d-flex align-items-center">
+            <a class="nav-link d-flex align-items-center" href='{{ route('login') }}'>
+              <i class="bi bi-person-circle {{ $icon_size }}"></i>
+              <span class="">&nbsp;Guest</span>
+            </a>
+            <div class="dropdown">
+              <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfile"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              </button>
+              <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownProfile">
+                <a class="dropdown-item" href="{{ route('login') }}">Login</a>
+                <a class="dropdown-item" href="{{ route('register') }}">Register</a>
+              </div>
             </div>
-          </div>
-        </li>
-        @endif
+          </li>
+        @endguest
       </ul>
     </div>
   </div>

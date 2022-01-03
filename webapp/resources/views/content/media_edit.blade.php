@@ -1,6 +1,6 @@
 @php
 $icon_size = 'fs-3';
-$link_back = route('content.show', ['id' => $mediacontent->id]);
+$link_back = route('content.show', ['id' => $media_content->id_content]);
 $user = Auth::user();
 @endphp
 
@@ -13,16 +13,17 @@ $user = Auth::user();
         <div class="col-12 col-md-9 col-lg-7 col-xl-6">
           <div class="card rounded-3">
             <div class="card-body p-5">
-              <h2 class="text-uppercase text-center mb-5">Create a new Media Content</h2>
+              <h2 class="text-uppercase text-center mb-5">Edit Media Content</h2>
 
-              <form method="POST" action="{{ route('mediacontent.edit') }}" enctype="multipart/form-data">
+              <form method="POST" action="{{ route('mediacontent.edit', ['id' => $media_content->id_content]) }}"
+                enctype="multipart/form-data">
                 @csrf
-                {{ method_field('patch') }}
+                @method('PATCH')
 
                 <div class="form-floating mb-2">
                   <textarea class="form-control" type="text" id="description" name="description"
                     placeholder="* Description" autofocus rows="10" required
-                    value="{{ $mediacontent->description }}"></textarea>
+                    value="{{ $media_content->description }}"></textarea>
                   <label for="description">* Description</label>
 
                   @if ($errors->has('description'))
@@ -34,7 +35,7 @@ $user = Auth::user();
 
                 <div class="form-floating mb-2">
                   <input type="file" accept="image/*,video/*" id="media" name="media" class="form-control form-control-lg"
-                    placeholder="* Media" required value="{{ $mediacontent->media }}">
+                    placeholder="* Media" required value="{{ $media_content->media }}">
                   <label for="media">* Media</label>
                   @if ($errors->has('media'))
                     <span class="invalid-feedback">
@@ -45,7 +46,7 @@ $user = Auth::user();
 
                 <div class="form-floating mb-2">
                   <input type="text" id="alt_text" name="alt_text" class="form-control form-control-lg"
-                    placeholder="Media's Text Alternative" value="{{ $mediacontent->alt_text }}">
+                    placeholder="Media's Text Alternative" value="{{ $media_content->alt_text }}">
                   <label for="alt_text">Media's Text Alternative</label>
                   @if ($errors->has('alt_text'))
                     <span class="invalid-feedback">
@@ -58,7 +59,7 @@ $user = Auth::user();
                 </div>
 
                 <div class="d-flex justify-content-around mb-3">
-                  <button type="submit" class="btn btn-outline-danger btn-lg text-dark">Change Media Content</button>
+                  <button type="submit" class="btn btn-outline-success btn-lg text-dark">Change Media Content</button>
                   <a href="{{ $link_back }}"><button type="button"
                       class="btn btn-outline-secondary btn-lg bg-dark text-white">Discard Changes</button></i></a>
                 </div>

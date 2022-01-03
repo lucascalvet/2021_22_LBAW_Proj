@@ -512,7 +512,7 @@ $$;
 CREATE TRIGGER image_disjoint
    BEFORE INSERT OR UPDATE ON image
    FOR EACH ROW
-   EXECUTE PROCEDURE image_disjoint()
+   EXECUTE PROCEDURE image_disjoint();
 
 --TRIGGER 7
 
@@ -529,7 +529,7 @@ $$;
 CREATE TRIGGER video_disjoint
    BEFORE INSERT OR UPDATE ON video
    FOR EACH ROW
-   EXECUTE PROCEDURE video_disjoint()
+   EXECUTE PROCEDURE video_disjoint();
 
 
 

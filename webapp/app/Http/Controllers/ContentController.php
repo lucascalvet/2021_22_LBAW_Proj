@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Content;
+use App\Models\TextContent;
+use App\Models\MediaContent;
 use Illuminate\Support\Facades\Validator;
 
 class ContentController extends Controller
@@ -13,17 +15,33 @@ class ContentController extends Controller
         return view('content.create');
     }
 
-    public function edit(Content $content, $id)
+    public function edit($id)
     {
-        $content = $content->withId($id)->first();
-        return view('contents.edit', ['content' => $content]);
+        abort_if(is_null($content = Content::find($id)), 404);
+
+        if ($content->contentable instanceof \App\Models\TextContent) {
+            return view('content.text_edit', ['text_content' => $content->contentable]);
+        } else if ($content->contentable instanceof \App\Models\MediaContent) {
+            return view('content.media_edit', ['media_content' => $content->contentable]);
+        }
+
+        return redirect()->route('home');
     }
 
-    public function destroy(Content $content, $id)
+    public function destroy($id)
     {
-        $content = $content->withId($id)->first();
+        abort_if(is_null($content = Content::find($id)), 404);
+
+        if ($content->contentable instanceof \App\Models\TextContent) {
+            $content->contentable->delete();
+        } else if ($content->contentable instanceof \App\Models\MediaContent) {
+            $content->contentable->media_contentable->delete();
+            $content->contentable->delete();
+        }
+
         $content->delete();
-        return redirect()->route('pages.home');
+
+        return redirect()->route('home');
     }
 
     protected function validator(Request $request)
@@ -38,20 +56,17 @@ class ContentController extends Controller
     public function index(Request $request)
     {
         $contents = $request->user()->contents()->paginate(10);
-        return view('contents.list', ['contents' => $contents]);
+        return view('content.list', ['contents' => $contents]);
     }
 
-    public function show(Content $content, $id)
+    public function show($id)
     {
-        $content = $content->withId($id)->first();
-        return view('contents.single', ['content' => $content]);
+        return view('content.single', ['content' => Content::find($id)]);
     }
 
     public function showt(Content $content, $title)
     {
-        $content = $content->withTitle($title)->first();
-
-        return view('contents.single', ['content' => $content]);
+        return view('content.single', ['content' => $content]);
     }
 
     public function update(Request $request, $id)
@@ -60,17 +75,17 @@ class ContentController extends Controller
         $content->title = $request->title;
         $content->description = $request->description;
 
-        if ($request->hasFile('media')){
+        if ($request->hasFile('media')) {
             $content->media = $request->file('media')->store('media', ['disk' => 'my_files']);
         }
 
-        if($content->media == null){
+        if ($content->media == null) {
             $content->media = "none";
         }
 
         $content->save();
 
-        return view('contents.single', ['content' => $content]);
+        return view('content.single', ['content' => $content]);
     }
 
     public function store(Request $request)
@@ -87,15 +102,14 @@ class ContentController extends Controller
         $content->title = $request->title;
         $content->description = $request->description;
 
-        if ($request->hasFile('media')){
+        if ($request->hasFile('media')) {
             $content->media = $request->file('media')->store('media', ['disk' => 'my_files']);
-        }
-        else{
+        } else {
             $content->media = "none";
         }
 
         $content->save();
-        
+
         //this fetches all the content data from the form
         //we can content all the data from content and not get an error
         // because laravel handles this in content model through fillable array
@@ -109,6 +123,6 @@ class ContentController extends Controller
         //meaning the id of user is automatically populated and saved in the user_id column of contents table
         //$user->contents()->create($formData);
 
-        return view('contents.single', ['content' => $content]);
+        return view('content.single', ['content' => $content]);
     }
 }

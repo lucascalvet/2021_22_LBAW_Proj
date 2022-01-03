@@ -3,7 +3,8 @@ $icon_size = 'fs-3';
 
 $user = Auth::user();
 $contents = \App\Models\Content::all();
-$link_create = route('textcontent.make');
+$link_create_text = route('textcontent.make');
+$link_create_media = route('mediacontent.make');
 @endphp
 
 @extends('layouts.app')
@@ -34,12 +35,20 @@ $link_create = route('textcontent.make');
           <span class="d-none d-md-block d-lg-none align-self-center ms-3">Messages</span>
         </div>
         <div class="d-flex flex-row my-3">
-          <a href="{{ $link_create }}">
+          <a href="{{ $link_create_text }}">
             <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-              <i class="bi bi-plus-circle {{ $icon_size }}"></i>
+              <i class="bi bi-pencil-square {{ $icon_size }}"></i>
             </button>
           </a>
-          <span class="d-none d-md-block d-lg-none align-self-center ms-3">Create</span>
+          <span class="d-none d-md-block d-lg-none align-self-center ms-3">Create Text Content</span>
+        </div>
+        <div class="d-flex flex-row my-3">
+          <a href="{{ $link_create_media }}">
+            <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
+              <i class="bi bi-file-earmark-richtext {{ $icon_size }}"></i>
+            </button>
+          </a>
+          <span class="d-none d-md-block d-lg-none align-self-center ms-3">Create Media Content</span>
         </div>
         <div class="d-flex flex-row my-3">
           <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
@@ -52,9 +61,6 @@ $link_create = route('textcontent.make');
     </div>
 
     <div class="col-3 d-lg-block d-none align-self-center">
-      <!-- <div class="row justify-content-center mb-3">
-                          <p class="text-center"><b>Games</b></p>
-                      </div> -->
       <div class="row justify-content-center mb-3 py-3">
         <div style="height: 15em; overflow-y: auto;">
           <table class="table table-hover table-dark">
@@ -134,66 +140,18 @@ $link_create = route('textcontent.make');
         @endforeach
       </div>
 
-      <div class="d-none d-lg-flex justify-content-center py-3">
-        <a href="{{ $link_create }}">
+      <div class="d-none d-lg-flex justify-content-around py-3">
+        <a href="{{ $link_create_text }}">
           <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-            <i class="bi bi-plus-circle {{ $icon_size }}"></i>
+            <i class="bi bi-pencil-square {{ $icon_size }}"></i>
+          </button>
+        </a>
+        <a href="{{ $link_create_media }}">
+          <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
+            <i class="bi bi-file-earmark-richtext {{ $icon_size }}"></i>
           </button>
         </a>
       </div>
     </div>
-    <!-- <div class="col-2 d-lg-block d-none justify-content-centre align-self-center">
-                      <div class="row justify-content-center">
-                          <p class="text-center"><b>Online</b></p>
-                      </div>
-                      <div class="row justify-content-center mb-3 py-3">
-                          <div style="height: 10em; overflow-y: auto;">
-                              <table class="table table-hover table-dark">
-                                  <thead>
-                                      <tr>
-                                          <th scope="col">Picture</th>
-                                          <th scope="col">Name</th>
-                                      </tr>
-                                  </thead>
-                                  <tbody>
-                                      <tr>
-                                          <td><img src="{{ asset('img/profile_pic.png') }}" class="rounded-circle" style="width: 3em; height: 3em;" alt="Profile Picture" /></td>
-                                          <td>Big SergIO</td>
-                                      </tr>
-                                      <tr>
-                                          <td><img src="{{ asset('img/profile_pic.png') }}" class="rounded-circle" style="width: 3em; height: 3em;" alt="Profile Picture" /></td>
-                                          <td>AÃ§ore</td>
-                                      </tr>
-                                      <tr>
-                                          <td><img src="{{ asset('img/profile_pic.png') }}" class="rounded-circle" style="width: 3em; height: 3em;" alt="Profile Picture" /></td>
-                                          <td>MagalhAPSes</td>
-                                      </tr>
-                                      <tr>
-                                          <td><img src="{{ asset('img/profile_pic.png') }}" class="rounded-circle" style="width: 3em; height: 3em;" alt="Profile Picture" /></td>
-                                          <td>Koala</td>
-                                      </tr>
-                                      <tr>
-                                          <td><img src="{{ asset('img/profile_pic.png') }}" class="rounded-circle" style="width: 3em; height: 3em;" alt="Profile Picture" /></td>
-                                          <td>Char Char</td>
-                                      </tr>
-                                      <tr>
-                                          <td><img src="{{ asset('img/profile_pic.png') }}" class="rounded-circle" style="width: 3em; height: 3em;" alt="Profile Picture" /></td>
-                                          <td>Caveira Face</td>
-                                      </tr>
-                                  </tbody>
-                              </table>
-                          </div>
-                      </div>
-                      <div class="row justify-content-center my-3">
-                          <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                              <i class="bi bi-chat-dots {{ $icon_size }}"></i>
-                          </button>
-                      </div>
-                      <div class="row justify-content-center my-3">
-                          <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                              <i class="bi bi-list {{ $icon_size }}"></i>
-                          </button>
-                      </div>
-                  </div> -->
   </div>
 @endsection
