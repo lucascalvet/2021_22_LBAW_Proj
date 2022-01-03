@@ -13,9 +13,10 @@ $n_shares = '100';
 $time = '10 days ago';
 @endphp
 
-@include('partials.navbar')
+
 
 @section('content')
+@include('partials.navbar')
   <div class="row">
     <h1>Title</h1>
 
@@ -29,10 +30,10 @@ $time = '10 days ago';
 
     @if ($content->contentable instanceof App\Models\MediaContent)
       <div class="row justify-content-center pt-3">
-        @if ($content->contentable->media_contentable_type instanceof App\Models\Video)
+        @if ($content->contentable->media_contentable instanceof App\Models\Video)
           <video src="{{ asset($content->contentable->media) }}" controls
             style="max-width: 20em; max-height: 30em;"></video>
-        @elseif ($content->contentable->media_contentable_type instanceof App\Models\Image)
+        @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
           <img src="{{ asset($content->contentable->media) }}" style="max-width: 20em; max-height: 30em;"></img>
         @endif
       </div>

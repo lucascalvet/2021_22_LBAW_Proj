@@ -1,3 +1,7 @@
+@php
+
+@endphp
+
 @extends('layouts.app')
 
 @section('title', 'Profile')
@@ -7,7 +11,7 @@
 @include('partials.navbar')
 
 <section id="profile">
-  <div class="container-fluid vh-100 overflow-hidden" style="padding: 0em; margin: 0em;">
+  <div class="container-fluid vh-100" style="padding: 0em; margin: 0em;">
       <!--Cover Photo-->
       <div class="row h-25 m-0 mb-4 justify-content-center bg-secondary position-relative">
         <img class="rounded h-100 p-0" style="object-fit: none;" src="{{$user->cover_picture}}"/>
@@ -72,14 +76,11 @@
             </div>
 
             <!--Actual Content for md screen and beyond-->
-            <div class="row text-light d-flex">
-              <div class="d-flex p-md-1 p-lg-2 flex-wrap justify-content-evenly">
-                @foreach($user->contents as $post)
-                  <div class="col-4">
-                      <div class="p-5 m-2 mx-1 bg-secondary shadow rounded-3"> @include('partials.mini_post', ['username' => $user->username, 'location'=>$post->location, 'date' => $post->publishing_date, 'image_src'=>""])</div>
-                  </div>
+            <div class="d-flex flex-row text-light overflow-auto">
+                @foreach($user->contents as $content)
+                      <div class="d-block mx-3 bg-secondary rounded-3"> @include('partials.content', ['content' => $content])</div>
+                      {{--<div class="p-5 m-2 mx-1 bg-secondary shadow rounded-3"> @include('partials.mini_post', ['content' => $content])--}}
                 @endforeach
-              </div>
             </div>
 
             <div class="row d-none d-md-block mt-5 text-end">
