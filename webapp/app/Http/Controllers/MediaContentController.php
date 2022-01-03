@@ -16,17 +16,16 @@ class MediaContentController extends Controller
         return view('content.media_create');
     }
 
-    public function edit(Content $content, $id)
+    public function edit($id)
     {
-        $content = $content->withId($id)->first();
-        return view('content.media_edit', ['content' => $content]);
+        return view('content.media_edit', ['content' => Content::find($id)]);
     }
 
-    public function destroy(Content $content, $id)
+    public function destroy($id)
     {
-        $content = $content->withId($id)->first();
+        $content = Content::find($id);
         $content->delete();
-        return redirect()->route('pages.home');
+        return redirect()->route('home');
     }
 
     protected function validator(Request $request)
@@ -41,20 +40,12 @@ class MediaContentController extends Controller
     public function index(Request $request)
     {
         $contents = $request->user()->contents()->paginate(10);
-        return view('contents.list', ['contents' => $contents]);
+        return view('content.list', ['contents' => $contents]);
     }
 
-    public function show(Content $content, $id)
+    public function show($id)
     {
-        $content = $content->withId($id)->first();
-        return view('contents.single', ['content' => $content]);
-    }
-
-    public function showt(Content $content, $title)
-    {
-        $content = $content->withTitle($title)->first();
-
-        return view('contents.single', ['content' => $content]);
+        return view('content.single', ['content' => Content::find($id)]);
     }
 
     public function update(Request $request, $id)
@@ -68,7 +59,7 @@ class MediaContentController extends Controller
 
         $mediacontent->save();
 
-        return view('contents.single', ['content' => $content]);
+        return redirect()->route('content.show', ['id' => $id]);
     }
 
     public function store(Request $request)
@@ -99,6 +90,6 @@ class MediaContentController extends Controller
             $image->save();
         }
     
-        return view('contents.single', ['content' => $content]);
+        return view('content.single', ['content' => $content]);
     }
 }

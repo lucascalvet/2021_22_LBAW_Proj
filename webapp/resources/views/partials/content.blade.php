@@ -18,11 +18,6 @@ $image = 'img/cont_elon.jpg';
 $example_video = 'vid/ex.mp4';
 $example_image = 'img/cont_elon.jpg';
 
-/* $mime = 'none';
-if ($content->media != 'none') {
-    $mime = mime_content_type($content->media);
-} */
-
 $link_edit = route('textcontent.edit', ['id' => $content->id]);
 $link_view = route('content.show', ['id' => $content->id]);
 @endphp
@@ -34,7 +29,7 @@ $link_view = route('content.show', ['id' => $content->id]);
       <div class="d-sm-block">
         <img src="{{ asset($profile_pic) }}" class="rounded-circle align-self-center" style="width: 3em; height: 3em;"
           alt="Profile Picture" />
-        <span class="align-self-centre">{{ $content->creator->name }}</span>
+        <span class="align-self-centre" style="overflow: hidden; text-overflow: ellipsis;">{{ $content->creator->name }}</span>
       </div>
 
       <div class="d-sm-flex align-self-center">

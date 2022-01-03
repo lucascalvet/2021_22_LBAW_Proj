@@ -60,6 +60,6 @@ class MediaContent extends Model
      */
     public function media_contentable()
     {
-        return $this->morphTo(null, null, 'id');
+        return $this->morphTo(null, null, 'id_content');
     }
 }

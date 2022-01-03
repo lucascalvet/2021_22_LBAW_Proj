@@ -14,17 +14,17 @@ class TextContentController extends Controller
         return view('content.text_create');
     }
 
-    public function edit(Content $content, $id)
+    public function edit($id)
     {
-        $content = $content->withId($id)->first();
-        return view('content.text_edit', ['content' => $content]);
+        return view('content.text_edit', ['content' => Content::find($id)]);
     }
 
-    public function destroy(Content $content, $id)
+    public function destroy($id)
     {
-        $content = $content->withId($id)->first();
+        $content = Content::find($id);
+        
         $content->delete();
-        return redirect()->route('pages.home');
+        return redirect()->route('home');
     }
 
     protected function validator(Request $request)
@@ -37,31 +37,23 @@ class TextContentController extends Controller
     public function index(Request $request)
     {
         $contents = $request->user()->contents()->paginate(10);
-        return view('contents.list', ['contents' => $contents]);
+        return view('content.list', ['contents' => $contents]);
     }
 
-    public function show(Content $content, $id)
+    public function show($id)
     {
-        $content = $content->withId($id)->first();
-        return view('contents.single', ['content' => $content]);
-    }
-
-    public function showt(Content $content, $title)
-    {
-        $content = $content->withTitle($title)->first();
-
-        return view('contents.single', ['content' => $content]);
+        return view('content.single', ['content' => Content::find($id)]);
     }
 
     public function update(Request $request, $id)
     {
         $content = Content::find($id);
         $textcontent = TextContent::find($id);
-        $textcontent = $request->post_text;
+        $textcontent->post_text = $request->post_text;
 
         $textcontent->save();
 
-        return view('contents.single', ['content' => $content]);
+        return redirect()->route('content.show', ['id' => $id]);
     }
 
     public function store(Request $request)
@@ -76,11 +68,11 @@ class TextContentController extends Controller
         $content = new Content;
         $content->id_creator = $user->id;
         $textcontent = new TextContent;
-        $textcontent = $request->post_text;
+        $textcontent->post_text = $request->post_text;
 
         $content->save();
         $textcontent->save();
     
-        return view('contents.single', ['content' => $content]);
+        return view('content.single', ['content' => $content]);
     }
 }

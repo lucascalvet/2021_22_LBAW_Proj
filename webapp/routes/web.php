@@ -14,24 +14,14 @@
 // Home
 Route::get('/', 'HomeController@show')->name('home');
 
-//Posts
-/*
-Route::get('post/create', 'PostController@create')->middleware('auth');
-Route::post('post','PostController@store')->middleware('auth')->name('post');
-Route::get('post/list','PostController@index')->middleware('auth')->name('posts.list');
-Route::get('post/{id}','PostController@show')->name('posts.single');
-Route::get('post/edit/{id}','PostController@edit')->middleware('auth')->name('post.edit');
-Route::patch('post/edit/{id}','PostController@update')->name('posts.update');
-Route::delete('/post/{id}', 'PostController@destroy')->name('posts.destroy');
-*/
-
-//Content
+// Content
 Route::get('content/text/create', 'TextContentController@create')->middleware('auth')->name('textcontent.make');
 Route::get('content/media/create', 'MediaContentController@create')->middleware('auth')->name('mediacontent.make');
 Route::post('content/text/create','TextContentController@store')->middleware('auth')->name('textcontent.create');
 Route::post('content/media/create','MediaContentController@store')->middleware('auth')->name('mediacontent.create');
 Route::get('content/list','ContentController@index')->middleware('auth')->name('content.list');
 Route::get('content/{id}','ContentController@show')->name('content.show');
+Route::get('content/edit/{id}','ContentController@edit')->middleware('auth')->name('content.edit');
 Route::get('content/text/edit/{id}','TextContentController@edit')->middleware('auth')->name('textcontent.edit');
 Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit');
 Route::patch('content/text/edit/{id}','TextContentController@update')->name('textcontent.update');
@@ -39,8 +29,8 @@ Route::patch('content/media/edit/{id}','MediaContentController@update')->name('m
 Route::delete('content/delete/{id}', 'ContentController@destroy')->name('content.destroy');
 
 // Profile
-Route::get('profile/{user}', 'ProfileController@show');
-Route::get('profile/{user}/edit', 'ProfileController@showEdit');
+Route::get('profile/{user}', 'ProfileController@show')->name('profile');
+Route::get('profile/{user}/edit', 'ProfileController@showEdit')->name('profile.edit');
 
 // Adiministration
 Route::get('admin', 'AdminController@show');
@@ -62,11 +52,20 @@ Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register.form');
 Route::post('register', 'Auth\RegisterController@create')->name('register');
 
-//Recover Password
+// Recover Password
 Route::get('recoverPassword', 'ForgotController@show');
 
 // List Card
 Route::get('listCards', 'ListCardsController@show');
 
-//Search
-Route::get('search', 'SearchController@show');
+// Search
+Route::get('search', 'SearchController@show')->name('search');
+
+// Notifications
+Route::get('/notifications', 'HomeController@show')->name('notifications');
+
+// Chat
+Route::get('/chat', 'HomeController@show')->name('chat');
+
+// Groups
+Route::get('/groups', 'HomeController@show')->name('groups');
