@@ -71,19 +71,20 @@
               @endif
             </div>
             <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
-
+            <div class="card m-3 list-group"> 
               @if ($type == 'user')
                 @foreach ($users as $user)
-                  @include('partials.listCards', ['username'=>$user->username, 'description'=>$user->description,
-                  'comment'=>$user->email, 'days_ago'=>"User"])
+                  @include('partials.listCards', ['username' => $user->username, 'description' => $user->description,
+                  'comment' => $user->email, 'days_ago'=>"User", 'link' => route('profile', ['user' => $user->id]) ])
                 @endforeach
               @elseif ($type == 'post')
                 @foreach ($posts as $post)
-                  @include('partials.listCards', ['username'=>$post->content->creator->username,
-                  'description'=>$post->post_text,
-                  'comment'=>"", 'days_ago'=>"Post"])
+                  @include('partials.listCards', ['username' => $post->content->creator->username,
+                  'description' => $post->post_text,
+                  'comment' => "", 'days_ago'=>"Post", 'link' => route('content.show', ['id' => $post->content->id]) ])
                 @endforeach
               @endif
+              </div>
             </div>
           </div>
           {{-- <div class="col-1 m-3">
@@ -127,10 +128,10 @@
             <button class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
             <label class="align-items-center pt-2">137 results found</label>
           </div>
-          <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
+          {{-- <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
             @include('partials.listCards',['username'=>'John Doe', 'description'=>'Studied at FEUP, currently working on
             fixing is life.', 'comment'=>'Son of a gun','days_ago'=>'3 hours ago'])
-          </div>
+          </div> --}}
         </div>
       </div>
 

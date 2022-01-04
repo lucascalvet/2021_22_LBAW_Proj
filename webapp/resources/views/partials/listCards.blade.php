@@ -1,7 +1,5 @@
 
-<!-- 
-<div class="card m-3 list-group"> -->
-    <a href="#" class="list-group-item list-group-item-action" aria-current="true" data-bs-toggle="list">
+    <a href="{{ $link }}" class="list-group-item list-group-item-action" aria-current="true">
         <div class="row justify-content-md-center">
             <div class="align-middle" style="max-width: 5rem;">
                 <!-- <br> -->
@@ -20,4 +18,5 @@
             </div>
         </div>
     </a>
+
 

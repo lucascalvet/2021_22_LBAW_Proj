@@ -59,11 +59,8 @@ $right_links = [
                 <a class="dropdown-item" href="{{ route('profile.edit', ['user' => Auth::user()->id]) }}">Edit
                   Profile</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{{ route('logout') }}"
-                  onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-                <form id="logout-form" action="{{ route('logout') }}" method="GET" style="display: none;">
-                  {{ csrf_field() }}
-                </form>
+                <a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
+                
 
               </div>
             </div>
