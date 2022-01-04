@@ -47,4 +47,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Content::class, 'id_creator');
     }
+
+    /**
+     * Determine if the user is an admin.
+     */
+    public function isAdmin()
+    {
+        return $this->id = 22;
+    }
 }
