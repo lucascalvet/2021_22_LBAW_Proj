@@ -31,7 +31,7 @@ $link_view = route('content.show', ['id' => $content->id]);
         <img src="{{ asset($profile_pic) }}" class="rounded-circle align-self-center" style="width: 3em; height: 3em;" alt="Profile Picture" />
       </div>
       <div class="d-block">
-        <span class="d-flex flex-column text-centre mx-3">{{ $content->creator->name }}</span>
+        <a href="{{ route('profile', ['user' => $content->creator->id])}}"><span class="d-flex flex-column text-centre mx-3">{{ $content->creator->username }}</span></a>
       </div>
 
       <div class="d-flex flex-row align-self-center">
@@ -40,23 +40,26 @@ $link_view = route('content.show', ['id' => $content->id]);
             <i class="bi bi-arrows-angle-expand {{ $icon_size }}"></i>
           </button>
         </a>
+        @if (Auth::check() && Auth::user()->can('update', $content))
         <div class="dropdown">
           <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownPost" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="bi bi-three-dots {{ $icon_size }}"></i>
           </button>
+
           <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownPost">
-            @if (Auth::user() == $content->creator)
+
             <a class="dropdown-item" href="{{ $link_edit }}">Edit Post</a>
             <a class="dropdown-item" href="#">Delete Post</a>
-            @endif
-            <a class="dropdown-item" href="#">Other Options</a>
+
           </div>
+
         </div>
+        @endif
       </div>
     </div>
   </div>
   <div class="card-body">
-    
+
     @if ($content->contentable instanceof App\Models\MediaContent)
     <div class="row justify-content-center pt-3">
       @if ($content->contentable->media_contentable instanceof App\Models\Video)
@@ -73,7 +76,7 @@ $link_view = route('content.show', ['id' => $content->id]);
     <div class="row pt-3">
       <div class="col-3">
         <div class="row justify-content-center">
-          <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
+          <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
             <i class="bi bi-chat-left-text {{ $icon_size }}"></i>
           </button>
           <span class="text-center">{{ $n_comments }}</span>
@@ -81,7 +84,7 @@ $link_view = route('content.show', ['id' => $content->id]);
       </div>
       <div class="col-6">
         <div class="row justify-content-center">
-          <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
+          <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
             <i class="bi bi-heart {{ $icon_size }}"></i>
           </button>
           <span class="text-center">{{ $n_hearts }}</span>
@@ -89,7 +92,7 @@ $link_view = route('content.show', ['id' => $content->id]);
       </div>
       <div class="col-3">
         <div class="row justify-content-center">
-          <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
+          <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
             <i class="bi bi-share {{ $icon_size }}"></i>
           </button>
           <span class="text-center">{{ $n_shares }}</span>

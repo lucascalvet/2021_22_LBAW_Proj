@@ -18,13 +18,15 @@ $time = '10 days ago';
 @section('content')
 @include('partials.navbar')
   <div class="row">
-    <!--<h1 class="text-center mt-5 fw-bold">Title</h1>-->
+    <a href="{{ route('profile', ['user' => $content->creator->id])}}">
+      <h1 class="text-center mt-5 fw-bold">{{$content->creator->username}}</h1>
+    </a>
 
     <div>
       @if ($content->contentable instanceof App\Models\MediaContent)
-        <div class="text-center mb-3 fw-bold mt-5 fs-3">{{ $content->contentable->description }}</div>
+        <div class="text-center mb-3 mt-3 fs-3">{{ $content->contentable->description }}</div>
       @else
-        <div class="text-center mb-3 fw-bold mt-5 fs-3">{{ $content->contentable->post_text }}</div>
+        <div class="text-center mb-3 mt-3 fs-3">{{ $content->contentable->post_text }}</div>
       @endif
     </div>
 
@@ -40,7 +42,7 @@ $time = '10 days ago';
     @endif
 
     <div class="d-flex justify-content-center mt-3 mb-3">
-      @if ($user == $content->creator)
+      @if (Auth::check() && Auth::user()->can('update', $content))
         <a href="{{ $link_edit }}"><button type="button"
             class="btn btn-outline-secondary btn-lg bg-dark text-white me-3">Edit Post</button></i></a>
         <form method="POST" action="{{ route('content.destroy', $content) }}">
