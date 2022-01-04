@@ -22,11 +22,13 @@ Route::post('content/media/create','MediaContentController@store')->middleware('
 Route::get('content/list','ContentController@index')->middleware('auth')->name('content.list');
 Route::get('content/{id}','ContentController@show')->name('content.show');
 Route::get('content/edit/{id}','ContentController@edit')->middleware('auth')->name('content.edit');
+/* 
 Route::get('content/text/edit/{id}','TextContentController@edit')->middleware('auth')->name('textcontent.edit');
-Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit');
-Route::patch('content/text/edit/{id}','TextContentController@update')->name('textcontent.update');
-Route::patch('content/media/edit/{id}','MediaContentController@update')->name('mediacontent.update');
-Route::delete('content/delete/{id}', 'ContentController@destroy')->name('content.destroy');
+Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit'); 
+*/
+Route::patch('content/text/edit/{id}','TextContentController@update')->middleware('auth')->name('textcontent.update');
+Route::patch('content/media/edit/{id}','MediaContentController@update')->middleware('auth')->name('mediacontent.update');
+Route::delete('content/delete/{id}', 'ContentController@destroy')->middleware('auth')->name('content.destroy');
 
 // Profile
 Route::get('profile/{user}', 'ProfileController@show')->name('profile');
@@ -51,7 +53,7 @@ Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register.form');
-Route::post('register', 'Auth\RegisterController@create')->name('register');
+Route::post('register', 'Auth\RegisterController@register')->name('register');
 
 // Recover Password
 Route::get('recoverPassword', 'ForgotController@show');

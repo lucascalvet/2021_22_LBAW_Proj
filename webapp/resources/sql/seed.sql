@@ -651,11 +651,11 @@ INSERT INTO text_content (id_content, post_text) VALUES (5, 'Take it easy, keep 
 INSERT INTO text_reply (child_text, parent_text) VALUES (1, 2);
 INSERT INTO text_reply (child_text, parent_text) VALUES (4, 3);
 
-INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (6, 'Just a cute video', '/cute.png', 'Photo of a cat playing', TRUE, 6);
-INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (7, 'BMW', '/moto.jpeg', NULL, FALSE, 7);
-INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (8, 'Mercedes car', '/car.png', 'Picture of a Mercedes car', TRUE, 8);
-INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (9, 'Learn SQL for beginners', '/tutorial.mp4', 'Video tutorial', FALSE, 9);
-INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (10, 'Gameplay of Fortnite. ;)', '/game.mp4', NULL, FALSE, 10);
+INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (6, 'Just a cute cat', 'media/cute.png', 'Photo of a cat playing', TRUE, 6);
+INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (7, 'BMW', 'media/moto.jpeg', NULL, FALSE, 7);
+INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (8, 'Mercedes car', 'media/car.png', 'Picture of a Mercedes car', TRUE, 8);
+INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (9, 'Learn SQL for beginners', 'media/tutorial.mp4', 'Video tutorial', FALSE, 9);
+INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (10, 'Gameplay of Fortnite. ;)', 'media/game.mp4', NULL, FALSE, 10);
 
 INSERT INTO image (id_media_content, width, height) VALUES (6, 200, 100);
 INSERT INTO image (id_media_content, width, height) VALUES (7, 300, 400);

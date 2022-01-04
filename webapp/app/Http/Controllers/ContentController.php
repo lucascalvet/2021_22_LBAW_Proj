@@ -15,9 +15,13 @@ class ContentController extends Controller
         return view('content.create');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         abort_if(is_null($content = Content::find($id)), 404);
+
+        if ($request->user()->cannot('update', $content)) {
+            abort(403);
+        }
 
         if ($content->contentable instanceof \App\Models\TextContent) {
             return view('content.text_edit', ['text_content' => $content->contentable]);
@@ -28,10 +32,14 @@ class ContentController extends Controller
         return redirect()->route('home');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         
         abort_if(is_null($content = Content::find($id)), 404);
+
+        if ($request->user()->cannot('delete', $content)) {
+            abort(403);
+        }
 
         /*
         if ($content->contentable instanceof \App\Models\TextContent) {
@@ -71,8 +79,11 @@ class ContentController extends Controller
         return view('content.list', ['contents' => $contents]);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        abort_if(is_null($content = Content::find($id)), 404);
+
+
         return view('content.single', ['content' => Content::find($id)]);
     }
 
