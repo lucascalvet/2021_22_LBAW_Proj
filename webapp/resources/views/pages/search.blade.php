@@ -17,26 +17,34 @@
           <div class="col-2 m-3">
             <ul class="nav nav-pills flex-column" id="pills-tab" role="tablist">
               <li class="nav-item">
-                <a class="nav-link custom-tab-left" id="list-all-list" data-bs-toggle="tab" href="#" role="tab"
+                <a class="nav-link custom-tab-left disabled" id="list-all-list" data-bs-toggle="tab" href="#" role="tab"
                   aria-controls="list-all">All</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link custom-tab-left" id="list-posts-list" data-bs-toggle="tab"
-                  href="{{ route('search.content') }}" role="tab" aria-controls="list-posts"><a
-                    href="{{ route('search.content') }}">Posts</a></a>
+                @if ($type == 'user')
+                  <a class="nav-link custom-tab-left" id="list-posts-list" href="{{ route('search.content') }}"
+                    role="tab" aria-controls="list-posts">Posts</a>
+                @elseif ($type == 'post')
+                  <a class="nav-link custom-tab-left active" id="list-posts-list" href="{{ route('search.content') }}"
+                    role="tab" aria-controls="list-posts">Posts</a>
+                @endif
               </li>
               <li class="nav-item">
-                <a class="nav-link active custom-tab-left" id="list-people-list" data-bs-toggle="tab"
-                  href="{{ route('search.users') }}" role="tab" aria-controls="list-people"><a
-                    href="{{ route('search.users') }}">People</a></a>
+                @if ($type == 'user')
+                  <a class="nav-link active custom-tab-left" id="list-people-list" href="{{ route('search.users') }}"
+                    role="tab" aria-controls="list-people">People</a>
+                @elseif ($type == 'post')
+                  <a class="nav-link custom-tab-left" id="list-people-list" href="{{ route('search.users') }}"
+                    role="tab" aria-controls="list-people">People</a>
+                @endif
               </li>
               <li class="nav-item">
-                <a class="nav-link custom-tab-left" id="list-groups-list" data-bs-toggle="tab" href="#" role="tab"
-                  aria-controls="list-groups">Groups</a>
+                <a class="nav-link custom-tab-left disabled" id="list-groups-list" data-bs-toggle="tab" href="#"
+                  role="tab" aria-controls="list-groups">Groups</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link custom-tab-left" id="list-organizations-list" data-bs-toggle="tab" href="#" role="tab"
-                  aria-controls="list-organizations">Organizations</a>
+                <a class="nav-link custom-tab-left disabled" id="list-organizations-list" data-bs-toggle="tab" href="#"
+                  role="tab" aria-controls="list-organizations">Organizations</a>
               </li>
             </ul>
           </div>
@@ -45,17 +53,17 @@
           <div class="col-8">
             <div class="form-floating m-3 w-100">
               @if ($type == 'user')
-                <form class="input-group" action="{{ route('search.users') }}" method="GET">
+                <form action="{{ route('search.users') }}" method="GET">
                 @elseif ($type == 'post')
-                  <form class="input-group" action="{{ route('search.content') }}" method="GET">
+                  <form action="{{ route('search.content') }}" method="GET">
               @endif
 
-              <input type="text" class="form-control" id="floatingInput" name="search" placeholder="">
-              <label for="floatingInput"><i class="bi bi-search"></i></label>
+              <input type="text" class="form-control" id="floatingInput" name="search" placeholder="Search">
+              {{-- <label for="floatingInput"><i class="bi bi-search"></i></label> --}}
               </form>
             </div>
             <div class=" ms-3 d-flex justify-content-between">
-              <button class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
+              <button disabled class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
               @if ($type == 'user')
                 <label class="align-items-center pt-2">{{ count($users) }} results found</label>
               @elseif ($type == 'post')
