@@ -577,22 +577,22 @@ paths:
 
   /content/create:
     get:
-      operationId: R0302
-      summary: 'R0302: View Content Creation Form'
+      operationId: R0402
+      summary: 'R0402: View Content Creation Form'
       description: 'Provide new Content Creation Form. Access: USR'
       tags:
-      - 'M03: View and Create Content'
+      - 'M04: View and Create Content'
 
       responses:
        '200':
          description: 'Ok. Show Content Creation Form UI.'
 
     post:
-      operationId: R0303
-      summary: 'R0303: Create Content'
+      operationId: R0403
+      summary: 'R0403: Create Content'
       description: 'Processes the Content Creation Form. Access: USR'
       tags:
-        - 'M03: View and Create Content'
+        - 'M04: View and Create Content'
 
       requestBody:
         required: true
@@ -621,24 +621,24 @@ paths:
                   description: 'Failed to choose Type of Content. Redirect to the Content Creation Form.'
                   value: '/content/create'
 
-  /content/create/text/{id}:
+  /content/text/create:
     get:
-      operationId: R0304
-      summary: 'R0304: View Text Content Creation Form'
+      operationId: R0404
+      summary: 'R0404: View Text Content Creation Form'
       description: 'Provide new Text Content Creation Form. Access: USR'
       tags:
-      - 'M03: View and Create Content'
+      - 'M04: View and Create Content'
 
       responses:
        '200':
          description: 'Ok. Show Text Content Creation Form UI.'
 
     post:
-      operationId: R0305
-      summary: 'R0305: Create Text Content'
+      operationId: R0405
+      summary: 'R0405: Create Text Content'
       description: 'Processes the Text Content Creation Form. Access: USR'
       tags:
-        - 'M03: View and Create Content'
+        - 'M04: View and Create Content'
 
       requestBody:
         required: true
@@ -667,26 +667,26 @@ paths:
                   value: '/content/{id}'
                 302Error:
                   description: 'Failed to create Text Content. Redirect to the Text Content Creation Form.'
-                  value: '/content/create/text/{id}'
+                  value: '/content/text/create/{id}'
 
-  /content/create/media/{id}:
+  /content/media/create:
     get:
-      operationId: R0306
-      summary: 'R0306: View Media Content Creation Form'
+      operationId: R0406
+      summary: 'R0406: View Media Content Creation Form'
       description: 'Provide new Media Content Creation Form. Access: USR'
       tags:
-      - 'M03: View and Create Content'
+      - 'M04: View and Create Content'
 
       responses:
        '200':
          description: 'Ok. Show Media Content Creation Form UI.'
 
     post:
-      operationId: R0307
-      summary: 'R0307: Create Media Content'
+      operationId: R0407
+      summary: 'R0407: Create Media Content'
       description: 'Processes the Media Content Creation Form. Access: USR'
       tags:
-        - 'M03: View and Create Content'
+        - 'M04: View and Create Content'
 
       requestBody:
         required: true
@@ -721,24 +721,124 @@ paths:
                   value: '/content/{id}'
                 302Error:
                   description: 'Failed to create Media Content. Redirect to the Media Content Creation Form.'
-                  value: '/content/create/media/{id}' 
+                  value: '/content/media/create/{id}' 
+
+  /content/text/edit/{id}:
+  patch:
+      operationId: R0408
+      summary: 'R0408: Edit Text Content'
+      description: 'Edit a previously created Text Content. Access: AUT'
+      tags:
+        - 'M04: View and Create Content'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                text:
+                  type: string
+              required:
+              - text
+
+      responses:
+        '302':
+          description: 'Redirect after processing the Text Content Edit Form.'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Text Content modified successfully. Redirect to the Content.'
+                  value: '/content/{id}'
+                302Error:
+                  description: 'Failed to modifiy Text Content. Redirect to the Text Content Edit Form.'
+                  value: '/content/text/edit/{id}' 
+
+  /content/media/edit/{id}:
+  patch:
+      operationId: R0409
+      summary: 'R0409: Edit Media Content'
+      description: 'Edit a previously created Media Content. Access: AUT'
+      tags:
+        - 'M04: View and Create Content'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                media:
+                  type: string
+                  format: binary
+                locale:
+                  type: integer #???
+              required:
+              - description
+              - media
+
+      responses:
+        '302':
+          description: 'Redirect after processing the Media Content Edit Form.'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Media Content modified successfully. Redirect to the Content.'
+                  value: '/content/{id}'
+                302Error:
+                  description: 'Failed to modifiy Media Content. Redirect to the Media Content Edit Form.'
+                  value: '/content/media/edit/{id}' 
+
+  content/delete/{id}:
+    delete:
+      operationID: R0410
+      summary: 'R0410: Delete Post'
+      description: 'Delete a User Post. Acess: AUT.'
+      tags:
+        - 'M04: View and Create Content'
+
+      parameters:
+       - in: path
+         name: id
+         description: id to post
+         schema:
+           type: integer
+         required: true
+
+     responses:
+       '200':
+         description: 'Deletion Successful.'
 
   /message/{id}:
    get:
-     operationId: R0401
-     summary: 'R0401: See Message'
+     operationId: R0501
+     summary: 'R0501: See Message'
      description: 'Shows the User the received messages.'
      tags:
-       - 'M04: Messages'
+       - 'M05: Messages'
      responses:
        '200':
          description: 'Ok. Show messages.'
    post:
-     operationId: R0402
-     summary: 'R0402: Send Message'
+     operationId: R0502
+     summary: 'R0502: Send Message'
      description: 'Send new message to other User'
      tags:
-      - 'M04: Messages'
+      - 'M05: Messages'
      parameters:
       - in: query
         name: msg
@@ -762,21 +862,21 @@ paths:
   
   /notifications:
     get:
-        operationId: R0501
-        summary: 'R0501: User Notifications'
+        operationId: R0601
+        summary: 'R0601: User Notifications'
         description: 'Provide user notifications section. Access: USR'
         tags:
-        - 'M05: Notifications'
+        - 'M06: Notifications'
 
         responses:
           '200':
             description: 'Ok. Show user notifications section UI. US19'
     post:
-      operationId: R0502
-      summary: 'R0502: Clear Notifications.'
+      operationId: R0602
+      summary: 'R0602: Clear Notifications.'
       description: 'Clears all notifications from user notification section. Access: USR'
       tags:
-        - 'M05: Notifications'
+        - 'M06: Notifications'
 
       responses:
         '302':
@@ -795,11 +895,11 @@ paths:
 
   /notifications/friend-request:
     post:
-      operationId: R0503
-      summary: 'R0503: Accept Friend Request through Notification.'
+      operationId: R0603
+      summary: 'R0603: Accept Friend Request through Notification.'
       description: 'Accepts a friend request through an user notification, from user notifications section. Access: USR'
       tags:
-        - 'M05: Notifications'
+        - 'M06: Notifications'
 
       responses:
         '302':
@@ -818,11 +918,11 @@ paths:
 
   /notifications/like:
     post:
-      operationId: R0504
-      summary: 'R0504: Like Content through Notification.'
+      operationId: R0604
+      summary: 'R0604: Like Content through Notification.'
       description: 'Likes some content from user notifications section. Access: USR'
       tags:
-        - 'M05: Notifications'
+        - 'M06: Notifications'
 
       responses:
         '302':
@@ -841,11 +941,11 @@ paths:
   
   /group/{id}:
     get:
-      operationId: R0601
-      summary: 'R0601: View Group'
+      operationId: R0701
+      summary: 'R0701: View Group'
       description: 'Show a Group. Access: GMB'
       tags:
-        - 'M06: Groups'
+        - 'M07: Groups'
 
       parameters:
         - in: path
@@ -860,11 +960,11 @@ paths:
   
   /group/{id}/moderate:
     get:
-      operationId: R0602
-      summary: 'R0602: View Moderator Page'
+      operationId: R0702
+      summary: 'R0702: View Moderator Page'
       description: 'Show a Group Moderator Page. Access: GMD'
       tags:
-        - 'M06: Groups'
+        - 'M07: Groups'
 
       parameters:
         - in: path
@@ -878,11 +978,11 @@ paths:
           description: 'Success. Show the Group Moderator UI'
     
     post:
-      operationId: R0603
-      summary: 'R0603: Apply Moderator settings'
+      operationId: R0703
+      summary: 'R0703: Apply Moderator settings'
       description: 'Apply the settings set by a moderator. Access: GMD'
       tags:
-        - 'M01: Authentication and Individual Profile'
+        - 'M07: Groups'
 
       requestBody:
         required: true
@@ -914,14 +1014,30 @@ paths:
                   description: 'Failed moderator authentication. Redirect to group page.'
                   value: '/group/{id}'
   
-
+  /admin:
+    get:
+      operationId: R0901
+      summary: 'R0901: View Administrator options'
+      description: 'View Administration level actions'
+      tags:
+        - 'M09: User Administration'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: 'Success. Show the Administration UI'
+    
   /delete:
     post:
-      operationId: R0801
-      summary: 'R0801: Delete Account'
+      operationId: R0902
+      summary: 'R0902: Delete Account'
       description: 'Delete a user account'
       tags:
-        - 'M08: User Administration'
+        - 'M09: User Administration'
       parameters:
         - in: query
           name: username
@@ -939,11 +1055,11 @@ paths:
   
   /block:
     post:
-      operationId: R0802
-      summary: 'R0802: Block Account'
+      operationId: R0903
+      summary: 'R0903: Block Account'
       description: 'Block a user account for unspecified time'
       tags:
-        - 'M08: User Administration'
+        - 'M09: User Administration'
       parameters:
         - in: query
           name: username
@@ -962,11 +1078,11 @@ paths:
           description: 'User not found.'
   /unblock:
     post:
-      operationId: R0803
-      summary: 'R0803: Unblock Account'
+      operationId: R0904
+      summary: 'R0904: Unblock Account'
       description: 'Unblock a user account that was previously blocked by an administrator'
       tags:
-        - 'M08: User Administration'
+        - 'M09: User Administration'
       parameters:
         - in: query
           name: username
@@ -1031,3 +1147,4 @@ paths:
       responses:
         '200':
           description: 'Success. Show FAQ page'
+          
