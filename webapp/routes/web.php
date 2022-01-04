@@ -12,9 +12,6 @@
 */
 
 // Home
-<<<<<<< HEAD
-Route::get('/', 'Auth\LoginController@home');
-=======
 Route::get('/', 'HomeController@show')->name('home');
 
 // Content
@@ -25,14 +22,13 @@ Route::post('content/media/create','MediaContentController@store')->middleware('
 Route::get('content/list','ContentController@index')->middleware('auth')->name('content.list');
 Route::get('content/{id}','ContentController@show')->name('content.show');
 Route::get('content/edit/{id}','ContentController@edit')->middleware('auth')->name('content.edit');
-/* 
+/*
 Route::get('content/text/edit/{id}','TextContentController@edit')->middleware('auth')->name('textcontent.edit');
-Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit'); 
+Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit');
 */
 Route::patch('content/text/edit/{id}','TextContentController@update')->middleware('auth')->name('textcontent.update');
 Route::patch('content/media/edit/{id}','MediaContentController@update')->middleware('auth')->name('mediacontent.update');
 Route::delete('content/delete/{id}', 'ContentController@destroy')->middleware('auth')->name('content.destroy');
->>>>>>> dev
 
 // Profile
 Route::get('profile/{user}', 'ProfileController@show')->name('profile');
