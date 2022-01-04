@@ -11,7 +11,7 @@
 <div class="container vh-100">
       <h1 class="text-light pt-5 fw-bold">Editing Profile</h1>
       <div class="row gx-5">
-        <form class="input-group" action="{{ route('profile.save', ['user' => Auth::User()->id]) }}" method="GET">
+        <form class="input-group" action="{{ route('profile.save', ['user' => $user->id]) }}" method="GET">
           <div class="col-6">
 
 
