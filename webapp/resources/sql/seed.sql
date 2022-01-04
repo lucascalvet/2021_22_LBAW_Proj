@@ -497,7 +497,7 @@ CREATE TRIGGER media_content_disjoint
 
 
 --TRIGGER 6
-/*
+
 CREATE FUNCTION image_disjoint() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
@@ -529,9 +529,6 @@ CREATE TRIGGER video_disjoint
    BEFORE INSERT OR UPDATE ON video
    FOR EACH ROW
    EXECUTE PROCEDURE video_disjoint();
-
-
-*/
 
 --------------------------------------------
 
