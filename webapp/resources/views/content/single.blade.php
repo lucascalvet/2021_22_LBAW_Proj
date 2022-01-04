@@ -18,13 +18,13 @@ $time = '10 days ago';
 @section('content')
 @include('partials.navbar')
   <div class="row">
-    <h1 class="text-center mt-5 fw-bold">Title</h1>
+    <!--<h1 class="text-center mt-5 fw-bold">Title</h1>-->
 
     <div>
       @if ($content->contentable instanceof App\Models\MediaContent)
-        <div class="text-center mb-3">{{ $content->contentable->description }}</div>
+        <div class="text-center mb-3 fw-bold mt-5 fs-3">{{ $content->contentable->description }}</div>
       @else
-        <div>{{ $content->contentable->post_text }}</div>
+        <div class="text-center mb-3 fw-bold mt-5 fs-3">{{ $content->contentable->post_text }}</div>
       @endif
     </div>
 
@@ -32,9 +32,9 @@ $time = '10 days ago';
       <div class="row justify-content-center m-0 p-0">
         @if ($content->contentable->media_contentable instanceof App\Models\Video)
           <video src="{{ asset($content->contentable->media) }}" controls
-            style="max-width: 20em; max-height: 30em;"></video>
+            style="max-width: 50em; max-height: 60em;"></video>
         @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
-          <img src="{{ asset($content->contentable->media) }}" style="max-width: 20em; max-height: 30em;"/>
+          <img src="{{ asset($content->contentable->media) }}" style="max-width: 50em; max-height: 60em;"/>
         @endif
       </div>
     @endif
