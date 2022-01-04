@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Models\MediaContent;
+use App\Models\TextContent;
 
 class SearchController extends Controller
 {
@@ -31,7 +32,9 @@ class SearchController extends Controller
     $search = request()->query('search');
 
     if($search){
-      $posts = MediaContent::where('description', 'LIKE', "%{$search}%")->get();
+      //$posts = MediaContent::where('description', 'LIKE', "%{$search}%")->get();
+      
+      $posts = TextContent::whereRaw("tsvectors @@ plainto_tsquery('english', '%{$search}%')")->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', '%{$search}%')) DESC")->get();
 
       return view('pages.search', [
         'posts' => $posts,

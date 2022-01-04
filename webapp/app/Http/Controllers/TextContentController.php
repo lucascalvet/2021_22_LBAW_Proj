@@ -56,9 +56,7 @@ class TextContentController extends Controller
     {
         abort_if(is_null($content = Content::find($id)), 404);
 
-        if ($request->user()->cannot('update', $content)) {
-            abort(403);
-        }
+        $this->authorize('update', $content);
 
         abort_if(is_null($textcontent = TextContent::find($id)), 404);
         $textcontent->post_text = $request->post_text;

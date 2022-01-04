@@ -29,7 +29,8 @@ class ProfileController extends Controller
      */
     public function showEdit($userId)
     {
-      $user = User::find($userId);
+      abort_if(is_null($user = User::find($userId)), 404);
+      $this->authorize('update', $user);
 
       return view('pages.edit_profile', [
         'user' => $user,
@@ -37,7 +38,8 @@ class ProfileController extends Controller
     }
 
     public function save($userId){
-      $user = User::find($userId);
+      abort_if(is_null($user = User::find($userId)), 404);
+      $this->authorize('update', $user);
 
       $user->name = request()->name;
       $user->birthday = request()->birthday;

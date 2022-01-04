@@ -52,7 +52,7 @@ class MediaContent extends Model
      */
     public function content()
     {
-        return $this->morphOne(Content::class, 'contentable');
+        return $this->morphOne(Content::class, 'contentable', null, 'id');
     }
 
     /**
@@ -60,6 +60,6 @@ class MediaContent extends Model
      */
     public function media_contentable()
     {
-        return $this->morphTo(null, null, 'id_content');
+        return $this->morphTo(null, null, 'id');
     }
 }

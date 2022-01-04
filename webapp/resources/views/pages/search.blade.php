@@ -4,31 +4,39 @@
 
 @section('content')
 
-@include('partials.navbar')
+  @include('partials.navbar')
 
-<section id="profile">
-  <div class="container-fluid vh-100 overflow-auto" style="padding: 0em;padding-top: 5em; margin: 0em; background-color: #afafaf">
-    <!--<h1 class="ms-3 me-4 mt-0 text-light fw-bold">Search</h1>-->
-        <!--Computer View-->
+  <section id="profile">
+    <div class="container-fluid vh-100 overflow-auto"
+      style="padding: 0em;padding-top: 5em; margin: 0em; background-color: #afafaf">
+      <!--<h1 class="ms-3 me-4 mt-0 text-light fw-bold">Search</h1>-->
+      <!--Computer View-->
       <div class="d-none d-md-block">
         <div class="row" style="margin-left: 3em;">
           <!--User Info-->
           <div class="col-2 m-3">
             <ul class="nav nav-pills flex-column" id="pills-tab" role="tablist">
               <li class="nav-item">
-                <a class="nav-link custom-tab-left" id="list-all-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-all">All</a>
+                <a class="nav-link custom-tab-left" id="list-all-list" data-bs-toggle="tab" href="#" role="tab"
+                  aria-controls="list-all">All</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link custom-tab-left" id="list-posts-list" data-bs-toggle="tab" href="{{ route('search.content') }}" role="tab" aria-controls="list-posts"><a href="{{ route('search.content') }}">Posts</a></a>
+                <a class="nav-link custom-tab-left" id="list-posts-list" data-bs-toggle="tab"
+                  href="{{ route('search.content') }}" role="tab" aria-controls="list-posts"><a
+                    href="{{ route('search.content') }}">Posts</a></a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active custom-tab-left" id="list-people-list" data-bs-toggle="tab" href="{{ route('search.users') }}" role="tab" aria-controls="list-people"><a href="{{ route('search.users') }}">People</a></a>
+                <a class="nav-link active custom-tab-left" id="list-people-list" data-bs-toggle="tab"
+                  href="{{ route('search.users') }}" role="tab" aria-controls="list-people"><a
+                    href="{{ route('search.users') }}">People</a></a>
               </li>
               <li class="nav-item">
-                <a class="nav-link custom-tab-left" id="list-groups-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-groups">Groups</a>
+                <a class="nav-link custom-tab-left" id="list-groups-list" data-bs-toggle="tab" href="#" role="tab"
+                  aria-controls="list-groups">Groups</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link custom-tab-left" id="list-organizations-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-organizations">Organizations</a>
+                <a class="nav-link custom-tab-left" id="list-organizations-list" data-bs-toggle="tab" href="#" role="tab"
+                  aria-controls="list-organizations">Organizations</a>
               </li>
             </ul>
           </div>
@@ -37,32 +45,35 @@
           <div class="col-8">
             <div class="form-floating m-3 w-100">
               @if ($type == 'user')
-                  <form class="input-group" action="{{ route('search.users') }}" method="GET">
+                <form class="input-group" action="{{ route('search.users') }}" method="GET">
                 @elseif ($type == 'post')
                   <form class="input-group" action="{{ route('search.content') }}" method="GET">
-                @endif
+              @endif
 
-                <input type="text" class="form-control" id="floatingInput" name="search" placeholder="">
-                <label for="floatingInput"><i class="bi bi-search"></i></label>
+              <input type="text" class="form-control" id="floatingInput" name="search" placeholder="">
+              <label for="floatingInput"><i class="bi bi-search"></i></label>
               </form>
             </div>
             <div class=" ms-3 d-flex justify-content-between">
-                <button class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
-                @if ($type == 'user')
-                  <label class="align-items-center pt-2">{{ count($users) }} results found</label>
-                @elseif ($type == 'post')
-                  <label class="align-items-center pt-2">{{ count($posts) }} results found</label>
-                @endif
+              <button class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
+              @if ($type == 'user')
+                <label class="align-items-center pt-2">{{ count($users) }} results found</label>
+              @elseif ($type == 'post')
+                <label class="align-items-center pt-2">{{ count($posts) }} results found</label>
+              @endif
             </div>
             <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
 
               @if ($type == 'user')
-                @foreach($users as $user)
-                  @include('partials.listCards', ['username'=>$user->username, 'description'=>$user->description, 'comment'=>$user->email, 'days_ago'=>"User"])
+                @foreach ($users as $user)
+                  @include('partials.listCards', ['username'=>$user->username, 'description'=>$user->description,
+                  'comment'=>$user->email, 'days_ago'=>"User"])
                 @endforeach
               @elseif ($type == 'post')
-                @foreach($posts as $post)
-                  @include('partials.listCards', ['username'=>"Post", 'description'=>$post->description, 'comment'=>"", 'days_ago'=>"Post"])
+                @foreach ($posts as $post)
+                  @include('partials.listCards', ['username'=>$post->content->creator->username,
+                  'description'=>$post->post_text,
+                  'comment'=>"", 'days_ago'=>"Post"])
                 @endforeach
               @endif
             </div>
@@ -78,19 +89,24 @@
         <div class="d-flex justify-content-center">
           <ul class="nav nav-pills" id="pills-tab" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active custom-tab-bottom" id="list-all-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-all">All</a>
+              <a class="nav-link active custom-tab-bottom" id="list-all-list" data-bs-toggle="tab" href="#" role="tab"
+                aria-controls="list-all">All</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link custom-tab-bottom" id="list-posts-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-posts">Posts</a>
+              <a class="nav-link custom-tab-bottom" id="list-posts-list" data-bs-toggle="tab" href="#" role="tab"
+                aria-controls="list-posts">Posts</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link custom-tab-bottom" id="list-people-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-people">People</a>
+              <a class="nav-link custom-tab-bottom" id="list-people-list" data-bs-toggle="tab" href="#" role="tab"
+                aria-controls="list-people">People</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link custom-tab-bottom" id="list-groups-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-groups">Groups</a>
+              <a class="nav-link custom-tab-bottom" id="list-groups-list" data-bs-toggle="tab" href="#" role="tab"
+                aria-controls="list-groups">Groups</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link custom-tab-bottom" id="list-organizations-list" data-bs-toggle="tab" href="#" role="tab" aria-controls="list-organizations">Organizations</a>
+              <a class="nav-link custom-tab-bottom" id="list-organizations-list" data-bs-toggle="tab" href="#" role="tab"
+                aria-controls="list-organizations">Organizations</a>
             </li>
           </ul>
         </div>
@@ -104,12 +120,13 @@
             <label class="align-items-center pt-2">137 results found</label>
           </div>
           <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
-            @include('partials.listCards',['username'=>'John Doe', 'description'=>'Studied at FEUP, currently working on fixing is life.', 'comment'=>'Son of a gun','days_ago'=>'3 hours ago'])
+            @include('partials.listCards',['username'=>'John Doe', 'description'=>'Studied at FEUP, currently working on
+            fixing is life.', 'comment'=>'Son of a gun','days_ago'=>'3 hours ago'])
           </div>
         </div>
       </div>
 
-  </div>
-</section>
+    </div>
+  </section>
 
 @endsection

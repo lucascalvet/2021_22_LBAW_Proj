@@ -42,6 +42,6 @@ class Video extends Model
      */
     public function content()
     {
-        return $this->morphOne(MediaContent::class, 'media_contentable');
+        return $this->morphOne(MediaContent::class, 'media_contentable', null, 'id_content');
     }
 }
