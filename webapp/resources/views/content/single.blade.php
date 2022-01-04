@@ -18,31 +18,31 @@ $time = '10 days ago';
 @section('content')
 @include('partials.navbar')
   <div class="row">
-    <h1>Title</h1>
+    <h1 class="text-center mt-5 fw-bold">Title</h1>
 
     <div>
       @if ($content->contentable instanceof App\Models\MediaContent)
-        <div>{{ $content->contentable->description }}</div>
+        <div class="text-center mb-3">{{ $content->contentable->description }}</div>
       @else
         <div>{{ $content->contentable->post_text }}</div>
       @endif
     </div>
 
     @if ($content->contentable instanceof App\Models\MediaContent)
-      <div class="row justify-content-center pt-3">
+      <div class="row justify-content-center m-0 p-0">
         @if ($content->contentable->media_contentable instanceof App\Models\Video)
           <video src="{{ asset($content->contentable->media) }}" controls
             style="max-width: 20em; max-height: 30em;"></video>
         @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
-          <img src="{{ asset($content->contentable->media) }}" style="max-width: 20em; max-height: 30em;"></img>
+          <img src="{{ asset($content->contentable->media) }}" style="max-width: 20em; max-height: 30em;"/>
         @endif
       </div>
     @endif
 
-    <div class="d-flex justify-content-around mb-3">
+    <div class="d-flex justify-content-center mt-3 mb-3">
       @if ($user == $content->creator)
         <a href="{{ $link_edit }}"><button type="button"
-            class="btn btn-outline-secondary btn-lg bg-dark text-white">Edit Post</button></i></a>
+            class="btn btn-outline-secondary btn-lg bg-dark text-white me-3">Edit Post</button></i></a>
         <form method="POST" action="{{ route('content.destroy', $content) }}">
           @csrf
           <input type="hidden" name="_method" value="DELETE" />
