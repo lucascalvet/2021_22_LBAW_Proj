@@ -49,8 +49,11 @@ $link_view = route('content.show', ['id' => $content->id]);
           <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownPost">
 
             <a class="dropdown-item" href="{{ $link_edit }}">Edit Post</a>
-            <a class="dropdown-item" href="#">Delete Post</a>
-
+            <form method="POST" action="{{ route('content.destroy', $content) }}">
+              @csrf
+              @method('DELETE')
+              <button class="dropdown-item" type="submit">Delete Post</button>
+            </form>
           </div>
 
         </div>

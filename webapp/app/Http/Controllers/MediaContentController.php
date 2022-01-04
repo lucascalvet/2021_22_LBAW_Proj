@@ -32,7 +32,7 @@ class MediaContentController extends Controller
         $content->save();
         $mediacontent->save();
         //return redirect()->route('home');
-        return view('content.single', ['content' => $content]);
+        return redirect()->route('content.show', ['id' => $id]);
 
     }
 

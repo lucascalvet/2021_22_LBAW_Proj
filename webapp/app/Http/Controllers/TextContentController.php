@@ -31,7 +31,7 @@ class TextContentController extends Controller
         
         //$content->delete();
         //return redirect()->route('home');
-        return view('content.single', ['content' => $content]);
+        return redirect()->route('content.show', ['id' => $id]);
     }
 
     protected function validator(Request $request)
