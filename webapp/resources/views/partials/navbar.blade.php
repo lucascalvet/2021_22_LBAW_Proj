@@ -48,7 +48,7 @@ $right_links = [
           <li class="nav-item d-flex align-items-center">
             <a class="nav-link d-flex align-items-center" href="{{ route('profile', ['user' => Auth::user()->id]) }}">
               <i class="bi bi-person-circle {{ $icon_size }}"></i>
-              <span class="">&nbsp;{{ Auth::user()->name }}</span>
+              <span class="d-inline-block text-truncate" style="max-width: 10em;">&nbsp;{{ Auth::user()->name }}</span>
             </a>
             <div class="dropdown">
               <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfile"

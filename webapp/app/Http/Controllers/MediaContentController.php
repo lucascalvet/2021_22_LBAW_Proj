@@ -58,7 +58,13 @@ class MediaContentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $mediacontent = MediaContent::find($id);
+        abort_if(is_null($content = Content::find($id)), 404);
+
+        if ($request->user()->cannot('update', $content)) {
+            abort(403);
+        }
+
+        abort_if(is_null($mediacontent = MediaContent::find($id)), 404);
 
         $mediacontent->description = $request->description;
         $mediacontent->media = $request->file('media')->store('media', ['disk' => 'my_files']);

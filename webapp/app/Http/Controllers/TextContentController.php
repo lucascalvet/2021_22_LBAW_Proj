@@ -54,8 +54,13 @@ class TextContentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $content = Content::find($id);
-        $textcontent = TextContent::find($id);
+        abort_if(is_null($content = Content::find($id)), 404);
+
+        if ($request->user()->cannot('update', $content)) {
+            abort(403);
+        }
+
+        abort_if(is_null($textcontent = TextContent::find($id)), 404);
         $textcontent->post_text = $request->post_text;
 
         $textcontent->save();

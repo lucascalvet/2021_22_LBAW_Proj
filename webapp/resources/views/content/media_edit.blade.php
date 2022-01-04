@@ -15,7 +15,7 @@ $user = Auth::user();
             <div class="card-body p-5">
               <h2 class="text-uppercase text-center mb-5">Edit Media Content</h2>
 
-              <form method="POST" action="{{ route('mediacontent.edit', ['id' => $media_content->id_content]) }}"
+              <form method="POST" action="{{ route('mediacontent.update', ['id' => $media_content->id_content]) }}"
                 enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
