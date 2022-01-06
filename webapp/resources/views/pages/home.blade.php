@@ -135,7 +135,11 @@ $link_create_media = route('mediacontent.make');
       <div class="d-flex flex-row pt-3 pl-3 pr-1" style="overflow-x: auto;">
         @foreach ($contents as $content)
           <div class="d-block mx-2 pb-2">
-            @include('partials.content', ['content' => $content])
+            @if(\App\Models\Like::where('id_user', $content->user_id)->where('id_content', $content->id)->count() == 0)
+              @include('partials.content', ['content' => $content, 'liked' => false])
+            @else
+              @include('partials.content', ['content' => $content, 'liked' => true])
+            @endif
           </div>
         @endforeach
       </div>

@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Content;
 use App\Models\TextContent;
 use App\Models\MediaContent;
+use App\Models\Like;
+
+
 use Illuminate\Support\Facades\Validator;
 
 class ContentController extends Controller
@@ -32,7 +35,7 @@ class ContentController extends Controller
 
     public function destroy($id)
     {
-        
+
         abort_if(is_null($content = Content::find($id)), 404);
 
         $this->authorize('delete', $content);
@@ -143,5 +146,61 @@ class ContentController extends Controller
         //$user->contents()->create($formData);
 
         return view('content.single', ['content' => $content]);
+    }
+
+    /**
+     * Likes
+     */
+    public function like(Request $request, $id){
+        abort_if(is_null($content = Content::find($id)), 404);
+
+        //this gives us the currently logged in user
+        $user = $request->user();
+
+        abort_if((Like::where('id_content', $content->id)->where('id_user', $user->id)->count() == 1), 404);
+
+        $like = new Like;
+        $like->id_user = $user->id;
+        $like->id_content = $content->id;
+
+        $like->save();
+
+        $nLikes = $content->numberOfLikes();
+
+        $res = json_encode(array(
+            'id' => $content->id,
+            'liked' => true,
+            'nLikes' => $nLikes,
+        ));
+
+        return $res;
+    }
+
+    public function dislike(Request $request, $id){
+        abort_if(is_null($content = Content::find($id)), 404);
+
+        //this gives us the currently logged in user
+        $user = $request->user();
+
+        Like::where('id_content', $content->id)->where('id_user', $user->id)->delete();
+
+        $nLikes = $content->numberOfLikes();
+
+        $res = json_encode(array(
+            'id' => $content->id,
+            'liked' => false,
+            'nLikes' => $nLikes
+        ));
+
+        return $res;
+    }
+
+    public function isLiked($id){
+        abort_if(is_null($content = Content::find($id)), 404);
+
+        if(Like::where('id_user', $content->user_id)->where('id_content', $content->id)->count() == 1){
+            return true;
+        }
+        else return false;
     }
 }

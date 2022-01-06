@@ -22,9 +22,14 @@ Route::post('content/media/create','MediaContentController@store')->middleware('
 Route::get('content/list','ContentController@index')->middleware('auth')->name('content.list');
 Route::get('content/{id}','ContentController@show')->name('content.show');
 Route::get('content/edit/{id}','ContentController@edit')->middleware('auth')->name('content.edit');
-/* 
+
+//Like content
+Route::post('content/like/{id}', 'ContentController@like')->middleware('auth')->name('content.like');
+Route::post('content/dislike/{id}', 'ContentController@dislike')->middleware('auth')->name('content.dislike');
+
+/*
 Route::get('content/text/edit/{id}','TextContentController@edit')->middleware('auth')->name('textcontent.edit');
-Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit'); 
+Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit');
 */
 Route::patch('content/text/edit/{id}','TextContentController@update')->middleware('auth')->name('textcontent.update');
 Route::patch('content/media/edit/{id}','MediaContentController@update')->middleware('auth')->name('mediacontent.update');

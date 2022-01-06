@@ -107,6 +107,7 @@ CREATE TABLE content (
 );
 
 CREATE TABLE content_like (
+   id SERIAL UNIQUE, --Laravel eloquent does not support composite primary, that's why this id exists
    date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
    id_user INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
    id_content INTEGER NOT NULL REFERENCES content(id),
@@ -218,9 +219,8 @@ CREATE TABLE notification (
 
 CREATE TABLE like_notification (
    id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,
-   id_user INTEGER NOT NULL,
-   id_content INTEGER NOT NULL,
-   FOREIGN KEY (id_user, id_content) REFERENCES content_like(id_user, id_content) ON UPDATE CASCADE
+   id_like INTEGER NOT NULL REFERENCES content_like(id) ON UPDATE CASCADE
+   --FOREIGN KEY (id_user, id_content) REFERENCES content_like(id_user, id_content) ON UPDATE CASCADE  --see content_like explanation
 );
 
 CREATE TABLE reply_notification (
@@ -631,16 +631,17 @@ INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (9, '2021
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (10, '2020-1-3', NULL, 10);
 SELECT setval('content_id_seq', (SELECT max(id) FROM content));
 
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2021-5-23', 1, 1);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2015-7-28', 2, 2);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2020-4-3', 3, 3);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2021-10-12', 4, 4);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2019-1-10', 5, 5);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2018-9-20', 6, 6);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2021-5-7', 7, 7);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2020-2-16', 8, 8);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2021-6-29', 9, 9);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2020-1-3', 10, 10);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (1, '2021-5-23', 1, 1);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (2, '2015-7-28', 2, 2);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (3, '2020-4-3', 3, 3);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (4, '2021-10-12', 4, 4);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (5, '2019-1-10', 5, 5);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (6, '2018-9-20', 6, 6);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (7, '2021-5-7', 7, 7);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (8, '2020-2-16', 8, 8);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (9, '2021-6-29', 9, 9);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (10, '2020-1-3', 10, 10);
+SELECT setval('content_like_id_seq', (SELECT max(id) FROM content_like));
 
 INSERT INTO text_content (id_content, post_text) VALUES (1, 'Today i made a funny thing!');
 INSERT INTO text_content (id_content, post_text) VALUES (2, 'I love to write SQL');
@@ -720,8 +721,8 @@ INSERT INTO notification (id, id_user, read) VALUES (4, 4, FALSE);
 INSERT INTO notification (id, id_user, read) VALUES (5, 5, FALSE);
 SELECT setval('notification_id_seq', (SELECT max(id) FROM notification));
 
-INSERT INTO like_notification (id_notification, id_user, id_content) VALUES (1, 1, 1);
-INSERT INTO like_notification (id_notification, id_user, id_content) VALUES (2, 2, 2);
+INSERT INTO like_notification (id_notification, id_like) VALUES (1, 1);
+INSERT INTO like_notification (id_notification, id_like) VALUES (2, 2);
 
 INSERT INTO reply_notification (id_notification) VALUES (1);
 INSERT INTO reply_notification (id_notification) VALUES (2);

@@ -178,3 +178,57 @@ function createItem(item) {
 }
 
 addEventListeners();
+
+
+/**
+ * NEW
+ */
+
+function addListeners(){
+  let like_buttons = document.getElementsByClassName('button-content-like');
+  console.log("HERE: ", like_buttons.length);
+
+  for(let i = 0; i < like_buttons.length; i++){
+    const icon = document.querySelector("#"+like_buttons[i].id+'> i');
+
+    if(icon.id == 'icon-liked'){
+      like_buttons[i].addEventListener('click', () => {
+        let idStr = like_buttons[i].id;
+        let parsedId = idStr.replace('button-content-like-', '');
+        sendAjaxRequest('post', '/content' + '/like/' + parsedId, null, likeResponseHandler);
+      });
+    }
+    else if (icon.id == 'icon-not-liked'){
+      like_buttons[i].addEventListener('click', () => {
+        let idStr = like_buttons[i].id;
+        let parsedId = idStr.replace('button-content-like-', '');
+        sendAjaxRequest('post', '/content' + '/dislike/' + parsedId , null, dislikeResponseHandler);
+      });
+    }
+  }
+}
+
+function likeResponseHandler(){
+  console.log(this.responseText);
+  let res = JSON.parse(this.responseText);
+
+  const but = document.getElementById('s-hearts-count-'+res.id);
+
+  if(res.liked){
+    but.innerHTML = res.nLikes;
+    addListeners();
+  }
+}
+
+function dislikeResponseHandler(){
+  let res = JSON.parse(this.responseText);
+
+  const but = document.getElementById('s-hearts-count-'+res.id);
+
+  if(res.liked){
+    but.innerHTML = res.nLikes;
+    addListeners();
+  }
+}
+
+addListeners();
