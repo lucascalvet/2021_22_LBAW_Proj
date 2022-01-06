@@ -186,49 +186,39 @@ addEventListeners();
 
 function addListeners(){
   let like_buttons = document.getElementsByClassName('button-content-like');
-  console.log("HERE: ", like_buttons.length);
 
   for(let i = 0; i < like_buttons.length; i++){
-    const icon = document.querySelector("#"+like_buttons[i].id+'> i');
 
-    if(icon.id == 'icon-liked'){
-      like_buttons[i].addEventListener('click', () => {
-        let idStr = like_buttons[i].id;
-        let parsedId = idStr.replace('button-content-like-', '');
-        sendAjaxRequest('post', '/content' + '/like/' + parsedId, null, likeResponseHandler);
-      });
-    }
-    else if (icon.id == 'icon-not-liked'){
-      like_buttons[i].addEventListener('click', () => {
-        let idStr = like_buttons[i].id;
-        let parsedId = idStr.replace('button-content-like-', '');
-        sendAjaxRequest('post', '/content' + '/dislike/' + parsedId , null, dislikeResponseHandler);
-      });
-    }
+    like_buttons[i].addEventListener('click', () => {
+      let idStr = like_buttons[i].id;
+      let parsedId = idStr.replace('button-content-like-', '');
+      sendAjaxRequest('post', '/content' + '/like/' + parsedId, null, likeResponseHandler);
+    });
   }
+
 }
 
 function likeResponseHandler(){
   console.log(this.responseText);
   let res = JSON.parse(this.responseText);
 
-  const but = document.getElementById('s-hearts-count-'+res.id);
+  const count = document.getElementById('s-hearts-count-'+res.id);
+  count.innerHTML = res.nLikes;
 
-  if(res.liked){
-    but.innerHTML = res.nLikes;
-    addListeners();
-  }
-}
+  const but = document.getElementById('button-content-like-'+res.id);
 
-function dislikeResponseHandler(){
-  let res = JSON.parse(this.responseText);
+  but.removeChild(but.lastElementChild);
 
-  const but = document.getElementById('s-hearts-count-'+res.id);
+  let newIcon = document.createElement('i');
 
-  if(res.liked){
-    but.innerHTML = res.nLikes;
-    addListeners();
-  }
+  newIcon.style.color = 'red';
+  newIcon.classList.add('bi');
+  newIcon.classList.add('fs-5');
+
+  if (res.liked) newIcon.classList.add('bi-heart-fill');
+  else newIcon.classList.add('bi-heart');
+
+  but.appendChild(newIcon);
 }
 
 addListeners();

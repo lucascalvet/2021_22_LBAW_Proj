@@ -89,9 +89,9 @@ $link_view = route('content.show', ['id' => $content->id]);
         <div class="row justify-content-center">
             <button id="button-content-like-{{ $content->id }}" type="button" class="btn btn-secondary button-content-like" style="width: auto; height: auto;">
               @if($liked)
-                <i id="icon-not-liked" style="color: red;" class="bi bi-heart-fill {{ $icon_size }}"></i>
+                <i style="color: red;" class="bi bi-heart-fill {{ $icon_size }}"></i>
               @else
-                <i id="icon-liked" style="color: red;" class="bi bi-heart {{ $icon_size }}"></i>
+                <i style="color: red;" class="bi bi-heart {{ $icon_size }}"></i>
               @endif
             </button>
           <span id="s-hearts-count-{{ $content->id }}" class="text-center">{{ $n_hearts }}</span>

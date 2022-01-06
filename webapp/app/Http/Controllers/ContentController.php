@@ -157,50 +157,35 @@ class ContentController extends Controller
         //this gives us the currently logged in user
         $user = $request->user();
 
-        abort_if((Like::where('id_content', $content->id)->where('id_user', $user->id)->count() == 1), 404);
+        if(Like::where('id_content', $content->id)->where('id_user', $user->id)->count() == 0){
+            $like = new Like;
+            $like->id_user = $user->id;
+            $like->id_content = $content->id;
 
-        $like = new Like;
-        $like->id_user = $user->id;
-        $like->id_content = $content->id;
+            $like->save();
 
-        $like->save();
+            $nLikes = $content->numberOfLikes();
 
-        $nLikes = $content->numberOfLikes();
-
-        $res = json_encode(array(
-            'id' => $content->id,
-            'liked' => true,
-            'nLikes' => $nLikes,
-        ));
-
-        return $res;
-    }
-
-    public function dislike(Request $request, $id){
-        abort_if(is_null($content = Content::find($id)), 404);
-
-        //this gives us the currently logged in user
-        $user = $request->user();
-
-        Like::where('id_content', $content->id)->where('id_user', $user->id)->delete();
-
-        $nLikes = $content->numberOfLikes();
-
-        $res = json_encode(array(
-            'id' => $content->id,
-            'liked' => false,
-            'nLikes' => $nLikes
-        ));
-
-        return $res;
-    }
-
-    public function isLiked($id){
-        abort_if(is_null($content = Content::find($id)), 404);
-
-        if(Like::where('id_user', $content->user_id)->where('id_content', $content->id)->count() == 1){
-            return true;
+            $res = json_encode(array(
+                'id' => $content->id,
+                'liked' => true,
+                'nLikes' => $nLikes,
+            ));
         }
-        else return false;
+        else{
+            //$like = Like::where('id_content', $content->id)->where('id_user', $user->id)->get();
+
+            //Like::destroy($like->id);
+
+            $nLikes = $content->numberOfLikes();
+
+            $res = json_encode(array(
+                'id' => $content->id,
+                'liked' => false,
+                'nLikes' => $nLikes,
+            ));
+        }
+
+        return $res;
     }
 }
