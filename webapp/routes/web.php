@@ -73,4 +73,4 @@ Route::get('/notifications', 'HomeController@show')->name('notifications');
 Route::get('/chat', 'HomeController@show')->name('chat');
 
 // Groups
-Route::get('/groups', 'HomeController@show')->name('groups');
+Route::get('/groups', 'GroupController@showHub')->name('groups');
