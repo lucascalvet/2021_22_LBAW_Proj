@@ -166,7 +166,7 @@ CREATE TABLE friend_request (
    id SERIAL PRIMARY KEY,
    creation_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
    id_sender INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
-   id_receiver INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE
+   id_receiver INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE accepted_friend_request (
@@ -219,7 +219,7 @@ CREATE TABLE notification (
 
 CREATE TABLE like_notification (
    id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,
-   id_like INTEGER NOT NULL REFERENCES content_like(id) ON UPDATE CASCADE
+   id_like INTEGER NOT NULL REFERENCES content_like(id) ON UPDATE CASCADE ON DELETE CASCADE
    --FOREIGN KEY (id_user, id_content) REFERENCES content_like(id_user, id_content) ON UPDATE CASCADE  --see content_like explanation
 );
 

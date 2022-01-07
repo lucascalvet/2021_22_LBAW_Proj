@@ -141,6 +141,8 @@ $link_create_media = route('mediacontent.make');
               @else
                 @include('partials.content', ['content' => $content, 'liked' => true])
               @endif
+            @else
+              @include('partials.content', ['content' => $content, 'liked' => false])
             @endif
           </div>
         @endforeach

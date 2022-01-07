@@ -173,9 +173,9 @@ class ContentController extends Controller
             ));
         }
         else{
-            //$like = Like::where('id_content', $content->id)->where('id_user', $user->id)->get();
+            $like = Like::where('id_content', $content->id)->where('id_user', $user->id)->first();
 
-            //Like::destroy($like->id);
+            $like->delete();
 
             $nLikes = $content->numberOfLikes();
 

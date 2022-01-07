@@ -87,14 +87,18 @@ $link_view = route('content.show', ['id' => $content->id]);
       </div>
       <div class="col-6">
         <div class="row justify-content-center">
+          @if(Auth::user())
             <button id="button-content-like-{{ $content->id }}" type="button" class="btn btn-secondary button-content-like" style="width: auto; height: auto;">
+          @else
+            <button disabled id="button-content-like-{{ $content->id }}" type="button" class="btn btn-secondary button-content-like" style="width: auto; height: auto;">
+          @endif
               @if($liked)
                 <i style="color: red;" class="bi bi-heart-fill {{ $icon_size }}"></i>
               @else
                 <i style="color: red;" class="bi bi-heart {{ $icon_size }}"></i>
               @endif
             </button>
-          <span id="s-hearts-count-{{ $content->id }}" class="text-center">{{ $n_hearts }}</span>
+          <span id="s-hearts-count-{{ $content->id }}" class="text-center">{{ $content->numberOfLikes() }}</span>
         </div>
       </div>
       <div class="col-3">
