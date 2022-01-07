@@ -25,7 +25,6 @@ Route::get('content/edit/{id}','ContentController@edit')->middleware('auth')->na
 
 //Like content
 Route::post('content/like/{id}', 'ContentController@like')->middleware('auth')->name('content.like');
-Route::post('content/dislike/{id}', 'ContentController@dislike')->middleware('auth')->name('content.dislike');
 
 /*
 Route::get('content/text/edit/{id}','TextContentController@edit')->middleware('auth')->name('textcontent.edit');
@@ -72,7 +71,10 @@ Route::get('search/content', 'SearchController@searchPosts')->name('search.conte
 Route::get('search', 'SearchController@searchUsers')->name('search');
 
 // Notifications
-Route::get('/notifications', 'HomeController@show')->name('notifications');
+Route::get('/notifications', 'NotificationsController@all')->middleware('auth')->name('notifications');
+Route::get('/notifications/friends_requests', 'NotificationsController@friends')->middleware('auth')->name('notifications.friend_requests');
+Route::get('/notifications/likes', 'NotificationsController@likes')->middleware('auth')->name('notifications.likes');
+Route::get('/notifications/comments', 'NotificationsController@comments')->middleware('auth')->name('notifications.comments');
 
 // Chat
 Route::get('/chat', 'HomeController@show')->name('chat');
