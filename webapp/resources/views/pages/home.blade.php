@@ -4,8 +4,7 @@ $icon_size = 'fs-3';
 $user = Auth::user();
 $users = \App\Models\User::all();
 $contents = \App\Models\Content::all();
-$link_create_text = route('textcontent.make');
-$link_create_media = route('mediacontent.make');
+
 @endphp
 
 @extends('layouts.app')
@@ -16,54 +15,12 @@ $link_create_media = route('mediacontent.make');
 @include('partials.navbar')
 <div class="row vh-100 overflow-auto bg-dark text-white" style="padding: 0em; margin: 0em;">
   <div class="col-3 d-sm-flex d-md-flex d-lg-none">
-    <nav class="d-flex flex-column">
-      <div class="d-flex flex-row my-3">
-        <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-          <i class="bi bi-bar-chart {{ $icon_size }}"></i>
-        </button>
-        <span class="d-none d-md-block d-lg-none align-self-center ms-3">Ranking</span>
-      </div>
-      <div class="d-flex flex-row my-3">
-        <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-          <i class="bi bi-controller {{ $icon_size }}"></i>
-        </button>
-        <span class="d-none d-md-block d-lg-none align-self-center ms-3">Games</span>
-      </div>
-      <div class="d-flex flex-row my-3">
-        <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-          <i class="bi bi-chat-dots {{ $icon_size }}"></i>
-        </button>
-        <span class="d-none d-md-block d-lg-none align-self-center ms-3">Messages</span>
-      </div>
-      <div class="d-flex flex-row my-3">
-        <a href="{{ $link_create_text }}">
-          <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-            <i class="bi bi-pencil-square {{ $icon_size }}"></i>
-          </button>
-        </a>
-        <span class="d-none d-md-block d-lg-none align-self-center ms-3">Create Text Content</span>
-      </div>
-      <div class="d-flex flex-row my-3">
-        <a href="{{ $link_create_media }}">
-          <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-            <i class="bi bi-file-earmark-richtext {{ $icon_size }}"></i>
-          </button>
-        </a>
-        <span class="d-none d-md-block d-lg-none align-self-center ms-3">Create Media Content</span>
-      </div>
-      <div class="d-flex flex-row my-3">
-        <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-          <i class="bi bi-list {{ $icon_size }}"></i>
-        </button>
-        <span class="d-none d-md-block d-lg-none align-self-center ms-3">Options</span>
-      </div>
-
-    </nav>
+    @include('partials.side_create_buttons')
   </div>
 
   <div class="col-3 d-lg-block d-none align-self-center">
     <div class="row justify-content-center mb-3 py-3">
-      <div style="height: 15em; overflow-y: auto;">
+      <div style="height: auto; max-height: 15em; overflow-y: auto;">
         <table class="table table-hover table-dark">
           <thead>
             <tr>
@@ -87,31 +44,9 @@ $link_create_media = route('mediacontent.make');
       </div>
     </div>
 
-    <div class="d-flex flex-row my-3">
-      <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-        <i class="bi bi-bar-chart {{ $icon_size }}"></i>
-      </button>
-      <span class="d-none d-lg-block align-self-center ms-3">Ranking</span>
-    </div>
-    <div class="d-flex flex-row my-3">
-      <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-        <i class="bi bi-controller {{ $icon_size }}"></i>
-      </button>
-      <span class="d-none d-lg-block align-self-center ms-3">Games</span>
-    </div>
-    <div class="d-flex flex-row my-3">
-      <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-        <i class="bi bi-chat-dots {{ $icon_size }}"></i>
-      </button>
-      <span class="d-none d-lg-block align-self-center ms-3">Messages</span>
-    </div>
-    <div class="d-flex flex-row my-3">
-      <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-        <i class="bi bi-list {{ $icon_size }}"></i>
-      </button>
-      <span class="d-none d-lg-block align-self-center ms-3">Options</span>
-    </div>
+    @include('partials.side_buttons')
   </div>
+
   <div class="col-8">
     <div class="d-flex flex-row pt-3 pl-3 pr-1" style="overflow-x: auto;">
       @foreach ($contents as $content)
@@ -121,18 +56,7 @@ $link_create_media = route('mediacontent.make');
       @endforeach
     </div>
 
-    <div class="d-none d-lg-flex justify-content-around py-3">
-      <a href="{{ $link_create_text }}">
-        <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-          <i class="bi bi-pencil-square {{ $icon_size }}"></i>
-        </button>
-      </a>
-      <a href="{{ $link_create_media }}">
-        <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-          <i class="bi bi-file-earmark-richtext {{ $icon_size }}"></i>
-        </button>
-      </a>
-    </div>
+    @include('partials.create_buttons')
   </div>
 </div>
 @endsection

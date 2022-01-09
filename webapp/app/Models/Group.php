@@ -51,7 +51,7 @@ class Group extends Model
      */
     public function contents()
     {
-        return $this->hasMany(Content::class, 'id_creator');
+        return $this->hasMany(Content::class, 'id_group');
     }
 
 

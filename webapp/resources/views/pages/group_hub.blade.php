@@ -3,7 +3,7 @@ $icon_size = 'fs-3';
 
 $user = Auth::user();
 $groups = \App\Models\Group::all();
-$link_create_group = route('textcontent.make');
+$link_create_group = route('group.make');
 @endphp
 
 @extends('layouts.app')
@@ -12,66 +12,24 @@ $link_create_group = route('textcontent.make');
 
 @section('content')
 @include('partials.navbar')
-<div class="row vh-100 overflow-auto bg-dark text-white" style="padding: 0em; margin: 0em;">
+<div class="row bg-dark text-white" style="padding: 0em; margin: 0em;">
     <div class="col-3 d-sm-flex d-md-flex d-lg-none">
-        <nav class="d-flex flex-column">
-            <div class="d-flex flex-row my-3">
-                <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                    <i class="bi bi-bar-chart {{ $icon_size }}"></i>
-                </button>
-                <span class="d-none d-md-block d-lg-none align-self-center ms-3">Ranking</span>
-            </div>
-            <div class="d-flex flex-row my-3">
-                <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                    <i class="bi bi-controller {{ $icon_size }}"></i>
-                </button>
-                <span class="d-none d-md-block d-lg-none align-self-center ms-3">Games</span>
-            </div>
-            <div class="d-flex flex-row my-3">
-                <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                    <i class="bi bi-chat-dots {{ $icon_size }}"></i>
-                </button>
-                <span class="d-none d-md-block d-lg-none align-self-center ms-3">Messages</span>
-            </div>
-            <div class="d-flex flex-row my-3">
-                <a href="{{ $link_create_text }}">
-                    <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                        <i class="bi bi-pencil-square {{ $icon_size }}"></i>
-                    </button>
-                </a>
-                <span class="d-none d-md-block d-lg-none align-self-center ms-3">Create Text Content</span>
-            </div>
-            <div class="d-flex flex-row my-3">
-                <a href="{{ $link_create_media }}">
-                    <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                        <i class="bi bi-file-earmark-richtext {{ $icon_size }}"></i>
-                    </button>
-                </a>
-                <span class="d-none d-md-block d-lg-none align-self-center ms-3">Create Media Content</span>
-            </div>
-            <div class="d-flex flex-row my-3">
-                <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                    <i class="bi bi-list {{ $icon_size }}"></i>
-                </button>
-                <span class="d-none d-md-block d-lg-none align-self-center ms-3">Options</span>
-            </div>
-
-        </nav>
+        @include('partials.side_group_buttons')
     </div>
 
-    <div class="col-3 d-lg-block d-none align-self-center">
-        <div class="row justify-content-center mb-3 py-3">
-            <div style="height: 15em; overflow-y: auto;">
+    <div class="col-3 d-lg-block d-none">
+        <div class="row justify-content-center my-3 py-3">
+            <div style="height: auto; max-height: 15em; overflow-y: auto;">
                 <table class="table table-hover table-dark">
                     <thead>
                         <tr>
-                            <th scope="col">Group</th>
+                            <th scope="col">Groups</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($groups as $group)
                         <tr>
-                            <td>{{ $group->name }}</td>
+                            <td><a href="{{ route('group.show', ['id' => $group->id])}}"> {{ $group->name }} </a></td>
                             {{-- <td> <a href="{{ route('profile', ['user' => $person->id])}}"> Name </a></td> --}}
                         </tr>
                         @endforeach
@@ -80,46 +38,29 @@ $link_create_group = route('textcontent.make');
             </div>
         </div>
 
-        <div class="d-flex flex-row my-3">
-            <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                <i class="bi bi-bar-chart {{ $icon_size }}"></i>
-            </button>
-            <span class="d-none d-lg-block align-self-center ms-3">Ranking</span>
-        </div>
-        <div class="d-flex flex-row my-3">
-            <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                <i class="bi bi-controller {{ $icon_size }}"></i>
-            </button>
-            <span class="d-none d-lg-block align-self-center ms-3">Games</span>
-        </div>
-        <div class="d-flex flex-row my-3">
-            <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                <i class="bi bi-chat-dots {{ $icon_size }}"></i>
-            </button>
-            <span class="d-none d-lg-block align-self-center ms-3">Messages</span>
-        </div>
-        <div class="d-flex flex-row my-3">
-            <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                <i class="bi bi-list {{ $icon_size }}"></i>
-            </button>
-            <span class="d-none d-lg-block align-self-center ms-3">Options</span>
-        </div>
+        @include('partials.side_buttons')
     </div>
     <div class="col-8">
-        <div class="d-flex flex-row pt-3 pl-3 pr-1" style="overflow-x: auto;">
+        <div class="d-flex flex-column pt-3 pl-3 pr-1" style="overflow-y: visible;">
             @foreach ($groups as $group)
-            @foreach ($groups->contents() as $content)
-            <div class="d-block mx-2 pb-2">
+            @if (count($group->contents) > 0)
+            <h5>{{ $group-> name }}</h5>
+            @endif
+            <div class="d-flex flex-row mx-2 mb-2 pb-2" style="overflow-x: auto;">
+                @foreach ($group->contents as $content)
+                <div class="d-block mx-2 pb-2">
                 @include('partials.content', ['content' => $content])
+                </div>
+                @endforeach
             </div>
-            @endforeach
+
             @endforeach
         </div>
 
-        <div class="d-none d-lg-flex justify-content-around py-3">
-            <a href="{{ link_create_group }}">
+        <div class="d-none d-lg-flex justify-content-center py-3">
+            <a href="{{ $link_create_group }}">
                 <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                    <i class="bi bi-pencil-square {{ $icon_size }}"></i>
+                    <i class="bi bi-plus-circle {{ $icon_size }}"></i>
                 </button>
             </a>
         </div>

@@ -56,8 +56,6 @@ class ContentController extends Controller
         }
 
         return redirect()->route('home');
-
-
     }
 
     protected function validator(Request $request)
