@@ -41,22 +41,59 @@ class NotificationsController extends Controller
      */
     public function likes(Request $request){
 
+        //this gives us the currently logged in user
         $user = $request->user();
 
-        //Notification::where('id_user', $user->id);
+        //retrieves all likes notifications for the logged user
+        $like_ids = LikeNotification::whereIn('id_notification', function ($query) use($user) {
+            $query->select('id')
+                ->from('notification')
+                ->where('id_user', '=', $user->id);
+        })->get();
 
-        //LikeNotification::addSelect(['id_notification' => Notification::select('id')->where('id_user', $user->id);
+        //retrieves all content that generated previous likes notifications
+        $contents_collection = $like_ids->map(function ($item, $key) {
+            return Content::whereIn('id', function ($query) use($item){
+                $query->select('id_content')
+                    ->from('content_like')
+                    ->where('id', $item->id_like);
+            })->get();
+        });
 
-        //$like_notifications = LikeNotification::all();
+        //retrieves all user that generated previous likes notifications
+        $users_collection = $like_ids->map(function ($item, $key) {
+            return User::whereIn('id', function ($query)  use($item) {
+                $query->select('id_user')
+                    ->from('content_like')
+                    ->where('id', $item->id_like);
+            })->get();
+        });
 
-        $contents = Content::all();
+        /*
+        The same as above, but in pure sql
 
-        $users = User::all();
+        SELECT id_like
+        FROM like_notifications
+        WHERE id_notification IN (
+            SELECT id
+            FROM notification
+            WHERE id_user = AUTH::user
+        )
+
+        SELECT *
+        FROM content
+        WHERE id IN (
+            SELECT id_content
+            FROM content_like
+            WHERE id = id_like
+        )
+        ...
+        */
 
         return view('pages.notifications', [
             'type' => 'likes',
-            'users' => $users,
-            'contents' => $contents,
+            'users' => $users_collection->first(),  //TODO: change both from first to all
+            'contents' => $contents_collection->first(),
         ]);
     }
 
