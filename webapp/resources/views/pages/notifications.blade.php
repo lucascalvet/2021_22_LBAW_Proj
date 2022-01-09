@@ -54,21 +54,24 @@
             </ul>
           </div>
 
-          <!--Results Bar-->
           <div class="col-7">
             <h1 class="ms-3 me-4 mt-0 mb-4 text-light fw-bold">Notifications</h1>
+
+             <!--Actual Notifications $users[$i]->profile_picture-->
             <div class="card m-3 list-group">
-              @if ($type == 'user')
-                @foreach ($users as $user)
-                  @include('partials.listCards', ['username' => $user->username, 'description' => $user->description,
-                  'comment' => $user->email, 'days_ago'=>"User", 'link' => route('profile', ['user' => $user->id]) ])
-                @endforeach
-              @elseif ($type == 'post')
-                @foreach ($posts as $post)
-                  @include('partials.listCards', ['username' => $post->content->creator->username,
-                  'description' => $post->post_text,
-                  'comment' => "", 'days_ago'=>"Post", 'link' => route('content.show', ['id' => $post->content->id]) ])
-                @endforeach
+              @if ($type == 'likes')
+                @for($i=0; $i < count(array($users)); $i++)
+
+                  @include('partials.notification',
+                  [
+                    'user_link' => route('profile', ['user' => $users[$i]->id]),
+                    'profile_picture' => "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+                    'username' => $users[$i]->username,
+                    'time_passed' => "none",
+                    'notification_generator_link' => route('content.show', ['id' => $contents[$i]->id]),
+                    'description' => "Liked your post",
+                  ])
+                @endfor
               @endif
               </div>
           </div>
@@ -82,6 +85,8 @@
       <!--Mobile View-->
       <div class="d-block d-md-none" style="padding: 0em;padding-top: 2em; margin: 0em;">
         <h1 class="mt-0 mb-3 text-light text-center fw-bold">Notifications</h1>
+
+        <!--Filters-->
         <div class="d-flex justify-content-center">
           <ul class="nav nav-pills" id="pills-tab" role="tablist">
             <li class="nav-item">
@@ -122,6 +127,8 @@
             </li>
           </ul>
         </div>
+
+        <!--Actual Notifications-->
         <div class="me-5 ms-5">
           {{-- <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
             @include('partials.listCards',['username'=>'John Doe', 'description'=>'Studied at FEUP, currently working on

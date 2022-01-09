@@ -553,6 +553,21 @@ CREATE TRIGGER like_notifications
    AFTER INSERT ON content_like
    FOR EACH ROW
    EXECUTE PROCEDURE like_notifications();
+
+CREATE FUNCTION delete_notification_after_dislike() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   DELETE FROM notification
+   WHERE OLD.id_notification = id;
+   RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER delete_notification_after_dislike
+   AFTER DELETE ON like_notification
+   FOR EACH ROW
+   EXECUTE PROCEDURE delete_notification_after_dislike();
+
 /*
 ----- FRIEND REQUEST TRIGGER
 CREATE FUNCTION friend_requests_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS

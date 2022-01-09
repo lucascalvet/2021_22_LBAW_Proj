@@ -81,8 +81,17 @@
             <!--Actual Content for md screen and beyond-->
             <div class="d-flex flex-row text-light overflow-auto">
                 @foreach($user->contents as $content)
-                      <div class="d-block mx-3 bg-secondary rounded-3"> @include('partials.content', ['content' => $content])</div>
-                      {{--<div class="p-5 m-2 mx-1 bg-secondary shadow rounded-3"> @include('partials.mini_post', ['content' => $content])--}}
+                <div class="d-block mx-2 pb-2">
+                  @if(Auth::user())
+                    @if(\App\Models\Like::where('id_user', $user->id)->where('id_content', $content->id)->count() == 0)
+                      @include('partials.content', ['content' => $content, 'liked' => false])
+                    @else
+                      @include('partials.content', ['content' => $content, 'liked' => true])
+                    @endif
+                  @else
+                    @include('partials.content', ['content' => $content, 'liked' => false])
+                  @endif
+                </div>
                 @endforeach
             </div>
 
