@@ -1,3 +1,7 @@
+@php
+$icon_size = 'fs-3';
+@endphp
+
 <nav class="d-flex flex-column">
     <div class="d-flex flex-row my-3">
         <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">

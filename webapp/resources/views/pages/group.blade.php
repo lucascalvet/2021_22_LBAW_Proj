@@ -11,10 +11,10 @@ $link_edit = route('group.edit', ['id' => $group->id]);
 
 @section('content')
 @include('partials.navbar')
-<div class="vh-100 row bg-dark text-white" style="padding: 0em; margin: 0em;">
+<div class="vh-100 row bg-dark text-white" style="padding: 0em; margin: 0em; overflow: visible;">
     <h3 class="d-block d-lg-none text-center my-3"> {{ $group->name }}</h3>
     <div class="col-3 d-sm-flex d-md-flex d-lg-none">
-        @include('partials.side_create_buttons')
+        @include('partials.side_group_create_buttons', ['group' => $group, 'user' => $user])
     </div>
 
     <div class="col-3 d-lg-block d-none align-self-center">
@@ -60,15 +60,7 @@ $link_edit = route('group.edit', ['id' => $group->id]);
             </div>
         </div>
 
-        @if($group->members->contains($user))
-        <div class="d-flex flex-row my-3">
-            <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                <i class="bi bi-chat-dots {{ $icon_size }}"></i>
-            </button>
-            <span class="d-none d-md-block d-lg-none align-self-center ms-3">Join</span>
-        </div>
-        @endif
-        @include('partials.side_buttons')
+        @include('partials.side_group_buttons', ['group' => $group, 'user' => $user])
     </div>
 
     <div class="col-8">
@@ -82,7 +74,9 @@ $link_edit = route('group.edit', ['id' => $group->id]);
             @endforeach
         </div>
 
+        @if($group->members->contains($user))
         @include('partials.create_buttons')
+        @endif
 
         <div class="d-none d-md-block text-center my-3">
             {{ $group->description }}

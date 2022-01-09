@@ -80,3 +80,7 @@ Route::get('group/{id}','GroupController@show')->name('group.show');
 Route::get('group/edit/{id}','GroupController@edit')->middleware('auth')->name('group.edit');
 Route::patch('group/edit/{id}','GroupController@update')->middleware('auth')->name('group.update');
 Route::delete('group/delete/{id}', 'GroupController@destroy')->middleware('auth')->name('group.destroy');
+Route::get('group/{id}/join/{user}','GroupController@memberJoin')->middleware('auth')->name('group.member.join');
+Route::get('group/{id}/leave/{user}','GroupController@memberLeave')->middleware('auth')->name('group.member.leave');
+Route::get('group/{id}/modjoin/{user}','GroupController@modJoin')->middleware('auth')->name('group.mod.join');
+Route::get('group/{id}/modleave/{user}','GroupController@modLeave')->middleware('auth')->name('group.mod.leave');

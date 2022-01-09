@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Group;
 use App\Models\GroupMember;
 use App\Models\GroupModerator;
+use App\Models\User;
 
 class GroupController extends Controller
 {
@@ -82,22 +83,12 @@ class GroupController extends Controller
   {
 
     abort_if(is_null($group = Group::find($id)), 404);
-
     //$this->authorize('delete', $content);
 
-    /*
-      if ($content->contentable instanceof \App\Models\TextContent) {
-          $content->contentable->delete();
-      } else if ($content->contentable instanceof \App\Models\MediaContent) {
-          $content->contentable->media_contentable->delete();
-          $content->contentable->delete();
-      }
-
-      $content->delete();
-      */
-
+    
     foreach ($group->contents as $content) {
-      $content->id_group = null;
+      $content->group()->dissociate();
+      $content->save();
     }
 
     $group->members()->detach();
@@ -106,5 +97,39 @@ class GroupController extends Controller
     $group->delete();
 
     return redirect()->route('groups');
+  }
+
+  public function memberJoin($id, $user){
+    $group = Group::find($id);
+    $group->members()->attach($user);
+
+    return redirect()->route('group.show', ['id' => $group->id]);
+  }
+
+  public function memberLeave($id, $user){
+    $group = Group::find($id);
+    if($group->moderators->contains(User::find($user))){
+      $group->moderators()->attach($user);
+    }
+    $group->members()->detach($user);
+
+    return redirect()->route('group.show', ['id' => $group->id]);
+  }
+
+  public function modJoin($id, $user){
+    $group = Group::find($id);
+    if(!($group->members->contains(User::find($user)))){
+      $group->members()->attach($user);
+    }
+    $group->moderators()->attach($user);
+
+    return redirect()->route('group.show', ['id' => $group->id]);
+  }
+
+  public function modLeave($id, $user){
+    $group = Group::find($id);
+    $group->moderators()->detach($user);
+
+    return redirect()->route('group.show', ['id' => $group->id]);
   }
 }
