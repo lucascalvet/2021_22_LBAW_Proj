@@ -223,9 +223,11 @@ CREATE TABLE like_notification (
    --FOREIGN KEY (id_user, id_content) REFERENCES content_like(id_user, id_content) ON UPDATE CASCADE  --see content_like explanation
 );
 
+/*
 CREATE TABLE reply_notification (
    id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE
 );
+*/
 
 CREATE TABLE friend_request_notification (
    id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,
@@ -233,14 +235,16 @@ CREATE TABLE friend_request_notification (
 );
 
 CREATE TABLE comment_notification (
-   id_reply_notification INTEGER PRIMARY KEY REFERENCES reply_notification(id_notification) ON UPDATE CASCADE,
+   id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,
    id_comment INTEGER NOT NULL REFERENCES comment(id) ON UPDATE CASCADE
 );
 
+/*
 CREATE TABLE text_content_reply_notification (
    id_reply_notification INTEGER PRIMARY KEY REFERENCES reply_notification(id_notification) ON UPDATE CASCADE,
    id_text_content INTEGER NOT NULL REFERENCES text_content(id_content) ON UPDATE CASCADE
 );
+*/
 
 CREATE TABLE payment_method (
    id SERIAL PRIMARY KEY,
@@ -554,6 +558,7 @@ CREATE TRIGGER like_notifications
    FOR EACH ROW
    EXECUTE PROCEDURE like_notifications();
 
+-- deletes notification (superclass) when like notification is deleted (subclass)
 CREATE FUNCTION delete_notification_after_dislike() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
@@ -568,15 +573,19 @@ CREATE TRIGGER delete_notification_after_dislike
    FOR EACH ROW
    EXECUTE PROCEDURE delete_notification_after_dislike();
 
-/*
+
 ----- FRIEND REQUEST TRIGGER
 CREATE FUNCTION friend_requests_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   --create friend request notification
-   --TODO: put here the same code as like notificaiton trigger first part
+   --create notification and friend request notification
+   WITH new_notification AS (
+      INSERT INTO notification (id_user, read)
+      VALUES (NEW.id_receiver, FALSE)
+      RETURNING id
+   )
    INSERT INTO friend_request_notification (id_notification, id_friend_request)
-   VALUES (SELECT id FROM new_notification, NEW.id);
+   VALUES ((SELECT id FROM new_notification), NEW.id);
    RETURN NEW;
 END;
 $$;
@@ -586,14 +595,23 @@ CREATE TRIGGER friend_requests_notifications
    FOR EACH ROW
    EXECUTE PROCEDURE friend_requests_notifications();
 
+
 ----- COMMENT TRIGGER
 CREATE FUNCTION comments_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   --create comment notification
-    --TODO: put here the same code as like notificaiton trigger first part
-   INSERT INTO comment_notification (id_notification, id_friend_request)
-   VALUES (SELECT id FROM new_notification, NEW.id);
+   --create notification and comment notification
+   WITH new_notification AS (
+      INSERT INTO notification (id_user, read)
+      VALUES ((SELECT id_creator
+              FROM content
+              WHERE id IN (SELECT id_content
+                           FROM media_content
+                           WHERE id_content = NEW.id_media_content)), FALSE)
+      RETURNING id
+   )
+   INSERT INTO comment_notification (id_notification, id_comment)
+   VALUES ((SELECT id FROM new_notification), NEW.id);
    RETURN NEW;
 END;
 $$;
@@ -603,6 +621,7 @@ CREATE TRIGGER comments_notifications
    FOR EACH ROW
    EXECUTE PROCEDURE comments_notifications();
 
+/*
 ----- TEXT REPLY TRIGGER
 CREATE FUNCTION text_replies_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
