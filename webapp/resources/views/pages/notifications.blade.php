@@ -43,7 +43,7 @@
                 @endif
               </li>
               <li class="nav-item">
-                @if ($type == 'comments')
+                @if ($type == 'comment')
                   <a class="nav-link custom-tab-left active" id="list-comments-list" href="{{ route('notifications.comments') }}"
                     role="tab" aria-controls="list-comments">Comments</a>
                 @else
@@ -58,11 +58,30 @@
             <h1 class="ms-3 me-4 mt-0 mb-4 text-light fw-bold">Notifications</h1>
 
              <!--Actual Notifications $users[$i]->profile_picture-->
-            <div class="card m-3 list-group">
+            <div class="m-3 list-group">
               @if ($type == 'likes')
-                @for($i=0; $i < count(array($users)); $i++)
+                @for($i=0; $i < $content_likes->count(); $i++)
 
                   @include('partials.notification',
+                  [
+                    'user_link' => route('profile', ['user' => $users[$i]->id]),
+                    'profile_picture' => "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+                    'username' => $users[$i]->username,
+                    'time_passed' => date_parse($content_likes[$i]->date)['year'] . "-" .
+                                   date_parse($content_likes[$i]->date)['month'] . "-" .
+                                   date_parse($content_likes[$i]->date)['day'] . " ".
+                                   date_parse($content_likes[$i]->date)['hour'] . ":" .
+                                   date_parse($content_likes[$i]->date)['minute'],
+                    'notification_generator_link' => route('content.show', ['id' => $contents[$i]->id]),
+                    'description' => "Liked your post",
+                    'comment' => "",
+                  ])
+                @endfor
+              @endif
+              @if ($type == 'friend_request')
+                @for($i=0; $i < $users->count(); $i++)
+
+                  @include('partials.notification_friend_request',
                   [
                     'user_link' => route('profile', ['user' => $users[$i]->id]),
                     'profile_picture' => "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
@@ -73,6 +92,25 @@
                   ])
                 @endfor
               @endif
+              @if ($type == 'comment')
+                @for($i=0; $i < $users->count(); $i++)
+
+                @include('partials.notification',
+                [
+                  'user_link' => route('profile', ['user' => $users[$i]->id]),
+                  'profile_picture' => "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+                  'username' => $users[$i]->username,
+                  'time_passed' => date_parse($contents[$i]->comment_date)['year'] . "-" .
+                                   date_parse($contents[$i]->comment_date)['month'] . "-" .
+                                   date_parse($contents[$i]->comment_date)['day'] . "   ".
+                                   date_parse($contents[$i]->comment_date)['hour'] . ":" .
+                                   date_parse($contents[$i]->comment_date)['minute'],
+                  'notification_generator_link' => route('content.show', ['id' => $contents[$i]->id_media_content]),
+                  'description' => "Commented your post:",
+                  'comment' => $contents[$i]->comment_text,
+                ])
+              @endfor
+            @endif
               </div>
           </div>
 
