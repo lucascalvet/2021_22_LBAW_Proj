@@ -75,6 +75,7 @@ Route::get('/notifications', 'NotificationsController@all')->middleware('auth')-
 Route::get('/notifications/friends_requests', 'NotificationsController@friends')->middleware('auth')->name('notifications.friend_requests');
 Route::get('/notifications/likes', 'NotificationsController@likes')->middleware('auth')->name('notifications.likes');
 Route::get('/notifications/comments', 'NotificationsController@comments')->middleware('auth')->name('notifications.comments');
+Route::post('/notifications/change_filter/{url}', 'NotificationsController@toggleFilter')->middleware('auth')->name('notifications.toggle_filter');
 
 // Chat
 Route::get('/chat', 'HomeController@show')->name('chat');

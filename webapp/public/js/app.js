@@ -1,3 +1,5 @@
+//const { filter } = require("lodash");
+
 function addEventListeners() {
   let itemCheckers = document.querySelectorAll('article.card li.item input[type=checkbox]');
   [].forEach.call(itemCheckers, function(checker) {
@@ -181,10 +183,10 @@ addEventListeners();
 
 
 /**
- * NEW
+ * Like NEW
  */
 
-function addListeners(){
+function addLikeListeners(){
   let like_buttons = document.getElementsByClassName('button-content-like');
 
   for(let i = 0; i < like_buttons.length; i++){
@@ -221,4 +223,22 @@ function likeResponseHandler(){
   but.appendChild(newIcon);
 }
 
-addListeners();
+addLikeListeners();
+
+/*
+function addNotificationsFilterListen(){
+  let viewd_icon = document.getElementById('a-only-viewed');
+
+  viewd_icon.addEventListener('click', () => {
+    var splitedUrl = window.location.href.split('/');
+    var lastPath = splitedUrl[splitedUrl.length - 1];
+    sendAjaxRequest('post', '/notifications/change_filter/' + lastPath, null, notificationsFilterHandler);
+  });
+}
+
+function notificationsFilterHandler(){
+  console.log(this.responseText);
+}
+
+addNotificationsFilterListen();
+*/
