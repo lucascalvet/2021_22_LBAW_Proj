@@ -5,6 +5,7 @@ $icon_size = 'fs-3';
 $user = Auth::user();
 
 $link_edit = route('content.edit', ['id' => $content->id]);
+$link_remove = route('content.remove', ['id' => $content->id]);
 
 $profile_pic = 'img/profile_pic.png';
 $n_hearts = '3000';
@@ -44,6 +45,9 @@ $time = '10 days ago';
   @endif
 
   <div class="d-flex justify-content-center mt-3 mb-3">
+    @if ($content->id_group != null && (App\Models\Group::find($content->id_group)->moderators->contains($user) || (Auth::check() && Auth::user()->can('update', $content))))
+    <a href="{{ $link_remove }}"><button type="button" class="btn btn-outline-warning btn-lg text-dark me-3">Remove from Group</button></i></a>
+    @endif
     @if (Auth::check() && Auth::user()->can('update', $content))
     <a href="{{ $link_edit }}"><button type="button" class="btn btn-outline-secondary btn-lg bg-dark text-white me-3">Edit Post</button></i></a>
     <form method="POST" action="{{ route('content.destroy', $content) }}">

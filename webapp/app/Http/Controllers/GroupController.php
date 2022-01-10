@@ -109,7 +109,7 @@ class GroupController extends Controller
   public function memberLeave($id, $user){
     $group = Group::find($id);
     if($group->moderators->contains(User::find($user))){
-      $group->moderators()->attach($user);
+      $group->moderators()->detach($user);
     }
     $group->members()->detach($user);
 

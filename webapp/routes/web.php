@@ -29,6 +29,7 @@ Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware(
 Route::patch('content/text/edit/{id}','TextContentController@update')->middleware('auth')->name('textcontent.update');
 Route::patch('content/media/edit/{id}','MediaContentController@update')->middleware('auth')->name('mediacontent.update');
 Route::delete('content/delete/{id}', 'ContentController@destroy')->middleware('auth')->name('content.destroy');
+Route::get('content/remove/{id}','ContentController@remove')->middleware('auth')->name('content.remove');
 
 // Profile
 Route::get('profile/{user}', 'ProfileController@show')->name('profile');
@@ -84,3 +85,9 @@ Route::get('group/{id}/join/{user}','GroupController@memberJoin')->middleware('a
 Route::get('group/{id}/leave/{user}','GroupController@memberLeave')->middleware('auth')->name('group.member.leave');
 Route::get('group/{id}/modjoin/{user}','GroupController@modJoin')->middleware('auth')->name('group.mod.join');
 Route::get('group/{id}/modleave/{user}','GroupController@modLeave')->middleware('auth')->name('group.mod.leave');
+
+//Static Pages
+Route::get('faq', 'StaticPagesController@showFAQ')->name('faq');
+Route::get('features', 'StaticPagesController@showFeatures')->name('features');
+Route::get('contacts', 'StaticPagesController@showContacts')->name('contacts');
+Route::get('about', 'StaticPagesController@showAbout')->name('about');

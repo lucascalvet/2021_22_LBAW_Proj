@@ -24,13 +24,18 @@ $link_create_group = route('group.make');
                     <thead>
                         <tr>
                             <th scope="col">Groups</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($groups as $group)
                         <tr>
                             <td><a href="{{ route('group.show', ['id' => $group->id])}}"> {{ $group->name }} </a></td>
-                            {{-- <td> <a href="{{ route('profile', ['user' => $person->id])}}"> Name </a></td> --}}
+                            @if($group->moderators->contains($user))
+                            <td class="vertical-align-middle"><i class="bi bi-star fs-6"></i></td>
+                            @else
+                            <td></td>
+                            @endif
                         </tr>
                         @endforeach
                     </tbody>

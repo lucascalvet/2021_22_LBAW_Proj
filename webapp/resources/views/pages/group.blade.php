@@ -45,13 +45,22 @@ $link_edit = route('group.edit', ['id' => $group->id]);
                     <thead>
                         <tr>
                             <th scope="col">Members</th>
+                            @if ($group->moderators->contains($user))
+                            <th scope="col" class="text-center">Mod Controls</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($group->members as $member)
                         @if ($member->id != 1 && !($group->moderators->contains($member)))
                         <tr>
-                            <td><a href="{{ route('profile', ['user' => $member->id])}}">{{ $member->username }}</a></td>
+                            <td><a href="{{ route('profile', ['user' => $member->id]) }}">{{ $member->username }}</a></td>
+                            @if ($group->moderators->contains($user))
+                            <td class="d-flex flex-row justify-content-around">
+                            <a href="{{ route('group.mod.join', ['id' => $group->id, 'user' => $member->id]); }}" class="text-success"><i class="bi bi-arrow-up-square fs-6"></i></a>
+                            <a href="{{ route('group.member.leave', ['id' => $group->id, 'user' => $member->id]); }}" class="text-danger"><i class="bi bi-x-circle fs-6"></i></a>
+                            </td>
+                            @endif
                         </tr>
                         @endif
                         @endforeach

@@ -39,10 +39,16 @@ $link_create_media = route('mediacontent.make');
         </a>
         <span class="d-none d-md-block d-lg-none align-self-center ms-3">Create Media Content</span>
     </div>
-    <div class="d-flex flex-row my-3">
-        <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
+    <div class="dropright d-flex flex-row my-3">
+        <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMore" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="bi bi-list {{ $icon_size }}"></i>
         </button>
-        <span class="d-none d-md-block d-lg-none align-self-center ms-3">Options</span>
+        <span class="d-none d-md-block d-lg-none align-self-center ms-3">More</span>
+        <div class="dropdown-menu" aria-labelledby="dropdownMore">
+            <a class="dropdown-item" href="{{ route('about') }}">About</a>
+            <a class="dropdown-item" href="{{ route('features') }}">Features</a>
+            <a class="dropdown-item" href="{{ route('faq') }}">FAQ</a>
+            <a class="dropdown-item" href="{{ route('contacts') }}">Contacts</a>
+        </div>
     </div>
 </nav>
