@@ -273,7 +273,7 @@ class NotificationsController extends Controller
         return view('pages.notifications', [
             'type' => 'comment',
             'users' => $users_collection,
-            'contents' => $comments_collection,
+            'comments' => $comments_collection,
         ]);
     }
 }

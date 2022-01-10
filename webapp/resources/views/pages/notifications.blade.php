@@ -59,8 +59,11 @@
 
              <!--Actual Notifications $users[$i]->profile_picture-->
             <div class="m-3 list-group">
-              @if ($type == 'like')
-                @for($i=0; $i < $content_likes->count(); $i++)
+              @php
+              $i = 0;
+              @endphp
+              @if ($type == 'like' || $type == 'all')
+                @for(; $i < $content_likes->count(); $i++)
 
                   @include('partials.notification',
                   [
@@ -78,41 +81,53 @@
                   ])
                 @endfor
               @endif
-              @if ($type == 'friend_request')
-                @for($i=0; $i < $friend_requests->count(); $i++)
+              @php
+              $j = 0;
+              @endphp
+              @if ($type == 'friend_request' || $type == 'all')
+                @for(; $i < $friend_requests->count(); $i++)
 
                   @include('partials.notifications_friend_request',
                   [
                     'user_link' => route('profile', ['user' => $users[$i]->id]),
                     'profile_picture' => "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
                     'username' => $users[$i]->username,
-                    'date' => date_parse($friend_requests[$i]->creation_date)['year'] . "-" .
-                              date_parse($friend_requests[$i]->creation_date)['month'] . "-" .
-                              date_parse($friend_requests[$i]->creation_date)['day'] . " ".
-                              date_parse($friend_requests[$i]->creation_date)['hour'] . ":" .
-                              date_parse($friend_requests[$i]->creation_date)['minute'],
+                    'date' => date_parse($friend_requests[$j]->creation_date)['year'] . "-" .
+                              date_parse($friend_requests[$j]->creation_date)['month'] . "-" .
+                              date_parse($friend_requests[$j]->creation_date)['day'] . " ".
+                              date_parse($friend_requests[$j]->creation_date)['hour'] . ":" .
+                              date_parse($friend_requests[$j]->creation_date)['minute'],
                     'notification_generator_link' => '',
                     'description' => "Sent you a friend request",
                   ])
+                  @php
+                  $j++;
+                  @endphp
                 @endfor
               @endif
-              @if ($type == 'comment')
-                @for($i=0; $i < $users->count(); $i++)
+              @php
+              $k = 0;
+              @endphp
+              @if ($type == 'comment' || $type == 'all')
+                @for(; $i < $comments->count(); $i++)
 
                 @include('partials.notification',
                 [
                   'user_link' => route('profile', ['user' => $users[$i]->id]),
                   'profile_picture' => "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
                   'username' => $users[$i]->username,
-                  'date' => date_parse($contents[$i]->comment_date)['year'] . "-" .
-                                   date_parse($contents[$i]->comment_date)['month'] . "-" .
-                                   date_parse($contents[$i]->comment_date)['day'] . "   ".
-                                   date_parse($contents[$i]->comment_date)['hour'] . ":" .
-                                   date_parse($contents[$i]->comment_date)['minute'],
-                  'notification_generator_link' => route('content.show', ['id' => $contents[$i]->id_media_content]),
+                  'date' => date_parse($comments[$i]->comment_date)['year'] . "-" .
+                                   date_parse($comments[$k]->comment_date)['month'] . "-" .
+                                   date_parse($comments[$k]->comment_date)['day'] . "   ".
+                                   date_parse($comments[$k]->comment_date)['hour'] . ":" .
+                                   date_parse($comments[$k]->comment_date)['minute'],
+                  'notification_generator_link' => route('content.show', ['id' => $comments[$k]->id_media_content]),
                   'description' => "Commented your post:",
-                  'comment' => $contents[$i]->comment_text,
+                  'comment' => $comments[$k]->comment_text,
                 ])
+                @php
+                $k++;
+                @endphp
               @endfor
             @endif
               </div>
@@ -129,7 +144,7 @@
         <h1 class="mt-0 mb-3 text-light text-center fw-bold">Notifications</h1>
 
         <!--Filters-->
-        <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center mb-3">
           <ul class="nav nav-pills" id="pills-tab" role="tablist">
             <li class="nav-item">
               @if ($type == 'all')
@@ -172,10 +187,79 @@
 
         <!--Actual Notifications-->
         <div class="me-5 ms-5">
-          {{-- <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
-            @include('partials.listCards',['username'=>'John Doe', 'description'=>'Studied at FEUP, currently working on
-            fixing is life.', 'comment'=>'Son of a gun','days_ago'=>'3 hours ago'])
-          </div> --}}
+          @php
+          $i = 0;
+          @endphp
+          @if ($type == 'like' || $type == 'all')
+            @for(; $i < $content_likes->count(); $i++)
+
+              @include('partials.notification',
+              [
+                'user_link' => route('profile', ['user' => $users[$i]->id]),
+                'profile_picture' => "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+                'username' => $users[$i]->username,
+                'date' => date_parse($content_likes[$i]->date)['year'] . "-" .
+                               date_parse($content_likes[$i]->date)['month'] . "-" .
+                               date_parse($content_likes[$i]->date)['day'] . " ".
+                               date_parse($content_likes[$i]->date)['hour'] . ":" .
+                               date_parse($content_likes[$i]->date)['minute'],
+                'notification_generator_link' => route('content.show', ['id' => $contents[$i]->id]),
+                'description' => "Liked your post",
+                'comment' => "",
+              ])
+            @endfor
+          @endif
+          @php
+          $j = 0;
+          @endphp
+          @if ($type == 'friend_request' || $type == 'all')
+            @for(; $i < $friend_requests->count(); $i++)
+
+              @include('partials.notifications_friend_request',
+              [
+                'user_link' => route('profile', ['user' => $users[$i]->id]),
+                'profile_picture' => "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+                'username' => $users[$i]->username,
+                'date' => date_parse($friend_requests[$j]->creation_date)['year'] . "-" .
+                          date_parse($friend_requests[$j]->creation_date)['month'] . "-" .
+                          date_parse($friend_requests[$j]->creation_date)['day'] . " ".
+                          date_parse($friend_requests[$j]->creation_date)['hour'] . ":" .
+                          date_parse($friend_requests[$j]->creation_date)['minute'],
+                'notification_generator_link' => '',
+                'description' => "Sent you a friend request",
+              ])
+              @php
+              $j++;
+              @endphp
+            @endfor
+          @endif
+          @php
+          $k = 0;
+          @endphp
+          @if ($type == 'comment' || $type == 'all')
+            @for(; $i < $comments->count(); $i++)
+
+            @include('partials.notification',
+            [
+              'user_link' => route('profile', ['user' => $users[$i]->id]),
+              'profile_picture' => "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+              'username' => $users[$i]->username,
+              'date' => date_parse($comments[$i]->comment_date)['year'] . "-" .
+                               date_parse($comments[$k]->comment_date)['month'] . "-" .
+                               date_parse($comments[$k]->comment_date)['day'] . "   ".
+                               date_parse($comments[$k]->comment_date)['hour'] . ":" .
+                               date_parse($comments[$k]->comment_date)['minute'],
+              'notification_generator_link' => route('content.show', ['id' => $comments[$k]->id_media_content]),
+              'description' => "Commented your post:",
+              'comment' => $comments[$k]->comment_text,
+            ])
+            @php
+            $k++;
+            @endphp
+          @endfor
+        @endif
+          </div>
+
         </div>
       </div>
 
