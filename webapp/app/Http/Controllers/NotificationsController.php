@@ -29,10 +29,43 @@ class NotificationsController extends Controller
      *
      * @return Response
      */
-    public function friends()
-    {
+    public function friends(Request $request){
+
+          //this gives us the currently logged in user
+          $user = $request->user();
+
+          //retrieves all friend requests
+          $friend_requests = DB::table('friend_request')->whereIn('id', function ($query) use($user) {
+            $query->select('id_friend_request')
+            ->from('friend_request_notification')
+            ->whereIn('id_notification', function ($query) use($user) {
+                $query->select('id')
+                    ->from('notification')
+                    ->where('id_user', '=', $user->id);
+            });
+            })->get();
+
+        //retrieves all users that sent a friend request
+        $users_collection = DB::table('users')->whereIn('id', function($query) use($user){
+            $query->select('id_sender')
+                    ->from('friend_request')
+                    ->whereIn('id', function ($query) use($user) {
+                $query->select('id_friend_request')
+                ->from('friend_request_notification')
+                ->whereIn('id_notification', function ($query) use($user) {
+                    $query->select('id')
+                        ->from('notification')
+                        ->where('id_user', '=', $user->id);
+                });
+            });
+        })->get();
+
+        //dd($users_collection);
+
         return view('pages.notifications', [
-            'type' => 'friend_requests',
+            'type' => 'friend_request',
+            'users' => $users_collection,
+            'friend_requests' => $friend_requests,
         ]);
     }
 
@@ -142,7 +175,7 @@ class NotificationsController extends Controller
         */
 
         return view('pages.notifications', [
-            'type' => 'likes',
+            'type' => 'like',
             'users' => $users_collection,
             'contents' => $contents_collection,
             'content_likes' => $content_likes,

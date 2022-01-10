@@ -25,7 +25,7 @@
                 @endif
               </li>
               <li class="nav-item">
-                @if ($type == 'friend_requests')
+                @if ($type == 'friend_request')
                   <a class="nav-link custom-tab-left active" id="list-friend-requests-list" href="{{ route('notifications.friend_requests') }}"
                     role="tab" aria-controls="list-friend-requests">Friend Requests</a>
                 @else
@@ -34,7 +34,7 @@
                 @endif
               </li>
               <li class="nav-item">
-                @if ($type == 'likes')
+                @if ($type == 'like')
                 <a class="nav-link custom-tab-left active" id="list-likes-list" href="{{ route('notifications.likes') }}"
                   role="tab" aria-controls="list-likes">Likes</a>
                 @else
@@ -59,7 +59,7 @@
 
              <!--Actual Notifications $users[$i]->profile_picture-->
             <div class="m-3 list-group">
-              @if ($type == 'likes')
+              @if ($type == 'like')
                 @for($i=0; $i < $content_likes->count(); $i++)
 
                   @include('partials.notification',
@@ -67,7 +67,7 @@
                     'user_link' => route('profile', ['user' => $users[$i]->id]),
                     'profile_picture' => "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
                     'username' => $users[$i]->username,
-                    'time_passed' => date_parse($content_likes[$i]->date)['year'] . "-" .
+                    'date' => date_parse($content_likes[$i]->date)['year'] . "-" .
                                    date_parse($content_likes[$i]->date)['month'] . "-" .
                                    date_parse($content_likes[$i]->date)['day'] . " ".
                                    date_parse($content_likes[$i]->date)['hour'] . ":" .
@@ -79,16 +79,20 @@
                 @endfor
               @endif
               @if ($type == 'friend_request')
-                @for($i=0; $i < $users->count(); $i++)
+                @for($i=0; $i < $friend_requests->count(); $i++)
 
-                  @include('partials.notification_friend_request',
+                  @include('partials.notifications_friend_request',
                   [
                     'user_link' => route('profile', ['user' => $users[$i]->id]),
                     'profile_picture' => "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
                     'username' => $users[$i]->username,
-                    'time_passed' => "none",
-                    'notification_generator_link' => route('content.show', ['id' => $contents[$i]->id]),
-                    'description' => "Liked your post",
+                    'date' => date_parse($friend_requests[$i]->creation_date)['year'] . "-" .
+                              date_parse($friend_requests[$i]->creation_date)['month'] . "-" .
+                              date_parse($friend_requests[$i]->creation_date)['day'] . " ".
+                              date_parse($friend_requests[$i]->creation_date)['hour'] . ":" .
+                              date_parse($friend_requests[$i]->creation_date)['minute'],
+                    'notification_generator_link' => '',
+                    'description' => "Sent you a friend request",
                   ])
                 @endfor
               @endif
@@ -100,7 +104,7 @@
                   'user_link' => route('profile', ['user' => $users[$i]->id]),
                   'profile_picture' => "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
                   'username' => $users[$i]->username,
-                  'time_passed' => date_parse($contents[$i]->comment_date)['year'] . "-" .
+                  'date' => date_parse($contents[$i]->comment_date)['year'] . "-" .
                                    date_parse($contents[$i]->comment_date)['month'] . "-" .
                                    date_parse($contents[$i]->comment_date)['day'] . "   ".
                                    date_parse($contents[$i]->comment_date)['hour'] . ":" .
@@ -137,7 +141,7 @@
               @endif
             </li>
             <li class="nav-item">
-              @if ($type == 'friend_requests')
+              @if ($type == 'friend_request')
                 <a class="nav-link custom-tab-bottom active" id="list-friend-requests-list" href="{{ route('notifications.friend_requests') }}"
                   role="tab" aria-controls="list-friend-requests">Friend Requests</a>
               @else
@@ -146,7 +150,7 @@
               @endif
             </li>
             <li class="nav-item">
-              @if ($type == 'likes')
+              @if ($type == 'like')
               <a class="nav-link custom-tab-bottom active" id="list-likes-list" href="{{ route('notifications.likes') }}"
                 role="tab" aria-controls="list-likes">Likes</a>
               @else
@@ -155,7 +159,7 @@
               @endif
             </li>
             <li class="nav-item">
-              @if ($type == 'comments')
+              @if ($type == 'comment')
                 <a class="nav-link custom-tab-bottom active" id="list-comments-list" href="{{ route('notifications.comments') }}"
                   role="tab" aria-controls="list-comments">Comments</a>
               @else
