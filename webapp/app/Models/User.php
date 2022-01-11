@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -53,6 +54,6 @@ class User extends Authenticatable
      */
     public function isAdmin()
     {
-        return $this->id == 22;
+        return DB::table('admin_user')->where('id_user', $this->id)->exists();
     }
 }
