@@ -11,7 +11,7 @@ $username = 'John Doe';
 $time = '10 days ago';
 $title = 'Wari(El)o(n)';
 $n_hearts = '3000';
-$n_comments = '100';
+$n_comments = $content->comment_count();
 $n_shares = '100';
 $description = 'Description: Elon vestido de Wario porque reasons.';
 $video = '';
@@ -28,10 +28,12 @@ $link_view = route('content.show', ['id' => $content->id]);
   <div class="card-header">
     <div class="d-flex flex-row justify-content-between">
       <div class="d-block">
-        <img src="{{ asset($profile_pic) }}" class="rounded-circle align-self-center" style="width: 3em; height: 3em;" alt="Profile Picture" />
+        <img src="{{ asset($profile_pic) }}" class="rounded-circle align-self-center" style="width: 3em; height: 3em;"
+          alt="Profile Picture" />
       </div>
       <div class="d-block">
-        <a href="{{ route('profile', ['user' => $content->creator->id])}}"><span class="d-flex flex-column text-centre mx-3">{{ $content->creator->username }}</span></a>
+        <a href="{{ route('profile', ['user' => $content->creator->id]) }}"><span
+            class="d-flex flex-column text-centre mx-3">{{ $content->creator->username }}</span></a>
       </div>
 
       <div class="d-flex flex-row align-self-center">
@@ -41,22 +43,23 @@ $link_view = route('content.show', ['id' => $content->id]);
           </button>
         </a>
         @if (Auth::check() && Auth::user()->can('update', $content))
-        <div class="dropdown">
-          <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownPost" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="bi bi-three-dots {{ $icon_size }}"></i>
-          </button>
+          <div class="dropdown">
+            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownPost"
+              data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="bi bi-three-dots {{ $icon_size }}"></i>
+            </button>
 
-          <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownPost">
+            <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownPost">
 
-            <a class="dropdown-item" href="{{ $link_edit }}">Edit Post</a>
-            <form method="POST" action="{{ route('content.destroy', $content) }}">
-              @csrf
-              @method('DELETE')
-              <button class="dropdown-item" type="submit">Delete Post</button>
-            </form>
+              <a class="dropdown-item" href="{{ $link_edit }}">Edit Post</a>
+              <form method="POST" action="{{ route('content.destroy', $content) }}">
+                @csrf
+                @method('DELETE')
+                <button class="dropdown-item" type="submit">Delete Post</button>
+              </form>
+            </div>
+
           </div>
-
-        </div>
         @endif
       </div>
     </div>
@@ -64,17 +67,19 @@ $link_view = route('content.show', ['id' => $content->id]);
   <div class="card-body">
 
     @if ($content->contentable instanceof App\Models\MediaContent)
-    <div class="row justify-content-center pt-3">
-      @if ($content->contentable->media_contentable instanceof App\Models\Video)
-      <video src="{{ asset($content->contentable->media) }}" class="align-self-centre" controls style="max-width: 18em; max-height: 30em;"></video>
-      @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
-      <img src="{{ asset($content->contentable->media) }}" class="align-self-centre" style="max-width: 20em; max-height: 30em;"></img>
-      @endif
-    </div>
+      <div class="row justify-content-center pt-3">
+        @if ($content->contentable->media_contentable instanceof App\Models\Video)
+          <video src="{{ asset($content->contentable->media) }}" class="align-self-centre" controls
+            style="max-width: 18em; max-height: 30em;"></video>
+        @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
+          <img src="{{ asset($content->contentable->media) }}" class="align-self-centre"
+            style="max-width: 20em; max-height: 30em;" />
+        @endif
+      </div>
     @else
-    @if ($content->contentable instanceof App\Models\TextContent)
-    <p class="card-text pt-3 $font_size" style="max-width: 20em;">{{ $content->contentable->post_text }}</p>
-    @endif
+      @if ($content->contentable instanceof App\Models\TextContent)
+        <p class="card-text pt-3 $font_size" style="max-width: 20em;">{{ $content->contentable->post_text }}</p>
+      @endif
     @endif
     <div class="row pt-3">
       <div class="col-3">
@@ -103,7 +108,7 @@ $link_view = route('content.show', ['id' => $content->id]);
       </div>
     </div>
     @if ($content->contentable instanceof App\Models\MediaContent)
-    <p class="card-text $font_size" style="max-width: 20em;">{{ $content->contentable->description }}</p>
+      <p class="card-text $font_size" style="max-width: 20em;">{{ $content->contentable->description }}</p>
     @endif
   </div>
 </div>

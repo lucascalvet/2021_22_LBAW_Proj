@@ -157,7 +157,7 @@ CREATE TABLE comment (
    id SERIAL PRIMARY KEY,
    comment_text TEXT NOT NULL,
    comment_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
-   author INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
+   id_author INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
    id_media_content INTEGER NOT NULL REFERENCES media_content(id_content) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -664,12 +664,12 @@ INSERT INTO image (id_media_content, width, height) VALUES (8, 500, 100);
 INSERT INTO video (id_media_content, title, views) VALUES (9, 'SQL Tutorial 2021', 100);
 INSERT INTO video (id_media_content, title, views) VALUES (10, 'Game', 300);
 
-INSERT INTO comment (id, comment_text, comment_date, author, id_media_content) VALUES (1, 'So cute!', '2021-10-11', 1, 6);
-INSERT INTO comment (id, comment_text, comment_date, author, id_media_content) VALUES (2, 'Very good brand', '2021-10-12', 2, 7);
-INSERT INTO comment (id, comment_text, comment_date, author, id_media_content) VALUES (3, 'I do not like that car', '2021-10-13', 3, 8);
-INSERT INTO comment (id, comment_text, comment_date, author, id_media_content) VALUES (4, 'Great tutorial', '2021-10-14', 4, 9);
-INSERT INTO comment (id, comment_text, comment_date, author, id_media_content) VALUES (5, 'I play this game all the time', '2021-10-15', 5, 10);
-INSERT INTO comment (id, comment_text, comment_date, author, id_media_content) VALUES (6, 'Best Dev Interview I have seen!', '2020-05-22', 5, 10);
+INSERT INTO comment (id, comment_text, comment_date, id_author, id_media_content) VALUES (1, 'So cute!', '2021-10-11', 1, 6);
+INSERT INTO comment (id, comment_text, comment_date, id_author, id_media_content) VALUES (2, 'Very good brand', '2021-10-12', 2, 7);
+INSERT INTO comment (id, comment_text, comment_date, id_author, id_media_content) VALUES (3, 'I do not like that car', '2021-10-13', 3, 8);
+INSERT INTO comment (id, comment_text, comment_date, id_author, id_media_content) VALUES (4, 'Great tutorial', '2021-10-14', 4, 9);
+INSERT INTO comment (id, comment_text, comment_date, id_author, id_media_content) VALUES (5, 'I play this game all the time', '2021-10-15', 5, 10);
+INSERT INTO comment (id, comment_text, comment_date, id_author, id_media_content) VALUES (6, 'Best Dev Interview I have seen!', '2020-05-22', 5, 10);
 SELECT setval('comment_id_seq', (SELECT max(id) FROM comment));
 
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (1, '2020-7-23', 1, 2);

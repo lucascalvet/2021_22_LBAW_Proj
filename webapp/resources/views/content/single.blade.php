@@ -16,18 +16,24 @@ $time = '10 days ago';
 
 
 @section('content')
-@include('partials.navbar')
-  <div class="row">
-    <a href="{{ route('profile', ['user' => $content->creator->id])}}">
-      <h1 class="text-center mt-5 fw-bold">{{$content->creator->username}}</h1>
+  @include('partials.navbar')
+  <div class="container-fluid pb-3">
+    <a href="{{ route('profile', ['user' => $content->creator->id]) }}">
+      <h1 class="text-center mt-5 fw-bold">{{ $content->creator->username }}</h1>
     </a>
 
     <div>
-      @if ($content->contentable instanceof App\Models\MediaContent)
-        <div class="text-center mb-3 mt-3 fs-3">{{ $content->contentable->description }}</div>
-      @else
-        <div class="text-center mb-3 mt-3 fs-3">{{ $content->contentable->post_text }}</div>
-      @endif
+      <div class="text-center mb-3 mt-3 fs-3">
+        @if ($content->contentable instanceof App\Models\MediaContent)
+          @if ($content->contentable->media_contentable instanceof App\Models\Image)
+            {{ $content->contentable->description }}
+          @elseif ($content->contentable->media_contentable instanceof App\Models\Video)
+            {{ $content->contentable->media_contentable->title }}
+          @endif
+        @elseif ($content->contentable instanceof App\Models\TextContent)
+          <div class="text-center mb-3 mt-3 fs-3">{{ $content->contentable->post_text }}
+        @endif
+      </div>
     </div>
 
     @if ($content->contentable instanceof App\Models\MediaContent)
@@ -36,7 +42,7 @@ $time = '10 days ago';
           <video src="{{ asset($content->contentable->media) }}" controls
             style="max-width: 50em; max-height: 60em;"></video>
         @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
-          <img src="{{ asset($content->contentable->media) }}" style="max-width: 50em; max-height: 60em;"/>
+          <img src="{{ asset($content->contentable->media) }}" style="max-width: 50em; max-height: 60em;" />
         @endif
       </div>
     @endif
@@ -52,6 +58,27 @@ $time = '10 days ago';
         </form>
       @endif
     </div>
+
+    @if ($content->contentable instanceof App\Models\MediaContent)
+      @if ($content->contentable->media_contentable instanceof App\Models\Video)
+        <h4>Description:</h4>
+        <p>{{ $content->contentable->description }}</p>
+      @endif
+      <div>
+        @if ($content->contentable->comments->isEmpty())
+          <p>No comments yet.</p>
+        @else
+          <h4>Comments ({{ $content->comment_count() }}): </h4>
+          <ul class="list-group">
+            @foreach ($content->contentable->comments as $comment)
+              <li class="list-group-item"><a href="{{ route('profile', ['user' => $comment->author->id]) }}">
+                  {{ $comment->author->name }}
+                </a>: {{ $comment->comment_text }}</li>
+            @endforeach
+          </ul>
+        @endif
+      </div>
+    @endif
   </div>
 
 @endsection

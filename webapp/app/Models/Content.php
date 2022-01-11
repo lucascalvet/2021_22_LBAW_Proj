@@ -37,7 +37,7 @@ class Content extends Model
     {
         return $this->belongsTo(User::class, 'id_creator');
     }
-    
+
     /**
      * Get the specific content.
      */
@@ -46,4 +46,12 @@ class Content extends Model
         return $this->morphTo(null, null, 'id');
     }
 
+    /**
+     * Get the number of comments or text replies
+     */
+    public function comment_count()
+    {
+        if ($this->contentable instanceof MediaContent) return $this->contentable->comments->count();
+        else return 100;
+    }
 }
