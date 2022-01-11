@@ -2,7 +2,11 @@
 $icon_size = 'fs-3';
 
 $user = Auth::user();
-$contents = \App\Models\Content::all();
+$contents = \App\Models\Content::orderBy('publishing_date', 'desc');
+if (!Auth::check() || !Auth::user()->isAdmin()) {
+    $contents = $contents->where('id_creator', '<>', 1);
+}
+$contents = $contents->get();
 $link_create_text = route('textcontent.make');
 $link_create_media = route('mediacontent.make');
 @endphp
