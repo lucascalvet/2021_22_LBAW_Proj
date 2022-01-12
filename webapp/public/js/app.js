@@ -194,6 +194,24 @@ function addLikeListeners(){
     like_buttons[i].addEventListener('click', () => {
       let idStr = like_buttons[i].id;
       let parsedId = idStr.replace('button-content-like-', '');
+
+      const but = document.getElementById('button-content-like-'+parsedId);
+
+      const liked = but.lastElementChild.classList.contains('bi-heart');
+
+      but.removeChild(but.lastElementChild);
+
+      let newIcon = document.createElement('i');
+
+      newIcon.style.color = 'red';
+      newIcon.classList.add('bi');
+      newIcon.classList.add('fs-5');
+
+      if (liked) newIcon.classList.add('bi-heart-fill');
+      else newIcon.classList.add('bi-heart');
+
+      but.appendChild(newIcon);
+
       sendAjaxRequest('post', '/content' + '/like/' + parsedId, null, likeResponseHandler);
     });
   }
