@@ -93,9 +93,9 @@ $link_view = route('content.show', ['id' => $content->id]);
             <button disabled id="button-content-like-{{ $content->id }}" type="button" class="btn btn-secondary button-content-like" style="width: auto; height: auto;">
           @endif
               @if($liked)
-                <i style="color: red;" class="bi bi-heart-fill {{ $icon_size }}"></i>
+                <i style="color: red;" class="bi bi-heart-fill fs-5"></i>
               @else
-                <i style="color: red;" class="bi bi-heart {{ $icon_size }}"></i>
+                <i style="color: red;" class="bi bi-heart fs-5"></i>
               @endif
             </button>
           <span id="s-hearts-count-{{ $content->id }}" class="text-center">{{ $content->numberOfLikes() }}</span>

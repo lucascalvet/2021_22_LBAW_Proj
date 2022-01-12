@@ -199,18 +199,9 @@ function addLikeListeners(){
 
       const liked = but.lastElementChild.classList.contains('bi-heart');
 
-      but.removeChild(but.lastElementChild);
+      const icon = but.lastElementChild;
 
-      let newIcon = document.createElement('i');
-
-      newIcon.style.color = 'red';
-      newIcon.classList.add('bi');
-      newIcon.classList.add('fs-5');
-
-      if (liked) newIcon.classList.add('bi-heart-fill');
-      else newIcon.classList.add('bi-heart');
-
-      but.appendChild(newIcon);
+      toggleLikeIcon(icon, liked);
 
       sendAjaxRequest('post', '/content' + '/like/' + parsedId, null, likeResponseHandler);
     });
@@ -227,18 +218,20 @@ function likeResponseHandler(){
 
   const but = document.getElementById('button-content-like-'+res.id);
 
-  but.removeChild(but.lastElementChild);
+  const icon = but.lastElementChild;
 
-  let newIcon = document.createElement('i');
+  toggleLikeIcon(icon, res.liked);
+}
 
-  newIcon.style.color = 'red';
-  newIcon.classList.add('bi');
-  newIcon.classList.add('fs-5');
-
-  if (res.liked) newIcon.classList.add('bi-heart-fill');
-  else newIcon.classList.add('bi-heart');
-
-  but.appendChild(newIcon);
+function toggleLikeIcon(icon, liked){
+  if (liked){
+    icon.classList.add("bi-heart-fill");
+    icon.classList.remove("bi-heart");
+  }
+  else{
+    icon.classList.remove("bi-heart-fill");
+    icon.classList.add("bi-heart");
+  }
 }
 
 addLikeListeners();

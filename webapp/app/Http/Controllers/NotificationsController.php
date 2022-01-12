@@ -150,36 +150,34 @@ class NotificationsController extends Controller
      */
     public function friends(Request $request){
 
-          //this gives us the currently logged in user
-          $user = $request->user();
+        //this gives us the currently logged in user
+        $user = $request->user();
 
-          //retrieves all friend requests
-          $friend_requests = DB::table('friend_request')->whereIn('id', function ($query) use($user) {
+        //retrieves all friend requests
+        $friend_requests = DB::table('friend_request')->whereIn('id', function ($query) use($user) {
             $query->select('id_friend_request')
             ->from('friend_request_notification')
             ->whereIn('id_notification', function ($query) use($user) {
                 $query->select('id')
                     ->from('notification')
                     ->where('id_user', '=', $user->id);
-            });
-            })->get();
+                });
+        })->get();
 
         //retrieves all users that sent a friend request
         $users_collection = DB::table('users')->whereIn('id', function($query) use($user){
             $query->select('id_sender')
-                    ->from('friend_request')
-                    ->whereIn('id', function ($query) use($user) {
+                ->from('friend_request')
+                ->whereIn('id', function ($query) use($user) {
                 $query->select('id_friend_request')
                 ->from('friend_request_notification')
                 ->whereIn('id_notification', function ($query) use($user) {
                     $query->select('id')
                         ->from('notification')
                         ->where('id_user', '=', $user->id);
+                    });
                 });
-            });
         })->get();
-
-        //dd($users_collection);
 
         return view('pages.notifications', [
             'type' => 'friend_request',
@@ -198,100 +196,52 @@ class NotificationsController extends Controller
         //this gives us the currently logged in user
         $user = $request->user();
 
-        //retrieves all likes notifications for the logged user
-        /*
-        $likes_ids = LikeNotification::whereIn('id_notification', function ($query) use($user) {
-            $query->select('id')
-                ->from('notification')
-                ->where('id_user', '=', $user->id);
-        })->get();
-        */
-
-        //retrieves all user that generated previous likes notifications
+        //retrieves all users that generated like notifications
         $users_collection = DB::table('users')->whereIn('id', function ($query) use($user) {
-                $query->select('id_user')
-                    ->from('content_like')
-                    ->whereIn('id', function($query) use($user) {
-                        $query->select('id_like')
-                        ->from('like_notification')
-                        ->whereIn('id_notification', function ($query) use($user) {
-                            $query->select('id')
-                                ->from('notification')
-                                ->where('id_user', '=', $user->id);
+            $query->select('id_user')
+            ->from('content_like')
+            ->whereIn('id', function($query) use($user) {
+                $query->select('id_like')
+                ->from('like_notification')
+                ->whereIn('id_notification', function ($query) use($user) {
+                    $query->select('id')
+                        ->from('notification')
+                        ->where('id_user', '=', $user->id);
                     });
                 });
         })->get();
-/*
-         //retrieves all content that generated previous likes notifications
-         $contents_collection = DB::table('content')->whereIn('id', function ($query) use($user) {
-            $query->select('id_content')
-                ->from('content_like')
-                ->whereIn('id', function($query) use($user) {
-                    $query->select('id_like')
-                    ->from('like_notification')
-                    ->whereIn('id_notification', function ($query) use($user) {
-                        $query->select('id')
-                            ->from('notification')
-                            ->where('id_user', '=', $user->id);
-                });
-            });
-        })->get();
-        */
+
         $contents_collection = array();
 
+        //retrieves all contents that generated previous like notifications
         foreach($users_collection as $us){
-             //retrieves all content that generated previous likes notifications
-            array_push($contents_collection, DB::table('content')->whereIn('id', function ($query) use($user, $us) {
-                $query->select('id_content')
-                    ->from('content_like')
-                    ->where('id_user', $us->id)
-                    ->whereIn('id', function($query) use($user) {
-                        $query->select('id_like')
-                        ->from('like_notification')
-                        ->whereIn('id_notification', function ($query) use($user) {
-                            $query->select('id')
-                                ->from('notification')
-                                ->where('id_user', '=', $user->id);
+
+        array_push($contents_collection, DB::table('content')->whereIn('id', function ($query) use($user, $us) {
+            $query->select('id_content')
+            ->from('content_like')
+            ->where('id_user', $us->id)
+            ->whereIn('id', function($query) use($user) {
+                $query->select('id_like')
+                ->from('like_notification')
+                ->whereIn('id_notification', function ($query) use($user) {
+                    $query->select('id')
+                        ->from('notification')
+                        ->where('id_user', '=', $user->id);
                     });
                 });
             })->first());
         }
 
-        //dd($users_collection);
-
-        //retrieves all content likes that generated previous likes notifications
+        //retrieves all content_likes that generated previous likes notifications
         $content_likes = DB::table('content_like')->whereIn('id', function ($query) use($user) {
-                    $query->select('id_like')
-                    ->from('like_notification')
-                    ->whereIn('id_notification', function ($query) use($user) {
-                        $query->select('id')
-                            ->from('notification')
-                            ->where('id_user', '=', $user->id);
+            $query->select('id_like')
+            ->from('like_notification')
+            ->whereIn('id_notification', function ($query) use($user) {
+                $query->select('id')
+                    ->from('notification')
+                    ->where('id_user', '=', $user->id);
                 });
         })->get();
-
-        //dd($content_likes);
-
-        /*
-        The same as above, but in pure sql
-
-        SELECT id_like
-        FROM like_notifications
-        WHERE id_notification IN (
-            SELECT id
-            FROM notification
-            WHERE id_user = AUTH::user
-        )
-
-        SELECT *
-        FROM content
-        WHERE id IN (
-            SELECT id_content
-            FROM content_like
-            WHERE id = id_like
-        )
-        ...
-        */
 
         return view('pages.notifications', [
             'type' => 'like',
@@ -311,83 +261,38 @@ class NotificationsController extends Controller
         //this gives us the currently logged in user
         $user = $request->user();
 
-        //retrieves all comments notifications for the logged user
+        //retrieves all comment_notifications for the logged user
         $comments_notifications = CommentNotification::whereIn('id_notification', function ($query) use($user) {
             $query->select('id')
                 ->from('notification')
                 ->where('id_user', '=', $user->id);
         })->get();
 
-        /*
-        //retrieves all contents that generated previous comments notifications
-        $comments_collection = $comments_notifications->map(function ($item, $key) {
-            //return Comment::where('id', '=', $item->id_comment);
-            return DB::table('comment')->where('id', $item->id_comment)->get();
-        });
-        */
-
+        //retrieves all the actual comments that generated previous notifications
         $comments_collection = DB::table('comment')->whereIn('id', function ($query) use($user) {
             $query->select('id_comment')
+            ->from('comment_notification')
+            ->whereIn('id_notification', function ($query) use($user) {
+                $query->select('id')
+                    ->from('notification')
+                    ->where('id_user', '=', $user->id);
+                });
+        })->get();
+
+        //retrieves the users that generated the notifications
+        $users_collection = DB::table('users')->whereIn('id', function ($query) use($user) {
+            $query->select('author')
+            ->from('comment')
+            ->whereIn('id', function ($query) use($user) {
+                $query->select('id_comment')
                 ->from('comment_notification')
                 ->whereIn('id_notification', function ($query) use($user) {
                     $query->select('id')
                         ->from('notification')
                         ->where('id_user', '=', $user->id);
+                    });
                 });
         })->get();
-
-       // dd($comments_collection);
-
-        $users_collection = DB::table('users')->whereIn('id', function ($query) use($user) {
-            $query->select('author')
-                  ->from('comment')
-                  ->whereIn('id', function ($query) use($user) {
-                      $query->select('id_comment')
-                            ->from('comment_notification')
-                            ->whereIn('id_notification', function ($query) use($user) {
-                                $query->select('id')
-                                      ->from('notification')
-                                      ->where('id_user', '=', $user->id);
-                                });
-                        });
-        })->get();
-
-/*
-        $users_collection = $comments_notifications->map(function ($item, $key){
-            return DB::table('user')->whereIn('id', function($query){
-                $query->select('author')
-                      ->from('comment')
-                      ->where('id', $item->id_comment);
-            });
-        });
-
-*/
-/*
-        $users_collection = $comments_collection->map(function ($item, $key) {
-            return User::where('id', '=', $item->author);
-        });*/
-
-
-        /*
-        The same as above, but in pure sql
-
-        SELECT id_comment
-        FROM comment_notifications
-        WHERE id_notification IN (
-            SELECT id
-            FROM notification
-            WHERE id_user = AUTH::user
-        )
-
-        SELECT *
-        FROM content
-        WHERE id IN (
-            SELECT id_content
-            FROM content_like
-            WHERE id = id_like
-        )
-        ...
-        */
 
         return view('pages.notifications', [
             'type' => 'comment',
@@ -395,7 +300,7 @@ class NotificationsController extends Controller
             'comments' => $comments_collection,
         ]);
     }
-/*
+    /*
     public function toggleFilter($url){
         return redirect()->route('notifications.likes');
     }
