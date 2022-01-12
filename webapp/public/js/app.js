@@ -195,13 +195,21 @@ function addLikeListeners(){
       let idStr = like_buttons[i].id;
       let parsedId = idStr.replace('button-content-like-', '');
 
+      const count = document.getElementById('s-hearts-count-'+parsedId);
+
       const but = document.getElementById('button-content-like-'+parsedId);
 
       const liked = but.lastElementChild.classList.contains('bi-heart');
 
       const icon = but.lastElementChild;
 
+      //changes icon instantaneously when user clicks in icon
       toggleLikeIcon(icon, liked);
+
+      //changes number of likes instantaneously when user clicks in icon
+      if(liked) count.innerHTML = parseFloat(count.innerHTML)+1;
+      else count.innerHTML = parseFloat(count.innerHTML)-1;
+
 
       sendAjaxRequest('post', '/content' + '/like/' + parsedId, null, likeResponseHandler);
     });
@@ -213,6 +221,7 @@ function likeResponseHandler(){
   console.log(this.responseText);
   let res = JSON.parse(this.responseText);
 
+  //failsafe changes for icon and number of likes after the request is processed
   const count = document.getElementById('s-hearts-count-'+res.id);
   count.innerHTML = res.nLikes;
 
