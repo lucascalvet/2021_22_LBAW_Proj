@@ -24,8 +24,8 @@ tags:
 - name: 'M07: Groups'
 - name: 'M08: Games'
 - name: 'M09: User Administration'
-- name: 'M010: Advertiser'
-- name: 'M011: Static Pages'
+- name: 'M10: Advertiser'
+- name: 'M11: Static Pages'
 
 paths:
   /:
@@ -34,7 +34,7 @@ paths:
       summary: 'R0101: Login and Home Page'
       description: 'Provide Login or Home Page (timeline), if the user is already logged in. Access: PUB'
       tags:
-      - 'M01: AuthenticatRion and Timeline'
+      - 'M01: Authentication and Timeline'
 
       parameters:
         - in: query
@@ -264,7 +264,7 @@ paths:
       summary: 'R0203: Save Edited Profile'
       description: 'Save the edited user profile informations. Access: USR'
       tags:
-      - 'M01: Authentication and Individual Profile'
+      - 'M01: Authentication and Timeline'
 
       parameters:
       - in: path
@@ -724,7 +724,7 @@ paths:
                   value: '/content/media/create/{id}' 
 
   /content/text/edit/{id}:
-  patch:
+    patch:
       operationId: R0408
       summary: 'R0408: Edit Text Content'
       description: 'Edit a previously created Text Content. Access: AUT'
@@ -761,7 +761,7 @@ paths:
                   value: '/content/text/edit/{id}' 
 
   /content/media/edit/{id}:
-  patch:
+    patch:
       operationId: R0409
       summary: 'R0409: Edit Media Content'
       description: 'Edit a previously created Media Content. Access: AUT'
@@ -803,9 +803,9 @@ paths:
                   description: 'Failed to modifiy Media Content. Redirect to the Media Content Edit Form.'
                   value: '/content/media/edit/{id}' 
 
-  content/delete/{id}:
+  /content/delete/{id}:
     delete:
-      operationID: R0410
+      operationId: R0410
       summary: 'R0410: Delete Post'
       description: 'Delete a User Post. Acess: AUT.'
       tags:
@@ -819,7 +819,7 @@ paths:
            type: integer
          required: true
 
-     responses:
+      responses:
        '200':
          description: 'Deletion Successful.'
 
@@ -1106,7 +1106,7 @@ paths:
       summary: 'R1001: View About Us page'
       description: 'Show the About Us page. Access: PUB'
       tags:
-        - 'M10: Static Pages'
+        - 'M11: Static Pages'
 
       responses:
         '200':
@@ -1118,7 +1118,7 @@ paths:
       summary: 'R1002: View Contact Us page'
       description: 'Show the Contact Us page. Access: PUB'
       tags:
-        - 'M10: Static Pages'
+        - 'M11: Static Pages'
 
       responses:
         '200':
@@ -1130,7 +1130,7 @@ paths:
       summary: 'R1003: View Features page'
       description: 'Show the Features page. Access: PUB'
       tags:
-        - 'M10: Static Pages'
+        - 'M11: Static Pages'
 
       responses:
         '200':
@@ -1142,7 +1142,7 @@ paths:
       summary: 'R1004: View FAQ page'
       description: 'Show the FAQ page. Access: PUB'
       tags:
-        - 'M10: Static Pages'
+        - 'M11: Static Pages'
 
       responses:
         '200':
