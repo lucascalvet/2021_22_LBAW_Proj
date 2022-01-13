@@ -12,7 +12,6 @@ $time = '10 days ago';
 $title = 'Wari(El)o(n)';
 $n_hearts = '3000';
 $n_comments = $content->comment_count();
-$n_shares = '100';
 $description = 'Description: Elon vestido de Wario porque reasons.';
 $video = '';
 $image = 'img/cont_elon.jpg';
@@ -33,7 +32,7 @@ $link_view = route('content.show', ['id' => $content->id]);
       </div>
       <div class="d-block">
         <a href="{{ route('profile', ['user' => $content->creator->id]) }}"><span
-            class="d-flex flex-column text-centre mx-3">{{ $content->creator->username }}</span></a>
+            class="d-flex flex-column text-centre mx-3">{{ $content->creator->name }}</span></a>
       </div>
 
       <div class="d-flex flex-row align-self-center">
@@ -84,9 +83,10 @@ $link_view = route('content.show', ['id' => $content->id]);
     <div class="row pt-3">
       <div class="col-3">
         <div class="row justify-content-center">
-          <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
+          <a class="btn btn-secondary w-auto h-auto"
+            href="{{ route('content.show', ['id' => $content->id, '#comments']) }}" role="button">
             <i class="bi bi-chat-left-text {{ $icon_size }}"></i>
-          </button>
+          </a>
           <span class="text-center">{{ $n_comments }}</span>
         </div>
       </div>
@@ -103,7 +103,6 @@ $link_view = route('content.show', ['id' => $content->id]);
           <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
             <i class="bi bi-share {{ $icon_size }}"></i>
           </button>
-          <span class="text-center">{{ $n_shares }}</span>
         </div>
       </div>
     </div>

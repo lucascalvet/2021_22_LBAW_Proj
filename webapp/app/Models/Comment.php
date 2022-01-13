@@ -24,6 +24,20 @@ class Comment extends Model
     public $timestamps = false;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['comment_text'];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['comment_date'];
+
+    /**
      * The media content that was commented.
      */
     public function media_content()

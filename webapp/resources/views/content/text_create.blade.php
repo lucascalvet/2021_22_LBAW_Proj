@@ -9,7 +9,7 @@
             <div class="card-body p-5">
               <h2 class="text-uppercase text-center mb-5">Create a new Text Content</h2>
 
-              <form method="POST" action="{{ route('textcontent.create') }}" enctype="multipart/form-data">
+              <form method="POST" action="{{ route('textcontent.create') }}">
                 @csrf
 
                 <div class="form-floating mb-2">

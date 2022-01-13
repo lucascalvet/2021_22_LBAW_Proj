@@ -19,7 +19,7 @@ $time = '10 days ago';
   @include('partials.navbar')
   <div class="container-fluid pb-3">
     <a href="{{ route('profile', ['user' => $content->creator->id]) }}">
-      <h1 class="text-center mt-5 fw-bold">{{ $content->creator->username }}</h1>
+      <h1 class="text-center mt-5 fw-bold">{{ $content->creator->name }}</h1>
     </a>
 
     <div>
@@ -61,20 +61,53 @@ $time = '10 days ago';
 
     @if ($content->contentable instanceof App\Models\MediaContent)
       @if ($content->contentable->media_contentable instanceof App\Models\Video)
+        <hr>
         <h4>Description:</h4>
         <p>{{ $content->contentable->description }}</p>
       @endif
-      <div>
+      <hr>
+      <div id="comments">
         @if ($content->contentable->comments->isEmpty())
           <p>No comments yet.</p>
         @else
           <h4>Comments ({{ $content->comment_count() }}): </h4>
           <ul class="list-group">
             @foreach ($content->contentable->comments as $comment)
-              <li class="list-group-item"><a href="{{ route('profile', ['user' => $comment->author->id]) }}">
-                  {{ $comment->author->name }}
-                </a>: {{ $comment->comment_text }}</li>
+              <li class="list-group-item">
+                <div class="d-flex flex-row">
+                  <span class="flex-fill">
+                    <a @if ($content->creator == $comment->author) class="fw-bold" @endif href="{{ route('profile', ['user' => $comment->author->id]) }}">
+                      {{ $comment->author->name }}</a>
+                    @if ($content->creator == $comment->author)<sup class="text-primary fw-bold">OP</sup> @endif
+                    : {{ $comment->comment_text }}
+                  </span>
+                  <span class="text-secondary">{{ $comment->comment_date->format('D, Y-m-d H:i:s') }}</span>
+                </div>
+              </li>
             @endforeach
+            @auth
+              <li class="list-group-item">
+                <form method="POST" action="{{ route('content.comment', ['id' => $content->id]) }}">
+                  @csrf
+                  <label for="comment-text" class="form-label fw-bold">Leave a comment:</label>
+                  <div class="d-flex flex-row">
+                    <input type="text" id="comment-text" name='comment_text' class="form-control"
+                      aria-describedby="comment-help-block">
+                    <button type="submit" class="btn btn-primary ms-3">Comment</button>
+                  </div>
+                  <div id="comment-help-block" class="form-text">
+                    Please have some common sense and be respectful. Don't be a downer, be a Social UPper ;)
+                  </div>
+                </form>
+              </li>
+            @endauth
+            @guest
+              <li class="list-group-item">
+                <span class="text-secondary">
+                  <a class="link-secondary" href="{{ route('login') }}">Login</a> to add a comment.
+                </span>
+              </li>
+            @endguest
           </ul>
         @endif
       </div>

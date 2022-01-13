@@ -68,7 +68,9 @@ class ContentPolicy
      */
     public function update(User $user, Content $content)
     {
-        return $user->id === $content->id_creator;
+        return $user->id === $content->id_creator
+            ? Response::allow()
+            : Response::deny('You do not own this post.');
     }
 
     /**
@@ -107,5 +109,17 @@ class ContentPolicy
     public function forceDelete(User $user, Content $content)
     {
         //
+    }
+
+    /**
+     * Determine whether the user can comment on the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Content  $content
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function comment(User $user, Content $content)
+    {
+        return true;
     }
 }

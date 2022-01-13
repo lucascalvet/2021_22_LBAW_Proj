@@ -17,18 +17,21 @@ Route::get('/', 'HomeController@show')->name('home');
 // Content
 Route::get('content/text/create', 'TextContentController@create')->middleware('auth')->name('textcontent.make');
 Route::get('content/media/create', 'MediaContentController@create')->middleware('auth')->name('mediacontent.make');
-Route::post('content/text/create','TextContentController@store')->middleware('auth')->name('textcontent.create');
-Route::post('content/media/create','MediaContentController@store')->middleware('auth')->name('mediacontent.create');
-Route::get('content/list','ContentController@index')->middleware('auth')->name('content.list');
-Route::get('content/{id}','ContentController@show')->name('content.show');
-Route::get('content/edit/{id}','ContentController@edit')->middleware('auth')->name('content.edit');
+Route::post('content/text/create', 'TextContentController@store')->middleware('auth')->name('textcontent.create');
+Route::post('content/media/create', 'MediaContentController@store')->middleware('auth')->name('mediacontent.create');
+Route::get('content/list', 'ContentController@index')->middleware('auth')->name('content.list');
+Route::get('content/{id}', 'ContentController@show')->where('id', '[0-9]+')->name('content.show');
+Route::get('content/{id}/edit', 'ContentController@edit')->where('id', '[0-9]+')->middleware('auth')->name('content.edit');
 /* 
 Route::get('content/text/edit/{id}','TextContentController@edit')->middleware('auth')->name('textcontent.edit');
 Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit'); 
 */
-Route::patch('content/text/edit/{id}','TextContentController@update')->middleware('auth')->name('textcontent.update');
-Route::patch('content/media/edit/{id}','MediaContentController@update')->middleware('auth')->name('mediacontent.update');
+Route::patch('content/text/edit/{id}', 'TextContentController@update')->middleware('auth')->name('textcontent.update');
+Route::patch('content/media/edit/{id}', 'MediaContentController@update')->middleware('auth')->name('mediacontent.update');
 Route::delete('content/delete/{id}', 'ContentController@destroy')->middleware('auth')->name('content.destroy');
+
+// Comments
+Route::post('content/{id}/comment', 'ContentController@comment')->name('content.comment');
 
 // Profile
 Route::get('profile/{user}', 'ProfileController@show')->name('profile');
@@ -67,10 +70,10 @@ Route::get('search/content', 'SearchController@searchPosts')->name('search.conte
 Route::get('search', 'SearchController@searchUsers')->name('search');
 
 // Notifications
-Route::get('/notifications', 'HomeController@show')->name('notifications');
+Route::get('notifications', 'HomeController@show')->name('notifications');
 
 // Chat
-Route::get('/chat', 'HomeController@show')->name('chat');
+Route::get('chat', 'HomeController@show')->name('chat');
 
 // Groups
-Route::get('/groups', 'HomeController@show')->name('groups');
+Route::get('groups', 'HomeController@show')->name('groups');
