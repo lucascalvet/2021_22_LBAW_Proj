@@ -15,7 +15,7 @@ $contents = \App\Models\Content::all();
 @include('partials.navbar')
 <div class="row vh-100 overflow-auto bg-dark text-white" style="padding: 0em; margin: 0em;">
   <div class="col-3 d-sm-flex d-md-flex d-lg-none">
-    @include('partials.side_create_buttons')
+    @include('partials.side_create_buttons', ['id_group' => -1])
   </div>
 
   <div class="col-3 d-lg-block d-none align-self-center">
@@ -44,19 +44,19 @@ $contents = \App\Models\Content::all();
       </div>
     </div>
 
-    @include('partials.side_buttons')
+    @include('partials.side_buttons', ['id_group' => -1])
   </div>
 
   <div class="col-8">
     <div class="d-flex flex-row pt-3 pl-3 pr-1" style="overflow-x: auto;">
       @foreach ($contents as $content)
       <div class="d-block mx-2 pb-2">
-        @include('partials.content', ['content' => $content])
+        @include('partials.content', ['content' => $content, 'show_group' => true])
       </div>
       @endforeach
     </div>
 
-    @include('partials.create_buttons')
+    @include('partials.create_buttons', ['id_group' => -1])
   </div>
 </div>
 @endsection

@@ -54,7 +54,7 @@ $link_create_group = route('group.make');
             <div class="d-flex flex-row mx-2 mb-2 pb-2" style="overflow-x: auto;">
                 @foreach ($group->contents as $content)
                 <div class="d-block mx-2 pb-2">
-                @include('partials.content', ['content' => $content])
+                @include('partials.content', ['content' => $content, 'show_group' => false])
                 </div>
                 @endforeach
             </div>

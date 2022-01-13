@@ -1,7 +1,7 @@
 @php
 $icon_size = 'fs-3';
-$link_create_text = route('textcontent.make');
-$link_create_media = route('mediacontent.make');
+$link_create_text = route('textcontent.make', ['id_group' => $id_group]);
+$link_create_media = route('mediacontent.make', ['id_group' => $id_group]);
 @endphp
 
 <nav class="d-flex flex-column">

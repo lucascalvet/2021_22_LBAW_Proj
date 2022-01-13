@@ -12,8 +12,9 @@ use Illuminate\Support\Facades\URL;
 
 class MediaContentController extends Controller
 {
-    public function create()
+    public function create($id_group)
     {
+        /*
         $url = url()->previous();
         $path = parse_url($url)["path"];
         
@@ -22,8 +23,9 @@ class MediaContentController extends Controller
         } else {
             return view('content.media_create', ['id_group' => -1]);
         }
+        */
         
-        return view('content.media_create');
+        return view('content.media_create', ['id_group' => $id_group]);
     }
 
     public function edit($id)

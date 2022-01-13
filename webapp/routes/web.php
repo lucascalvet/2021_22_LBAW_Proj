@@ -15,8 +15,13 @@
 Route::get('/', 'HomeController@show')->name('home');
 
 // Content
-Route::get('content/text/create', 'TextContentController@create')->middleware('auth')->name('textcontent.make');
-Route::get('content/media/create', 'MediaContentController@create')->middleware('auth')->name('mediacontent.make');
+/*
+Route::get($known_route, function() use ($id) {
+    return App::make('SomeController')->someMethod($id);
+}); 
+*/
+Route::get('content/text/create/{id_group?}', 'TextContentController@create')->middleware('auth')->name('textcontent.make');
+Route::get('content/media/create/{id_group?}', 'MediaContentController@create')->middleware('auth')->name('mediacontent.make');
 Route::post('content/text/create','TextContentController@store')->middleware('auth')->name('textcontent.create');
 Route::post('content/media/create','MediaContentController@store')->middleware('auth')->name('mediacontent.create');
 Route::get('content/list','ContentController@index')->middleware('auth')->name('content.list');

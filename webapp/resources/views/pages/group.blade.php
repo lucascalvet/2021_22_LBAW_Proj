@@ -78,13 +78,13 @@ $link_edit = route('group.edit', ['id' => $group->id]);
         <div class="d-flex flex-row pt-3 pl-3 pr-1" style="overflow-x: auto;">
             @foreach ($group->contents as $content)
             <div class="d-block mx-2 pb-2">
-                @include('partials.content', ['content' => $content])
+                @include('partials.content', ['content' => $content, 'show_group' => false])
             </div>
             @endforeach
         </div>
 
         @if($group->members->contains($user))
-        @include('partials.create_buttons')
+        @include('partials.create_buttons', ['id_group' => $group->id])
         @endif
 
         <div class="d-none d-md-block text-center my-3">

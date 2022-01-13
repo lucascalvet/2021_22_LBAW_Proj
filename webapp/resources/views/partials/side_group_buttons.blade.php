@@ -1,8 +1,5 @@
 @php
 $icon_size = 'fs-3';
-$link_join = route('group.member.join', ['id' => $group->id, 'user' => $user->id]);
-$link_leave = route('group.member.leave', ['id' => $group->id, 'user' => $user->id]);
-$link_demote = route('group.mod.leave', ['id' => $group->id, 'user' => $user->id]);
 @endphp
 
 <nav class="d-flex flex-column">
@@ -12,9 +9,10 @@ $link_demote = route('group.mod.leave', ['id' => $group->id, 'user' => $user->id
         </button>
         <span class="d-none d-md-block align-self-center ms-3">Messages</span>
     </div>
+    @if($user != null)
     @if($group->members->contains($user))
     <div class="d-flex flex-row my-3">
-        <a href="{{ $link_leave }}">
+        <a href="{{ route('group.member.leave', ['id' => $group->id, 'user' => $user->id]) }}">
             <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
                 <i class="bi bi-x-circle {{ $icon_size }}"></i>
             </button>
@@ -23,7 +21,7 @@ $link_demote = route('group.mod.leave', ['id' => $group->id, 'user' => $user->id
     </div>
     @if($group->moderators->contains($user))
     <div class="d-flex flex-row my-3">
-        <a href="{{ $link_demote }}">
+        <a href="{{ route('group.mod.leave', ['id' => $group->id, 'user' => $user->id]) }}">
             <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
                 <i class="bi bi-arrow-down-square {{ $icon_size }}"></i>
             </button>
@@ -33,13 +31,14 @@ $link_demote = route('group.mod.leave', ['id' => $group->id, 'user' => $user->id
     @endif
     @else
     <div class="d-flex flex-row my-3">
-        <a href="{{ $link_join }}">
+        <a href="{{ route('group.member.join', ['id' => $group->id, 'user' => $user->id]) }}">
             <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
                 <i class="bi bi-box-arrow-in-right {{ $icon_size }}"></i>
             </button>
         </a>
         <span class="d-none d-md-block align-self-center ms-3">Join Group</span>
     </div>
+    @endif
     @endif
     <div class="dropright d-flex flex-row my-3">
         <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMore" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

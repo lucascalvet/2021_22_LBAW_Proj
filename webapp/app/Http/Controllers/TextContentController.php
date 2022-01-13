@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Validator;
 
 class TextContentController extends Controller
 {
-    public function create()
-    {
+    public function create($id_group = false)
+    {   /*
         $url = url()->previous();
         $path = parse_url($url)["path"];
         
@@ -19,8 +19,9 @@ class TextContentController extends Controller
         } else {
             return view('content.text_create', ['id_group' => -1]);
         }
+        */
 
-        return view('content.text_create');
+        return view('content.text_create', ['id_group' => $id_group]);
     }
 
     public function edit($id)

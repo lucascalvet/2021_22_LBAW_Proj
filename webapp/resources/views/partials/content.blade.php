@@ -113,7 +113,7 @@ $link_remove = route('content.remove', ['id' => $content->id]);
     @endif
   </div>
 
-  @if($content->id_group != null)
+  @if($content->id_group != null && $show_group)
   <div class="card-footer text-center">
     @ <a href="{{ route('group.show', ['id' => $content->id_group])}}"> {{ App\Models\Group::find($content->id_group)->name }}</a>
   </div>
