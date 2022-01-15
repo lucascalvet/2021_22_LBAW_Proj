@@ -11,19 +11,19 @@ $right_links = [
 ];
 @endphp
 
-<nav class="navbar navbar-expand-sm navbar-dark bg-secondary py-0">
-  <div class="container-fluid justify-content-sm-evenly">
-    <button class="order-first navbar-toggler my-2 fs-6" type="button" data-bs-toggle="collapse"
-      data-bs-target=".multi-collapse" aria-controls="navbarSupportedContent" aria-expanded="false"
-      aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="flex-grow-1 collapse multi-collapse navbar-collapse justify-content-evenly" id="leftIcons">
-      <ul class="flex-grow-1 px-0 align-items-sm-center navbar-nav justify-content-sm-evenly">
+<nav class="navbar navbar-expand-sm navbar-dark bg-secondary py-0 overflow-hidden">
+  <button class="order-first navbar-toggler m-2 fs-6 align-self-start" type="button" data-bs-toggle="collapse"
+    data-bs-target=".multi-collapse" aria-controls="navbarSupportedContent" aria-expanded="false"
+    aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="row flex-grow-1 align-items-center">
+    <div class="col-12 col-sm-5 order-2 order-sm-1 collapse multi-collapse navbar-collapse">
+      <ul class="align-items-center navbar-nav justify-content-evenly flex-grow-1" id="leftIcons">
         @foreach ($left_links as $page => $props)
           <li class="nav-item">
-            <a class="nav-link {{ Route::currentRouteName() == $page ? 'active' : '' }}"
-              {{ request()->is($page) ? 'aria-current="page"' : '' }} href="{{ route($page) }}">
+            <a class="nav-link{{ Route::currentRouteName() == $page ? ' active' : '' }}"
+              {{ Route::currentRouteName() == $page ? 'aria-current=page' : '' }} href="{{ route($page) }}">
               <i class="{{ $props['icon'] }} {{ $icon_size }}" aria-label="{{ $props['title'] }}"></i>
               <span class="d-sm-none">{{ $props['title'] }}</span>
             </a>
@@ -31,14 +31,16 @@ $right_links = [
         @endforeach
       </ul>
     </div>
-    <a class="position-absolute top-50 start-50 translate-middle order-first text-center order-sm-0 d-sm-block navbar-brand fs-3 fw-bold mx-2 py-0"
-      href="{{ route('home') }}">Social UP</a>
-    <div class="flex-grow-1 collapse multi-collapse navbar-collapse justify-content-evenly" id="rightIcons">
-      <ul class="flex-grow-1 px-0 align-items-sm-center navbar-nav justify-content-sm-evenly">
+    <div class="col-12 col-sm-2 order-1 order-sm-2 d-flex justify-content-center">
+      <a class="order-sm-0 d-sm-block navbar-brand fs-3 fw-bold mx-2 nav-link" href="{{ route('home') }}">Social
+        UP</a>
+    </div>
+    <div class="col-12 col-sm-5 order-last collapse multi-collapse navbar-collapse">
+      <ul class="align-items-center navbar-nav justify-content-evenly flex-grow-1" id="rightIcons">
         @foreach ($right_links as $page => $props)
           <li class="nav-item">
             <a class="nav-link {{ Route::currentRouteName() == $page ? 'active' : '' }}"
-              {{ request()->is($page) ? 'aria-current="page"' : '' }} href="{{ route($page) }}">
+              {{ Route::currentRouteName() == $page ? 'aria-current="page"' : '' }} href="{{ route($page) }}">
               <i class="{{ $props['icon'] }} {{ $icon_size }}" aria-label="{{ $props['title'] }}"></i>
               <span class="d-sm-none">{{ $props['title'] }}</span>
             </a>
@@ -48,21 +50,22 @@ $right_links = [
           <li class="nav-item d-flex align-items-center">
             <a class="nav-link d-flex align-items-center" href="{{ route('profile', ['user' => Auth::user()->id]) }}">
               <i class="bi bi-person-circle {{ $icon_size }}"></i>
-              <span class="d-inline-block text-truncate" style="max-width: 10em;">&nbsp;{{ Auth::user()->name }}</span>
+              <span class="text-truncate" style="max-width: 10em;">&nbsp;{{ Auth::user()->name }}</span>
             </a>
             <div class="dropdown">
-              <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfile"
+              <button class="btn btn-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownProfile"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               </button>
-              <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownProfile">
-                <a class="dropdown-item" href="{{ route('profile', ['user' => Auth::user()->id]) }}">Profile</a>
-                <a class="dropdown-item" href="{{ route('profile.edit', ['user' => Auth::user()->id]) }}">Edit
-                  Profile</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
-
-
-              </div>
+              <ul class="dropdown-menu" aria-labelledby="dropdownProfile">
+                <li><a class="dropdown-item" href="{{ route('profile', ['user' => Auth::user()->id]) }}">Profile</a>
+                </li>
+                <li><a class="dropdown-item" href="{{ route('profile.edit', ['user' => Auth::user()->id]) }}">Edit
+                    Profile</a></li>
+                <li>
+                  <div class="dropdown-divider"></div>
+                </li>
+                <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
+              </ul>
             </div>
           </li>
         @endauth
@@ -77,10 +80,10 @@ $right_links = [
               <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfile"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               </button>
-              <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownProfile">
-                <a class="dropdown-item" href="{{ route('login') }}">Login</a>
-                <a class="dropdown-item" href="{{ route('register') }}">Register</a>
-              </div>
+              <ul class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownProfile">
+                <li><a class="dropdown-item" href="{{ route('login') }}">Login</a></li>
+                <li><a class="dropdown-item" href="{{ route('register') }}">Register</a></li>
+              </ul>
             </div>
           </li>
         @endguest
