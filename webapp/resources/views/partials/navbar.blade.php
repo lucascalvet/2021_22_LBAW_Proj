@@ -11,13 +11,13 @@ $right_links = [
 ];
 @endphp
 
-<nav class="navbar navbar-expand-sm navbar-dark bg-secondary py-0 overflow-hidden">
+<nav class="navbar navbar-expand-sm navbar-dark bg-secondary py-0">
   <button class="order-first navbar-toggler m-2 fs-6 align-self-start" type="button" data-bs-toggle="collapse"
     data-bs-target=".multi-collapse" aria-controls="navbarSupportedContent" aria-expanded="false"
     aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="row flex-grow-1 align-items-center">
+  <div class="row flex-grow-1 align-items-center m-0">
     <div class="col-12 col-sm-5 order-2 order-sm-1 collapse multi-collapse navbar-collapse">
       <ul class="align-items-center navbar-nav justify-content-evenly flex-grow-1" id="leftIcons">
         @foreach ($left_links as $page => $props)
@@ -46,47 +46,49 @@ $right_links = [
             </a>
           </li>
         @endforeach
-        @auth
-          <li class="nav-item d-flex align-items-center">
-            <a class="nav-link d-flex align-items-center" href="{{ route('profile', ['user' => Auth::user()->id]) }}">
-              <i class="bi bi-person-circle {{ $icon_size }}"></i>
-              <span class="text-truncate" style="max-width: 10em;">&nbsp;{{ Auth::user()->name }}</span>
-            </a>
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownProfile"
-                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <li class="nav-item d-flex align-items-center">
+          @auth
+            <div class="btn-group">
+              <a role="button" class="btn btn-light py-0 d-flex align-items-center"
+                href="{{ route('profile', ['user' => Auth::user()->id]) }}">
+                <i class="text-secondary bi bi-person-circle {{ $icon_size }}"></i>
+                <span class="text-secondary text-truncate"
+                  style="max-width: 10em;">&nbsp;{{ Auth::user()->name }}</span>
+              </a>
+              <button type="button" class="text-secondary btn btn-light dropdown-toggle dropdown-toggle-split"
+                id="dropdownProfile" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="visually-hidden">Toggle Dropdown</span>
               </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownProfile">
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownProfile">
                 <li><a class="dropdown-item" href="{{ route('profile', ['user' => Auth::user()->id]) }}">Profile</a>
                 </li>
                 <li><a class="dropdown-item" href="{{ route('profile.edit', ['user' => Auth::user()->id]) }}">Edit
                     Profile</a></li>
                 <li>
-                  <div class="dropdown-divider"></div>
+                  <hr class="dropdown-divider">
                 </li>
                 <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
               </ul>
             </div>
-          </li>
-        @endauth
-        @guest
-          {{-- Button for non-authenticated --}}
-          <li class="nav-item  d-flex align-items-center">
-            <a class="nav-link d-flex align-items-center" href='{{ route('login') }}'>
-              <i class="bi bi-person-circle {{ $icon_size }}"></i>
-              <span class="">&nbsp;Guest</span>
-            </a>
-            <div class="dropdown">
-              <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfile"
-                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          @endauth
+          @guest
+            <div class="btn-group">
+              <a role="button" class="btn btn-light py-0 d-flex align-items-center" href="{{ route('login') }}">
+                <i class="text-secondary bi bi-person-circle {{ $icon_size }}"></i>
+                <span class="text-secondary text-truncate" style="max-width: 10em;">&nbsp;Guest</span>
+              </a>
+              <button type="button" class="text-secondary btn btn-light dropdown-toggle dropdown-toggle-split"
+                id="dropdownProfile" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="visually-hidden">Toggle Dropdown</span>
               </button>
-              <ul class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownProfile">
-                <li><a class="dropdown-item" href="{{ route('login') }}">Login</a></li>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownProfile">
+                <li><a class="dropdown-item" href="{{ route('login') }}">Login</a>
+                </li>
                 <li><a class="dropdown-item" href="{{ route('register') }}">Register</a></li>
               </ul>
             </div>
-          </li>
-        @endguest
+          @endguest
+        </li>
       </ul>
     </div>
   </div>

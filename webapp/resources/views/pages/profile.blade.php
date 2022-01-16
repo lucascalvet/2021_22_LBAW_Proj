@@ -1,6 +1,6 @@
 @php
-  $profile_pic = 'img/profile_pic.png';
-  $cover_pic = 'img/cover_pic.jpg';
+$profile_pic = 'img/profile_pic.png';
+$cover_pic = 'img/cover_pic.jpg';
 @endphp
 
 @extends('layouts.app')
@@ -9,42 +9,44 @@
 
 @section('content')
 
-@include('partials.navbar')
+  @include('partials.navbar')
 
-<section id="profile">
-  <div class="container-fluid vh-100" style="padding: 0em; margin: 0em;">
+  <section id="profile">
+    <div class="container-fluid vh-100" style="padding: 0em; margin: 0em;">
       <!--Cover Photo-->
       <div class="row h-25 m-0 mb-4 justify-content-center bg-secondary position-relative">
-        <img class="rounded h-100 p-0" style="object-fit: none;" src="{{ asset($cover_pic) }}"/>
-        <img class="d-none d-md-block rounded-circle w-25 position-absolute top-100 start-0 translate-middle" style="margin-left: 8em; max-height: 10em; max-width: 10em;" src="{{ asset($profile_pic) }}"/>
-        <img class="d-block d-md-none rounded-circle w-25 position-absolute top-100 start-50 translate-middle" style="max-height: 10em; max-width: 10em;" src="{{ asset($profile_pic) }}"/>
+        <img class="rounded h-100 p-0" style="object-fit: none;" src="{{ asset($cover_pic) }}" />
+        <img class="d-none d-md-block rounded-circle w-25 position-absolute top-100 start-0 translate-middle"
+          style="margin-left: 8em; max-height: 10em; max-width: 10em;" src="{{ asset($profile_pic) }}" />
+        <img class="d-block d-md-none rounded-circle w-25 position-absolute top-100 start-50 translate-middle"
+          style="max-height: 10em; max-width: 10em;" src="{{ asset($profile_pic) }}" />
         <div class="d-flex m-2">
           @if (Auth::check() && Auth::user()->can('update', $user))
-        <a class="me-auto" href=" {{ route('profile.edit', ['user' => $user->id]) }}">
-          <i class="bi d-block d-md-none bi-pencil-square"></i>
-        </a>
-        @endif
+            <a class="me-auto" href=" {{ route('profile.edit', ['user' => $user->id]) }}">
+              <i class="bi d-block d-md-none bi-pencil-square"></i>
+            </a>
+          @endif
           <i class="bi bi-three-dots d-block d-md-none"></i>
         </div>
       </div>
 
-        <!--Computer View-->
+      <!--Computer View-->
       <div class="d-none d-md-block">
         <div class="row gx-5 me-2" style="margin-left: 3em;">
           <!--User Info-->
           <div class="col-4 mt-5">
-            <h2 class="pt-4">{{$user->username}}</h2>
+            <h2 class="pt-4">{{ $user->username }}</h2>
 
             <div class="d-flex">
               <div class="pb-2 pe-2"><strong>120</strong></div>
               friends
-              </div>
+            </div>
 
-            <div class="pb-2">{{$user->name}}</div>
-            <div class="pb-2">{{$user->description}}</div>
-            <div class="pb-2">{{$user->birthday}}</div>
-            <div class="pb-2">{{$user->email}}</div>
-            <div class="pb-2 mb-4">{{$user->phone_number}}</div>
+            <div class="pb-2">{{ $user->name }}</div>
+            <div class="pb-2">{{ $user->description }}</div>
+            <div class="pb-2">{{ $user->birthday }}</div>
+            <div class="pb-2">{{ $user->email }}</div>
+            <div class="pb-2 mb-4">{{ $user->phone_number }}</div>
 
             <div class="row">
               <h5 class="text-center">Interests</h5>
@@ -80,10 +82,11 @@
 
             <!--Actual Content for md screen and beyond-->
             <div class="d-flex flex-row text-light overflow-auto">
-                @foreach($user->contents as $content)
-                      <div class="d-block mx-3 bg-secondary rounded-3"> @include('partials.content', ['content' => $content])</div>
-                      {{--<div class="p-5 m-2 mx-1 bg-secondary shadow rounded-3"> @include('partials.mini_post', ['content' => $content])--}}
-                @endforeach
+              @foreach ($user->contents->sortBy(['publishing_date', 'desc']) as $content)
+                <div class="d-block mx-3 bg-secondary rounded-3"> @include('partials.content', ['content' => $content])
+                </div>
+                {{-- <div class="p-5 m-2 mx-1 bg-secondary shadow rounded-3"> @include('partials.mini_post', ['content' => $content]) --}}
+              @endforeach
             </div>
 
             <div class="row d-none d-md-block mt-5 text-end">
@@ -100,18 +103,18 @@
       <!--Mobile View-->
       <div class="d-block d-md-none text-center">
         <div class="mt-5">
-          <h2 class="pt-5">{{$user->username}}</h2>
+          <h2 class="pt-5">{{ $user->username }}</h2>
 
           <div class="d-flex justify-content-center">
             <div class="pb-2 pe-2"><strong>120</strong></div>
             friends
           </div>
 
-          <div class="pb-2">{{$user->name}}</div>
-          <div class="pb-2">{{$user->description}}</div>
-          <div class="pb-2">{{$user->birthday}}</div>
-          <div class="pb-2">{{$user->email}}</div>
-          <div class="pb-2 mb-4">{{$user->phone_number}}</div>
+          <div class="pb-2">{{ $user->name }}</div>
+          <div class="pb-2">{{ $user->description }}</div>
+          <div class="pb-2">{{ $user->birthday }}</div>
+          <div class="pb-2">{{ $user->email }}</div>
+          <div class="pb-2 mb-4">{{ $user->phone_number }}</div>
 
           <div class="row">
             <h5>Interests</h5>
@@ -125,7 +128,7 @@
         </div>
       </div>
 
-  </div>
-</section>
+    </div>
+  </section>
 
 @endsection

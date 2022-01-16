@@ -28,7 +28,7 @@ class TextContentController extends Controller
 
         $content->save();
         $textcontent->save();
-        
+
         //$content->delete();
         //return redirect()->route('home');
         return redirect()->route('content.show', ['id' => $id]);
@@ -83,9 +83,13 @@ class TextContentController extends Controller
         $content->save();
 
         $textcontent->id_content = $content->id;
-
         $textcontent->save();
-    
+
+        if (isset($request->parent_id)) {
+            $textcontent->parent()->attach($request->parent_id);
+            return redirect()->route('content.show', ['id' => $request->parent_id]);
+        }
+
         return redirect()->route('content.show', ['id' => $content->id]);
     }
 }

@@ -13,7 +13,7 @@
                 @csrf
 
                 <div class="form-floating mb-2">
-                  <textarea class="form-control" type="text" id="post_text" name="post_text" placeholder="* Post Text"
+                  <textarea class="form-control" type="text" id="post-text" name="post_text" placeholder="* Post Text"
                     autofocus required rows="10"></textarea>
                   <label for="post_text">* Post Text</label>
 

@@ -31,6 +31,13 @@ class Content extends Model
     protected $fillable = ['id_creator'];
 
     /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['publishing_date'];
+
+    /**
      * The contents published by this user.
      */
     public function creator()
@@ -52,6 +59,6 @@ class Content extends Model
     public function comment_count()
     {
         if ($this->contentable instanceof MediaContent) return $this->contentable->comments->count();
-        else return 100;
+        else if ($this->contentable instanceof TextContent) return $this->contentable->replies->count();
     }
 }

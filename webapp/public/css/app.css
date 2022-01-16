@@ -1,5 +1,6 @@
 ::-webkit-scrollbar {
     width: 10px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -11,7 +12,6 @@
     border-radius: 10px;
     background-color: rgba(32, 32, 32, 0.5);
 }
-
 
 .dropdown-menu-right {
     right: 0;
@@ -32,6 +32,7 @@
     color: white !important;
     border-left: 2px solid white !important;
 }
+
 .custom-tab-bottom {
     background: transparent !important;
     color: black !important;
@@ -48,4 +49,3 @@
     border-bottom: 2px solid white !important;
     border-radius: 0px !important;
 }
-

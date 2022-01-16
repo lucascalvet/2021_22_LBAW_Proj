@@ -21,7 +21,14 @@ $time = '10 days ago';
     <a href="{{ route('profile', ['user' => $content->creator->id]) }}">
       <h1 class="text-center mt-5 fw-bold">{{ $content->creator->name }}</h1>
     </a>
-
+    <div class="text-center text-secondary">
+      {{ $content->publishing_date->format('D, Y-m-d H:i:s') }}
+      @if ($content->contentable instanceof App\Models\TextContent && !$content->contentable->isRoot())
+        <br>
+        In response to <a class="text-truncate"
+          href="{{ route('content.show', ['id' => $content->contentable->parent->first()->id_content]) }}">{{ $content->contentable->parent->first()->content->creator->name }}</a>
+      @endif
+    </div>
     <div>
       <div class="text-center mb-3 mt-3 fs-3">
         @if ($content->contentable instanceof App\Models\MediaContent)
@@ -39,10 +46,9 @@ $time = '10 days ago';
     @if ($content->contentable instanceof App\Models\MediaContent)
       <div class="row justify-content-center m-0 p-0">
         @if ($content->contentable->media_contentable instanceof App\Models\Video)
-          <video src="{{ asset($content->contentable->media) }}" controls
-            style="max-width: 50em; max-height: 60em;"></video>
+          <video src="{{ asset($content->contentable->media) }}" controls style="max-width: 50em;"></video>
         @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
-          <img src="{{ asset($content->contentable->media) }}" style="max-width: 50em; max-height: 60em;" />
+          <img src="{{ asset($content->contentable->media) }}" style="max-width: 40em;" />
         @endif
       </div>
     @endif
@@ -67,21 +73,27 @@ $time = '10 days ago';
       @endif
       <hr>
       <div id="comments">
-        @if ($content->contentable->comments->isEmpty())
-          <p>No comments yet.</p>
+        @if ($content->comment_count() === 0)
+          <h4>No comments yet.</h4>
         @else
           <h4>Comments ({{ $content->comment_count() }}): </h4>
           <ul class="list-group">
             @foreach ($content->contentable->comments as $comment)
               <li class="list-group-item">
-                <div class="d-flex flex-row">
-                  <span class="flex-fill">
+                <div class="d-flex flex-row align-items-center">
+                  <span class="me-auto">
                     <a @if ($content->creator == $comment->author) class="fw-bold" @endif href="{{ route('profile', ['user' => $comment->author->id]) }}">
                       {{ $comment->author->name }}</a>
                     @if ($content->creator == $comment->author)<sup class="text-primary fw-bold">OP</sup> @endif
                     : {{ $comment->comment_text }}
                   </span>
-                  <span class="text-secondary">{{ $comment->comment_date->format('D, Y-m-d H:i:s') }}</span>
+                  <span class="text-secondary text-nowrap ps-2">
+                    {{ $comment->comment_date->format('D, ') }}
+                    <br class="d-sm-none text-nowrap">
+                    {{ $comment->comment_date->format('Y-m-d ') }}
+                    <br class="d-sm-none text-nowrap">
+                    {{ $comment->comment_date->format('H:i:s') }}
+                  </span>
                 </div>
               </li>
             @endforeach
@@ -110,6 +122,72 @@ $time = '10 days ago';
             @endguest
           </ul>
         @endif
+      </div>
+    @elseif ($content->contentable instanceof App\Models\TextContent)
+      <hr>
+      <div id="comments">
+        @if ($content->comment_count() === 0)
+          <h4>No replies yet.</h4>
+        @else
+          <h4>Replies ({{ $content->comment_count() }}): </h4>
+        @endif
+        <ul class="list-group">
+          @foreach ($content->contentable->replies as $reply)
+            <li class="list-group-item">
+              <div class="d-flex flex-row align-items-center">
+                <span class="me-auto">
+                  <a @if ($content->creator == $reply->content->creator) class="fw-bold" @endif href="{{ route('profile', ['user' => $reply->content->creator]) }}">
+                    {{ $reply->content->creator->name }}</a>
+                  @if ($content->creator == $reply->content->creator)<sup class="text-primary fw-bold">OP</sup> @endif
+                  : {{ $reply->post_text }}
+                </span>
+                <span class="text-end text-nowrap">
+                  <span class="ms-2"> 0 {{-- TODO: insert like count here*/ --}} </span>
+                  <a class="text-dark text-decoration-none ms-1" href="#">
+                    <i class="bi bi-heart"></i>
+                  </a>
+                  <br class="d-sm-none">
+                  <span class="ms-3"> {{ $reply->content->comment_count() }} </span>
+                  <a class="text-dark ms-1"
+                    href="{{ route('content.show', ['id' => $reply->content->id, '#comments']) }}">
+                    <i class="bi bi-chat-left-text"></i>
+                  </a>
+                </span>
+                <span class="text-secondary text-nowrap ms-3">
+                  {{ $reply->content->publishing_date->format('D, ') }}
+                  <br class="d-sm-none">
+                  {{ $reply->content->publishing_date->format('Y-m-d ') }}
+                  <br class="d-sm-none">
+                  {{ $reply->content->publishing_date->format('H:i:s') }}
+                </span>
+              </div>
+            </li>
+          @endforeach
+          @auth
+            <li class="list-group-item">
+              <form method="POST" action="{{ route('textcontent.create') }}">
+                @csrf
+                <input type="hidden" id="parent-id" name="parent_id" value="{{ $content->id }}">
+                <label for="comment-text" class="form-label fw-bold">Leave a reply:</label>
+                <div class="d-flex flex-row">
+                  <input type="text" id="comment-text" name='post_text' class="form-control"
+                    aria-describedby="comment-help-block">
+                  <button type="submit" class="btn btn-primary ms-3">Reply</button>
+                </div>
+                <div id="comment-help-block" class="form-text">
+                  Please have some common sense and be respectful. Don't be a downer, be a Social UPper ;)
+                </div>
+              </form>
+            </li>
+          @endauth
+          @guest
+            <li class="list-group-item">
+              <span class="text-secondary">
+                <a class="link-secondary" href="{{ route('login') }}">Login</a> to reply.
+              </span>
+            </li>
+          @endguest
+        </ul>
       </div>
     @endif
   </div>

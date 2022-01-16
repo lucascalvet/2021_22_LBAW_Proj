@@ -22,7 +22,6 @@ $link_edit = route('content.edit', ['id' => $content->id]);
 $link_view = route('content.show', ['id' => $content->id]);
 @endphp
 
-
 <div class="card text-black p-0" style="width: 19em; height: 30em; overflow-y: auto;">
   <div class="card-header">
     <div class="d-flex flex-row justify-content-between">
@@ -63,23 +62,39 @@ $link_view = route('content.show', ['id' => $content->id]);
       </div>
     </div>
   </div>
-  <div class="card-body">
-
-    @if ($content->contentable instanceof App\Models\MediaContent)
-      <div class="row justify-content-center pt-3">
-        @if ($content->contentable->media_contentable instanceof App\Models\Video)
-          <video src="{{ asset($content->contentable->media) }}" class="align-self-centre" controls
-            style="max-width: 18em; max-height: 30em;"></video>
-        @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
-          <img src="{{ asset($content->contentable->media) }}" class="align-self-centre"
-            style="max-width: 20em; max-height: 30em;" />
-        @endif
-      </div>
-    @else
-      @if ($content->contentable instanceof App\Models\TextContent)
-        <p class="card-text pt-3 $font_size" style="max-width: 20em;">{{ $content->contentable->post_text }}</p>
-      @endif
+  <div class="card-header text-secondary">
+    {{ $content->publishing_date->format('D, Y-m-d H:i:s') }}
+    @if ($content->contentable instanceof App\Models\TextContent && !$content->contentable->isRoot())
+      <br>
+      In response to <a class="text-truncate"
+        href="{{ route('content.show', ['id' => $content->contentable->parent->first()->id_content]) }}">{{ $content->contentable->parent->first()->content->creator->name }}</a>
     @endif
+  </div>
+  <div class="card-body d-flex flex-column">
+    <div class="mb-auto">
+      @if ($content->contentable instanceof App\Models\MediaContent)
+        <div class="row justify-content-center py-3">
+          @if ($content->contentable->media_contentable instanceof App\Models\Video)
+            <video src="{{ asset($content->contentable->media) }}" class="align-self-centre" controls
+              style="max-width: 18em; max-height: 30em;"></video>
+          @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
+            <img src="{{ asset($content->contentable->media) }}" class="align-self-centre"
+              style="max-width: 20em; max-height: 30em;" />
+          @endif
+        </div>
+      @endif
+      <p class="card-text pt-3{{ $font_size }}" style="max-width: 20em;">
+        @if ($content->contentable instanceof App\Models\MediaContent)
+          @if ($content->contentable->media_contentable instanceof App\Models\Video)
+            {{ $content->contentable->media_contentable->title }}
+          @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
+            {{ $content->contentable->description }}
+          @endif
+        @elseif ($content->contentable instanceof App\Models\TextContent)
+          {{ $content->contentable->post_text }}
+        @endif
+      </p>
+    </div>
     <div class="row pt-3">
       <div class="col-3">
         <div class="row justify-content-center">
@@ -106,8 +121,5 @@ $link_view = route('content.show', ['id' => $content->id]);
         </div>
       </div>
     </div>
-    @if ($content->contentable instanceof App\Models\MediaContent)
-      <p class="card-text $font_size" style="max-width: 20em;">{{ $content->contentable->description }}</p>
-    @endif
   </div>
 </div>

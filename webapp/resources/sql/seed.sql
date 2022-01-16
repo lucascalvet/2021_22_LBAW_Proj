@@ -621,7 +621,7 @@ SELECT setval('groups_id_seq', (SELECT max(id) FROM groups));
 
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (1, '2021-5-23', NULL, 1);
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (2, '2015-7-28', 2, 2);
-INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (3, '2020-4-3', NULL, 3);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (3, '2021-10-3 15:03:25', NULL, 3);
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (4, '2021-10-12', 1, 4);
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (5, '2019-1-10', NULL, 5);
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (6, '2018-9-20', NULL, 6);
@@ -629,6 +629,12 @@ INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (7, '2021
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (8, '2020-2-16', 1, 8);
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (9, '2021-6-29', NULL, 9);
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (10, '2020-1-3', NULL, 10);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (11, '2021-10-3 15:32:13', NULL, 4);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (12, '2021-10-3 15:51:37', NULL, 7);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (13, '2021-10-3 16:08:54', NULL, 4);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (14, '2021-10-3 16:14:34', NULL, 9);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (15, '2021-10-3 16:34:28', NULL, 10);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (16, '2021-10-3 16:37:09', NULL, 8);
 SELECT setval('content_id_seq', (SELECT max(id) FROM content));
 
 INSERT INTO content_like (date, id_user, id_content) VALUES ('2021-5-23', 1, 1);
@@ -647,9 +653,20 @@ INSERT INTO text_content (id_content, post_text) VALUES (2, 'I love to write SQL
 INSERT INTO text_content (id_content, post_text) VALUES (3, 'LBAW is the best course in the world');
 INSERT INTO text_content (id_content, post_text) VALUES (4, 'Who is the best football player?');
 INSERT INTO text_content (id_content, post_text) VALUES (5, 'Take it easy, keep calm');
+INSERT INTO text_content (id_content, post_text) VALUES (11, 'I agree, it''s pretty interesting! ╰(*°▽°*)╯');
+INSERT INTO text_content (id_content, post_text) VALUES (12, 'I''ll have to disagree, because all of the courses are great 🤩');
+INSERT INTO text_content (id_content, post_text) VALUES (13, 'ahah you had us in the first part ngl.');
+INSERT INTO text_content (id_content, post_text) VALUES (14, 'Yes, but we are expected to work too much, considering the time we have and the other courses that also expect a lot of work from us');
+INSERT INTO text_content (id_content, post_text) VALUES (15, 'Laravel is cool');
+INSERT INTO text_content (id_content, post_text) VALUES (16, 'Agreed 😕');
 
 INSERT INTO text_reply (child_text, parent_text) VALUES (1, 2);
-INSERT INTO text_reply (child_text, parent_text) VALUES (4, 3);
+INSERT INTO text_reply (child_text, parent_text) VALUES (11, 3);
+INSERT INTO text_reply (child_text, parent_text) VALUES (12, 11);
+INSERT INTO text_reply (child_text, parent_text) VALUES (13, 12);
+INSERT INTO text_reply (child_text, parent_text) VALUES (14, 3);
+INSERT INTO text_reply (child_text, parent_text) VALUES (15, 11);
+INSERT INTO text_reply (child_text, parent_text) VALUES (16, 14);
 
 INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (6, 'Just a cute cat', 'media/cute.png', 'Photo of a cat playing', TRUE, 6);
 INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (7, 'BMW', 'media/moto.jpeg', NULL, FALSE, 7);
