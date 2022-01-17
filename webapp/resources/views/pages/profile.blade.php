@@ -84,12 +84,12 @@
                 <div class="d-block mx-2 pb-2">
                   @if(Auth::user())
                     @if(\App\Models\Like::where('id_user', $user->id)->where('id_content', $content->id)->count() == 0)
-                      @include('partials.content', ['content' => $content, 'liked' => false])
+                      @include('partials.content', ['content' => $content, 'liked' => false,'show_group' => true])
                     @else
-                      @include('partials.content', ['content' => $content, 'liked' => true])
+                      @include('partials.content', ['content' => $content, 'liked' => true, 'show_group' => true])
                     @endif
                   @else
-                    @include('partials.content', ['content' => $content, 'liked' => false])
+                    @include('partials.content', ['content' => $content, 'liked' => false, 'show_group' => true])
                   @endif
                 </div>
                 @endforeach

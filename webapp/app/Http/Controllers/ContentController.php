@@ -33,6 +33,18 @@ class ContentController extends Controller
         return redirect()->route('home');
     }
 
+    public function remove($id)
+    {
+        abort_if(is_null($content = Content::find($id)), 404);
+        //$this->authorize('delete', $content);
+
+        $content->group()->dissociate();
+
+        $content->save();
+
+        return view('content.single', ['content' => $content]);
+    }
+
     public function destroy($id)
     {
 
@@ -59,8 +71,6 @@ class ContentController extends Controller
         }
 
         return redirect()->route('home');
-
-
     }
 
     protected function validator(Request $request)
