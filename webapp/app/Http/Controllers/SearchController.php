@@ -33,7 +33,7 @@ class SearchController extends Controller
 
     if($search){
       //$posts = MediaContent::where('description', 'LIKE', "%{$search}%")->get();
-      
+
       $posts = TextContent::whereRaw("tsvectors @@ plainto_tsquery('english', '%{$search}%')")->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', '%{$search}%')) DESC")->get();
 
       return view('pages.search', [

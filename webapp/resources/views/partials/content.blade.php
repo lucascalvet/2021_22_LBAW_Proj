@@ -1,8 +1,4 @@
 @php
-/* use App\Models\TextContent;
-use App\Models\MediaContent;
-use App\Models\Content; */
-
 $icon_size = 'fs-5';
 $font_size = 'fs-6';
 
@@ -19,8 +15,10 @@ $image = 'img/cont_elon.jpg';
 $example_video = 'vid/ex.mp4';
 $example_image = 'img/cont_elon.jpg';
 
+$user = Auth::user();
 $link_edit = route('content.edit', ['id' => $content->id]);
 $link_view = route('content.show', ['id' => $content->id]);
+$link_remove = route('content.remove', ['id' => $content->id]);
 @endphp
 
 
@@ -40,7 +38,7 @@ $link_view = route('content.show', ['id' => $content->id]);
             <i class="bi bi-arrows-angle-expand {{ $icon_size }}"></i>
           </button>
         </a>
-        @if (Auth::check() && Auth::user()->can('update', $content))
+        @if (Auth::check() && (Auth::user()->can('update', $content) || ($content->id_group != null && App\Models\Group::find($content->id_group)->moderators->contains($user))))
         <div class="dropdown">
           <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownPost" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="bi bi-three-dots {{ $icon_size }}"></i>
@@ -48,12 +46,20 @@ $link_view = route('content.show', ['id' => $content->id]);
 
           <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="dropdownPost">
 
+            @if (Auth::check() && Auth::user()->can('update', $content))
             <a class="dropdown-item" href="{{ $link_edit }}">Edit Post</a>
             <form method="POST" action="{{ route('content.destroy', $content) }}">
               @csrf
               @method('DELETE')
               <button class="dropdown-item" type="submit">Delete Post</button>
             </form>
+            @endif
+            @if (Auth::check() && Auth::user()->can('update', $content) && $content->id_group != null)
+            <div class="dropdown-divider"></div>
+            @endif
+            @if ($content->id_group != null && (App\Models\Group::find($content->id_group)->moderators->contains($user) || (Auth::check() && Auth::user()->can('update', $content))))
+            <a class="dropdown-item" href="{{ $link_remove }}">Remove from Group</a>
+            @endif
           </div>
 
         </div>
@@ -87,10 +93,19 @@ $link_view = route('content.show', ['id' => $content->id]);
       </div>
       <div class="col-6">
         <div class="row justify-content-center">
-          <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-            <i class="bi bi-heart {{ $icon_size }}"></i>
-          </button>
-          <span class="text-center">{{ $n_hearts }}</span>
+          @if(Auth::user())
+            <button id="button-content-like-{{ $content->id }}" type="button" class="btn btn-secondary button-content-like" style="width: auto; height: auto;">
+            @if(\App\Models\Like::where('id_user', Auth::user()->id)->where('id_content', $content->id)->count() != 0)
+              <i style="color: red;" class="bi bi-heart-fill fs-5"></i>
+            @else
+              <i style="color: red;" class="bi bi-heart fs-5"></i>
+            @endif
+          @else
+            <button disabled id="button-content-like-{{ $content->id }}" type="button" class="btn btn-secondary button-content-like" style="width: auto; height: auto;">
+            <i style="color: red;" class="bi bi-heart fs-5"></i>
+          @endif
+            </button>
+          <span id="s-hearts-count-{{ $content->id }}" class="text-center">{{ $content->numberOfLikes() }}</span>
         </div>
       </div>
       <div class="col-3">
@@ -106,4 +121,12 @@ $link_view = route('content.show', ['id' => $content->id]);
     <p class="card-text $font_size" style="max-width: 20em;">{{ $content->contentable->description }}</p>
     @endif
   </div>
+
+  @if($content->id_group != null && $show_group)
+  <div class="card-footer text-center">
+    @ <a href="{{ route('group.show', ['id' => $content->id_group])}}"> {{ App\Models\Group::find($content->id_group)->name }}</a>
+  </div>
+
+  @endif
+
 </div>

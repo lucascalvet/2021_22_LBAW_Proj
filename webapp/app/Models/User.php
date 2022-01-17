@@ -56,6 +56,7 @@ class User extends Authenticatable
         return $this->id == 22;
     }
 
+
     public function friendRequests(){
         return $this->hasMany(FriendRequest::class, 'id_receiver');
     }
@@ -68,4 +69,21 @@ class User extends Authenticatable
         return false;
     }
     
+
+    /**
+     * The groups that the user is member of.
+     */
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_member', 'id_user_member', 'id_group');
+    }
+
+    /**
+     * The groups that the user is moderator of.
+     */
+    public function mod_groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_moderator', 'id_user_moderator', 'id_group');
+    }
+
 }

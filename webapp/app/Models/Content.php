@@ -31,11 +31,19 @@ class Content extends Model
     protected $fillable = ['id_creator'];
 
     /**
-     * The contents published by this user.
+     * The creator of the content.
      */
     public function creator()
     {
         return $this->belongsTo(User::class, 'id_creator');
+    }
+
+    /**
+     * The group where the content is posted.
+     */
+    public function group()
+    {
+        return $this->belongsTo(Group::class, 'id_group');
     }
     
     /**
@@ -44,6 +52,20 @@ class Content extends Model
     public function contentable()
     {
         return $this->morphTo(null, null, 'id');
+    }
+
+    /**
+     * The likes a content has
+     */
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'id_content');
+    }
+
+    public function numberOfLikes(){
+        $nLikes = $this->likes->count();
+
+        return $nLikes;
     }
 
 }

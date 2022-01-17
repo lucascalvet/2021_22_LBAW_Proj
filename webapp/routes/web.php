@@ -15,20 +15,30 @@
 Route::get('/', 'HomeController@show')->name('home');
 
 // Content
-Route::get('content/text/create', 'TextContentController@create')->middleware('auth')->name('textcontent.make');
-Route::get('content/media/create', 'MediaContentController@create')->middleware('auth')->name('mediacontent.make');
+/*
+Route::get($known_route, function() use ($id) {
+    return App::make('SomeController')->someMethod($id);
+}); 
+*/
+Route::get('content/text/create/{id_group?}', 'TextContentController@create')->middleware('auth')->name('textcontent.make');
+Route::get('content/media/create/{id_group?}', 'MediaContentController@create')->middleware('auth')->name('mediacontent.make');
 Route::post('content/text/create','TextContentController@store')->middleware('auth')->name('textcontent.create');
 Route::post('content/media/create','MediaContentController@store')->middleware('auth')->name('mediacontent.create');
 Route::get('content/list','ContentController@index')->middleware('auth')->name('content.list');
 Route::get('content/{id}','ContentController@show')->name('content.show');
 Route::get('content/edit/{id}','ContentController@edit')->middleware('auth')->name('content.edit');
-/* 
+
+//Like content
+Route::post('content/like/{id}', 'ContentController@like')->middleware('auth')->name('content.like');
+
+/*
 Route::get('content/text/edit/{id}','TextContentController@edit')->middleware('auth')->name('textcontent.edit');
-Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit'); 
+Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit');
 */
 Route::patch('content/text/edit/{id}','TextContentController@update')->middleware('auth')->name('textcontent.update');
 Route::patch('content/media/edit/{id}','MediaContentController@update')->middleware('auth')->name('mediacontent.update');
 Route::delete('content/delete/{id}', 'ContentController@destroy')->middleware('auth')->name('content.destroy');
+Route::get('content/remove/{id}','ContentController@remove')->middleware('auth')->name('content.remove');
 
 // Profile
 Route::get('profile/{user}', 'ProfileController@show')->name('profile');
@@ -70,10 +80,30 @@ Route::get('search/content', 'SearchController@searchPosts')->name('search.conte
 Route::get('search', 'SearchController@searchUsers')->name('search');
 
 // Notifications
-Route::get('/notifications', 'HomeController@show')->name('notifications');
+Route::get('/notifications', 'NotificationsController@all')->middleware('auth')->name('notifications');
+Route::get('/notifications/friends_requests', 'NotificationsController@friends')->middleware('auth')->name('notifications.friend_requests');
+Route::get('/notifications/likes', 'NotificationsController@likes')->middleware('auth')->name('notifications.likes');
+Route::get('/notifications/comments', 'NotificationsController@comments')->middleware('auth')->name('notifications.comments');
+Route::post('/notifications/change_filter/{url}', 'NotificationsController@toggleFilter')->middleware('auth')->name('notifications.toggle_filter');
 
 // Chat
 Route::get('/chat', 'HomeController@show')->name('chat');
 
 // Groups
-Route::get('/groups', 'HomeController@show')->name('groups');
+Route::get('groups', 'GroupController@showHub')->name('groups');
+Route::get('group/create', 'GroupController@create')->middleware('auth')->name('group.make');
+Route::post('group/create', 'GroupController@store')->middleware('auth')->name('group.create');
+Route::get('group/{id}','GroupController@show')->name('group.show');
+Route::get('group/edit/{id}','GroupController@edit')->middleware('auth')->name('group.edit');
+Route::patch('group/edit/{id}','GroupController@update')->middleware('auth')->name('group.update');
+Route::delete('group/delete/{id}', 'GroupController@destroy')->middleware('auth')->name('group.destroy');
+Route::get('group/{id}/join/{user}','GroupController@memberJoin')->middleware('auth')->name('group.member.join');
+Route::get('group/{id}/leave/{user}','GroupController@memberLeave')->middleware('auth')->name('group.member.leave');
+Route::get('group/{id}/modjoin/{user}','GroupController@modJoin')->middleware('auth')->name('group.mod.join');
+Route::get('group/{id}/modleave/{user}','GroupController@modLeave')->middleware('auth')->name('group.mod.leave');
+
+//Static Pages
+Route::get('faq', 'StaticPagesController@showFAQ')->name('faq');
+Route::get('features', 'StaticPagesController@showFeatures')->name('features');
+Route::get('contacts', 'StaticPagesController@showContacts')->name('contacts');
+Route::get('about', 'StaticPagesController@showAbout')->name('about');
