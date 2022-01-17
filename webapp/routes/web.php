@@ -27,9 +27,13 @@ Route::post('content/media/create','MediaContentController@store')->middleware('
 Route::get('content/list','ContentController@index')->middleware('auth')->name('content.list');
 Route::get('content/{id}','ContentController@show')->name('content.show');
 Route::get('content/edit/{id}','ContentController@edit')->middleware('auth')->name('content.edit');
-/* 
+
+//Like content
+Route::post('content/like/{id}', 'ContentController@like')->middleware('auth')->name('content.like');
+
+/*
 Route::get('content/text/edit/{id}','TextContentController@edit')->middleware('auth')->name('textcontent.edit');
-Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit'); 
+Route::get('content/media/edit/{id}','MediaContentController@edit')->middleware('auth')->name('mediacontent.edit');
 */
 Route::patch('content/text/edit/{id}','TextContentController@update')->middleware('auth')->name('textcontent.update');
 Route::patch('content/media/edit/{id}','MediaContentController@update')->middleware('auth')->name('mediacontent.update');
@@ -73,7 +77,11 @@ Route::get('search/content', 'SearchController@searchPosts')->name('search.conte
 Route::get('search', 'SearchController@searchUsers')->name('search');
 
 // Notifications
-Route::get('/notifications', 'HomeController@show')->name('notifications');
+Route::get('/notifications', 'NotificationsController@all')->middleware('auth')->name('notifications');
+Route::get('/notifications/friends_requests', 'NotificationsController@friends')->middleware('auth')->name('notifications.friend_requests');
+Route::get('/notifications/likes', 'NotificationsController@likes')->middleware('auth')->name('notifications.likes');
+Route::get('/notifications/comments', 'NotificationsController@comments')->middleware('auth')->name('notifications.comments');
+Route::post('/notifications/change_filter/{url}', 'NotificationsController@toggleFilter')->middleware('auth')->name('notifications.toggle_filter');
 
 // Chat
 Route::get('/chat', 'HomeController@show')->name('chat');

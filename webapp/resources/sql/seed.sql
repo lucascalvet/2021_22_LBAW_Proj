@@ -35,7 +35,7 @@ DROP TABLE IF EXISTS notification CASCADE;
 DROP TABLE IF EXISTS like_notification CASCADE;
 DROP TABLE IF EXISTS reply_notification CASCADE;
 DROP TABLE IF EXISTS friend_request_notification CASCADE;
-DROP TABLE IF EXISTS comment_reply_notification CASCADE;
+DROP TABLE IF EXISTS comment_notification CASCADE;
 DROP TABLE IF EXISTS text_content_reply_notification CASCADE;
 DROP TABLE IF EXISTS game_session CASCADE;
 DROP TABLE IF EXISTS game_stats CASCADE;
@@ -107,6 +107,7 @@ CREATE TABLE content (
 );
 
 CREATE TABLE content_like (
+   id SERIAL UNIQUE, --Laravel eloquent does not support composite primary, that's why this id exists
    date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
    id_user INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
    id_content INTEGER NOT NULL REFERENCES content(id),
@@ -165,7 +166,7 @@ CREATE TABLE friend_request (
    id SERIAL PRIMARY KEY,
    creation_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
    id_sender INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
-   id_receiver INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE
+   id_receiver INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE accepted_friend_request (
@@ -217,30 +218,33 @@ CREATE TABLE notification (
 );
 
 CREATE TABLE like_notification (
-   id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,
-   id_user INTEGER NOT NULL,
-   id_content INTEGER NOT NULL,
-   FOREIGN KEY (id_user, id_content) REFERENCES content_like(id_user, id_content) ON UPDATE CASCADE
+   id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,  --TODO: create trigger to delete parent notification when child is deleted
+   id_like INTEGER NOT NULL REFERENCES content_like(id) ON UPDATE CASCADE ON DELETE CASCADE
+   --FOREIGN KEY (id_user, id_content) REFERENCES content_like(id_user, id_content) ON UPDATE CASCADE  --see content_like explanation
 );
 
+/*
 CREATE TABLE reply_notification (
    id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE
 );
+*/
 
 CREATE TABLE friend_request_notification (
    id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,
    id_friend_request INTEGER NOT NULL REFERENCES friend_request(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE comment_reply_notification (
-   id_reply_notification INTEGER PRIMARY KEY REFERENCES reply_notification(id_notification) ON UPDATE CASCADE,
+CREATE TABLE comment_notification (
+   id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,
    id_comment INTEGER NOT NULL REFERENCES comment(id) ON UPDATE CASCADE
 );
 
+/*
 CREATE TABLE text_content_reply_notification (
    id_reply_notification INTEGER PRIMARY KEY REFERENCES reply_notification(id_notification) ON UPDATE CASCADE,
    id_text_content INTEGER NOT NULL REFERENCES text_content(id_content) ON UPDATE CASCADE
 );
+*/
 
 CREATE TABLE payment_method (
    id SERIAL PRIMARY KEY,
@@ -530,7 +534,110 @@ CREATE TRIGGER video_disjoint
    FOR EACH ROW
    EXECUTE PROCEDURE video_disjoint();
 
+
+-- NOTIFICATIONS TRIGGERS
+
+----- LIKE TRIGGER
+CREATE FUNCTION like_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   --create notification and like notification
+   WITH new_notification AS (
+      INSERT INTO notification (id_user, read)
+      VALUES ((SELECT id_creator FROM content WHERE id = NEW.id_content), FALSE)
+      RETURNING id
+   )
+   INSERT INTO like_notification (id_notification, id_like)
+   VALUES ((SELECT id FROM new_notification), NEW.id);
+   RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER like_notifications
+   AFTER INSERT ON content_like
+   FOR EACH ROW
+   EXECUTE PROCEDURE like_notifications();
+
+-- deletes notification (superclass) when like notification is deleted (subclass)
+CREATE FUNCTION delete_notification_after_dislike() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   DELETE FROM notification
+   WHERE OLD.id_notification = id;
+   RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER delete_notification_after_dislike
+   AFTER DELETE ON like_notification
+   FOR EACH ROW
+   EXECUTE PROCEDURE delete_notification_after_dislike();
+
+
+----- FRIEND REQUEST TRIGGER
+CREATE FUNCTION friend_requests_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   --create notification and friend request notification
+   WITH new_notification AS (
+      INSERT INTO notification (id_user, read)
+      VALUES (NEW.id_receiver, FALSE)
+      RETURNING id
+   )
+   INSERT INTO friend_request_notification (id_notification, id_friend_request)
+   VALUES ((SELECT id FROM new_notification), NEW.id);
+   RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER friend_requests_notifications
+   AFTER INSERT ON friend_request
+   FOR EACH ROW
+   EXECUTE PROCEDURE friend_requests_notifications();
+
+
+----- COMMENT TRIGGER
+CREATE FUNCTION comments_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   --create notification and comment notification
+   WITH new_notification AS (
+      INSERT INTO notification (id_user, read)
+      VALUES ((SELECT id_creator
+              FROM content
+              WHERE id IN (SELECT id_content
+                           FROM media_content
+                           WHERE id_content = NEW.id_media_content)), FALSE)
+      RETURNING id
+   )
+   INSERT INTO comment_notification (id_notification, id_comment)
+   VALUES ((SELECT id FROM new_notification), NEW.id);
+   RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER comments_notifications
+   AFTER INSERT ON comment
+   FOR EACH ROW
+   EXECUTE PROCEDURE comments_notifications();
+
+/*
+----- TEXT REPLY TRIGGER
+CREATE FUNCTION text_replies_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   --create text reply notification
+   RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER text_replies_notifications
+   AFTER INSERT ON text_reply
+   FOR EACH ROW
+   EXECUTE PROCEDURE text_replies_notifications();
+
 --------------------------------------------
+*/
 
 --Create anonymous user (shared user for deleted accounts)
 INSERT INTO country (id, iso_3166, name) VALUES (1, '', '');
@@ -631,16 +738,17 @@ INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (9, '2021
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (10, '2020-1-3', NULL, 10);
 SELECT setval('content_id_seq', (SELECT max(id) FROM content));
 
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2021-5-23', 1, 1);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2015-7-28', 2, 2);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2020-4-3', 3, 3);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2021-10-12', 4, 4);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2019-1-10', 5, 5);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2018-9-20', 6, 6);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2021-5-7', 7, 7);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2020-2-16', 8, 8);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2021-6-29', 9, 9);
-INSERT INTO content_like (date, id_user, id_content) VALUES ('2020-1-3', 10, 10);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (1, '2021-5-23', 1, 1);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (2, '2015-7-28', 2, 2);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (3, '2020-4-3', 3, 3);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (4, '2021-10-12', 4, 4);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (5, '2019-1-10', 5, 5);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (6, '2018-9-20', 6, 6);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (7, '2021-5-7', 7, 7);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (8, '2020-2-16', 8, 8);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (9, '2021-6-29', 9, 9);
+INSERT INTO content_like (id, date, id_user, id_content) VALUES (10, '2020-1-3', 10, 10);
+SELECT setval('content_like_id_seq', (SELECT max(id) FROM content_like));
 
 INSERT INTO text_content (id_content, post_text) VALUES (1, 'Today i made a funny thing!');
 INSERT INTO text_content (id_content, post_text) VALUES (2, 'I love to write SQL');
@@ -674,7 +782,7 @@ SELECT setval('comment_id_seq', (SELECT max(id) FROM comment));
 
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (1, '2020-7-23', 1, 2);
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (2, '2021-3-2', 1, 3);
-INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (3, '2021-10-11', 3, 4);
+INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (3, '2021-10-11', 3, 6);
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (4, '2020-9-8', 4, 5);
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (5, '2021-6-11', 6, 7);
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (6, '2021-12-31', 10, 11);
@@ -712,7 +820,7 @@ SELECT setval('interest_id_seq', (SELECT max(id) FROM interest));
 INSERT INTO user_interest (id_interest, id_user) VALUES (1, 1);
 INSERT INTO user_interest (id_interest, id_user) VALUES (2, 2);
 INSERT INTO user_interest (id_interest, id_user) VALUES (3, 3);
-
+/*
 INSERT INTO notification (id, id_user, read) VALUES (1, 1, FALSE);
 INSERT INTO notification (id, id_user, read) VALUES (2, 2, FALSE);
 INSERT INTO notification (id, id_user, read) VALUES (3, 3, FALSE);
@@ -720,8 +828,8 @@ INSERT INTO notification (id, id_user, read) VALUES (4, 4, FALSE);
 INSERT INTO notification (id, id_user, read) VALUES (5, 5, FALSE);
 SELECT setval('notification_id_seq', (SELECT max(id) FROM notification));
 
-INSERT INTO like_notification (id_notification, id_user, id_content) VALUES (1, 1, 1);
-INSERT INTO like_notification (id_notification, id_user, id_content) VALUES (2, 2, 2);
+INSERT INTO like_notification (id_notification, id_like) VALUES (1, 1);
+INSERT INTO like_notification (id_notification, id_like) VALUES (2, 2);
 
 INSERT INTO reply_notification (id_notification) VALUES (1);
 INSERT INTO reply_notification (id_notification) VALUES (2);
@@ -729,10 +837,10 @@ INSERT INTO reply_notification (id_notification) VALUES (2);
 INSERT INTO friend_request_notification (id_notification, id_friend_request) VALUES (3, 3);
 INSERT INTO friend_request_notification (id_notification, id_friend_request) VALUES (4, 4);
 
-INSERT INTO comment_reply_notification (id_reply_notification, id_comment) VALUES (1, 1);
+INSERT INTO comment_notification (id_reply_notification, id_comment) VALUES (1, 1);
 
 INSERT INTO text_content_reply_notification (id_reply_notification, id_text_content) VALUES (1, 2);
-
+*/
 INSERT INTO payment_method (id, name, company, transaction_limit) VALUES (1, 'PayPal', 'PayPal', 10000);
 SELECT setval('payment_method_id_seq', (SELECT max(id) FROM payment_method));
 

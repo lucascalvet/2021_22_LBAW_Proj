@@ -54,4 +54,18 @@ class Content extends Model
         return $this->morphTo(null, null, 'id');
     }
 
+    /**
+     * The likes a content has
+     */
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'id_content');
+    }
+
+    public function numberOfLikes(){
+        $nLikes = $this->likes->count();
+
+        return $nLikes;
+    }
+
 }

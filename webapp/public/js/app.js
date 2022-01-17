@@ -1,3 +1,5 @@
+//const { filter } = require("lodash");
+
 function addEventListeners() {
   let itemCheckers = document.querySelectorAll('article.card li.item input[type=checkbox]');
   [].forEach.call(itemCheckers, function(checker) {
@@ -178,3 +180,85 @@ function createItem(item) {
 }
 
 addEventListeners();
+
+
+/**
+ * Like NEW
+ */
+
+function addLikeListeners(){
+  let like_buttons = document.getElementsByClassName('button-content-like');
+
+  for(let i = 0; i < like_buttons.length; i++){
+
+    like_buttons[i].addEventListener('click', () => {
+      let idStr = like_buttons[i].id;
+      let parsedId = idStr.replace('button-content-like-', '');
+
+      const count = document.getElementById('s-hearts-count-'+parsedId);
+
+      const but = document.getElementById('button-content-like-'+parsedId);
+
+      const liked = but.lastElementChild.classList.contains('bi-heart');
+
+      const icon = but.lastElementChild;
+
+      //changes icon instantaneously when user clicks in icon
+      toggleLikeIcon(icon, liked);
+
+      //changes number of likes instantaneously when user clicks in icon
+      if(liked) count.innerHTML = parseFloat(count.innerHTML)+1;
+      else count.innerHTML = parseFloat(count.innerHTML)-1;
+
+
+      sendAjaxRequest('post', '/content' + '/like/' + parsedId, null, likeResponseHandler);
+    });
+  }
+
+}
+
+function likeResponseHandler(){
+  console.log(this.responseText);
+  let res = JSON.parse(this.responseText);
+
+  //failsafe changes for icon and number of likes after the request is processed
+  const count = document.getElementById('s-hearts-count-'+res.id);
+  count.innerHTML = res.nLikes;
+
+  const but = document.getElementById('button-content-like-'+res.id);
+
+  const icon = but.lastElementChild;
+
+  toggleLikeIcon(icon, res.liked);
+}
+
+function toggleLikeIcon(icon, liked){
+  if (liked){
+    icon.classList.add("bi-heart-fill");
+    icon.classList.remove("bi-heart");
+  }
+  else{
+    icon.classList.remove("bi-heart-fill");
+    icon.classList.add("bi-heart");
+  }
+}
+
+addLikeListeners();
+
+/*
+function addNotificationsFilterListen(){
+  let viewd_icon = document.getElementById('a-only-viewed');
+
+  viewd_icon.addEventListener('click', () => {
+    var splitedUrl = window.location.href.split('/');
+    var lastPath = splitedUrl[splitedUrl.length - 1];
+    sendAjaxRequest('post', '/notifications/change_filter/' + lastPath, null, notificationsFilterHandler);
+  });
+}
+
+function notificationsFilterHandler(){
+  console.log(this.responseText);
+}
+
+addNotificationsFilterListen();
+*/

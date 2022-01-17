@@ -93,10 +93,18 @@ $link_remove = route('content.remove', ['id' => $content->id]);
       </div>
       <div class="col-6">
         <div class="row justify-content-center">
-          <button disabled type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-            <i class="bi bi-heart {{ $icon_size }}"></i>
-          </button>
-          <span class="text-center">{{ $n_hearts }}</span>
+          @if(Auth::user())
+            <button id="button-content-like-{{ $content->id }}" type="button" class="btn btn-secondary button-content-like" style="width: auto; height: auto;">
+          @else
+            <button disabled id="button-content-like-{{ $content->id }}" type="button" class="btn btn-secondary button-content-like" style="width: auto; height: auto;">
+          @endif
+              @if($liked)
+                <i style="color: red;" class="bi bi-heart-fill fs-5"></i>
+              @else
+                <i style="color: red;" class="bi bi-heart fs-5"></i>
+              @endif
+            </button>
+          <span id="s-hearts-count-{{ $content->id }}" class="text-center">{{ $content->numberOfLikes() }}</span>
         </div>
       </div>
       <div class="col-3">
