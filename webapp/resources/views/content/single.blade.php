@@ -77,51 +77,51 @@ $time = '10 days ago';
           <h4>No comments yet.</h4>
         @else
           <h4>Comments ({{ $content->comment_count() }}): </h4>
-          <ul class="list-group">
-            @foreach ($content->contentable->comments as $comment)
-              <li class="list-group-item">
-                <div class="d-flex flex-row align-items-center">
-                  <span class="me-auto">
-                    <a @if ($content->creator == $comment->author) class="fw-bold" @endif href="{{ route('profile', ['user' => $comment->author->id]) }}">
-                      {{ $comment->author->name }}</a>
-                    @if ($content->creator == $comment->author)<sup class="text-primary fw-bold">OP</sup> @endif
-                    : {{ $comment->comment_text }}
-                  </span>
-                  <span class="text-secondary text-nowrap ps-2">
-                    {{ $comment->comment_date->format('D, ') }}
-                    <br class="d-sm-none text-nowrap">
-                    {{ $comment->comment_date->format('Y-m-d ') }}
-                    <br class="d-sm-none text-nowrap">
-                    {{ $comment->comment_date->format('H:i:s') }}
-                  </span>
-                </div>
-              </li>
-            @endforeach
-            @auth
-              <li class="list-group-item">
-                <form method="POST" action="{{ route('content.comment', ['id' => $content->id]) }}">
-                  @csrf
-                  <label for="comment-text" class="form-label fw-bold">Leave a comment:</label>
-                  <div class="d-flex flex-row">
-                    <input type="text" id="comment-text" name='comment_text' class="form-control"
-                      aria-describedby="comment-help-block">
-                    <button type="submit" class="btn btn-primary ms-3">Comment</button>
-                  </div>
-                  <div id="comment-help-block" class="form-text">
-                    Please have some common sense and be respectful. Don't be a downer, be a Social UPper ;)
-                  </div>
-                </form>
-              </li>
-            @endauth
-            @guest
-              <li class="list-group-item">
-                <span class="text-secondary">
-                  <a class="link-secondary" href="{{ route('login') }}">Login</a> to add a comment.
-                </span>
-              </li>
-            @endguest
-          </ul>
         @endif
+        <ul class="list-group">
+          @foreach ($content->contentable->comments as $comment)
+            <li class="list-group-item">
+              <div class="d-flex flex-row align-items-center">
+                <span class="me-auto">
+                  <a @if ($content->creator == $comment->author) class="fw-bold" @endif href="{{ route('profile', ['user' => $comment->author->id]) }}">
+                    {{ $comment->author->name }}</a>
+                  @if ($content->creator == $comment->author)<sup class="text-primary fw-bold">OP</sup> @endif
+                  : {{ $comment->comment_text }}
+                </span>
+                <span class="text-secondary text-nowrap ps-2">
+                  {{ $comment->comment_date->format('D, ') }}
+                  <br class="d-sm-none text-nowrap">
+                  {{ $comment->comment_date->format('Y-m-d ') }}
+                  <br class="d-sm-none text-nowrap">
+                  {{ $comment->comment_date->format('H:i:s') }}
+                </span>
+              </div>
+            </li>
+          @endforeach
+          @auth
+            <li class="list-group-item">
+              <form method="POST" action="{{ route('content.comment', ['id' => $content->id]) }}">
+                @csrf
+                <label for="comment-text" class="form-label fw-bold">Leave a comment:</label>
+                <div class="d-flex flex-row">
+                  <input type="text" id="comment-text" name='comment_text' class="form-control"
+                    aria-describedby="comment-help-block">
+                  <button type="submit" class="btn btn-primary ms-3">Comment</button>
+                </div>
+                <div id="comment-help-block" class="form-text">
+                  Please have some common sense and be respectful. Don't be a downer, be a Social UPper ;)
+                </div>
+              </form>
+            </li>
+          @endauth
+          @guest
+            <li class="list-group-item">
+              <span class="text-secondary">
+                <a class="link-secondary" href="{{ route('login') }}">Login</a> to add a comment.
+              </span>
+            </li>
+          @endguest
+        </ul>
       </div>
     @elseif ($content->contentable instanceof App\Models\TextContent)
       <hr>
