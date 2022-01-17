@@ -19,9 +19,17 @@ $time = '10 days ago';
 @section('content')
   @include('partials.navbar')
   <div class="container-fluid pb-3">
-    <a href="{{ route('profile', ['user' => $content->creator->id]) }}">
-      <h1 class="text-center mt-5 fw-bold">{{ $content->creator->name }}</h1>
-    </a>
+    <h1 class="text-center mt-5 fw-bold">
+      <a href="{{ route('profile', ['user' => $content->creator->id]) }}" class="text-center mt-5 fw-bold">
+        {{ $content->creator->name }}
+      </a>
+      @if ($content->id_group != null)
+        <span class="fs-4">
+          @ <a href="{{ route('group.show', ['id' => $content->id_group]) }}">
+            {{ App\Models\Group::find($content->id_group)->name }}</a>
+        </span>
+      @endif
+    </h1>
     <div class="text-center text-secondary">
       {{ $content->publishing_date->format('D, Y-m-d H:i:s') }}
       @if ($content->contentable instanceof App\Models\TextContent && !$content->contentable->isRoot())
@@ -44,14 +52,6 @@ $time = '10 days ago';
       </div>
     </div>
 
-    <h1 class="text-center mt-5 fw-bold"><a
-        href="{{ route('profile', ['user' => $content->creator->id]) }}">{{ $content->creator->username }}</a>
-      @if ($content->id_group != null)
-        @ <a href="{{ route('group.show', ['id' => $content->id_group]) }}">
-          {{ App\Models\Group::find($content->id_group)->name }}</a>
-      @endif
-    </h1>
-
     <div>
       @if ($content->contentable instanceof App\Models\MediaContent)
         <div class="row justify-content-center m-0 p-0">
@@ -63,18 +63,25 @@ $time = '10 days ago';
         </div>
       @endif
     </div>
-    @endif
 
     <div class="d-flex justify-content-center mt-3 mb-3">
-      @if (Auth::check() && Auth::user()->can('update', $content))
-        <a href="{{ $link_edit }}"><button type="button"
-            class="btn btn-outline-secondary btn-lg bg-dark text-white me-3">Edit Post</button></i></a>
-        <form method="POST" action="{{ route('content.destroy', $content) }}">
-          @csrf
-          <input type="hidden" name="_method" value="DELETE" />
-          <button type="submit" value="Delete" class="btn btn-outline-danger btn-lg text-dark">Delete Post</button>
-        </form>
-      @endif
+      @auth
+        @if (Auth::user()->can('deleteFromGroup', $content))
+          <a href="{{ $link_remove }}"><button type="button" class="btn btn-outline-warning btn-lg text-dark me-3">Remove
+              from Group</button></i></a>
+        @endif
+        @if (Auth::user()->can('update', $content))
+          <a href="{{ $link_edit }}"><button type="button"
+              class="btn btn-outline-secondary btn-lg bg-dark text-white me-3">Edit Post</button></i></a>
+        @endif
+        @if (Auth::user()->can('delete', $content))
+          <form method="POST" action="{{ route('content.destroy', $content) }}">
+            @csrf
+            <input type="hidden" name="_method" value="DELETE" />
+            <button type="submit" value="Delete" class="btn btn-outline-danger btn-lg text-dark">Delete Post</button>
+          </form>
+        @endif
+      @endauth
     </div>
 
     @if ($content->contentable instanceof App\Models\MediaContent)

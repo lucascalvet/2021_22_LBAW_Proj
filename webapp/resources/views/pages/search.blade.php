@@ -1,14 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Profile')
+@section('title', 'Search')
+
+@section('bg_color', '#afafaf')
 
 @section('content')
 
   @include('partials.navbar')
 
   <section id="profile">
-    <div class="container-fluid vh-100 overflow-auto"
-      style="padding: 0em;padding-top: 5em; margin: 0em; background-color: #afafaf">
+    <div class="container-fluid p-0 pt-5 m-0">
       <!--<h1 class="ms-3 me-4 mt-0 text-light fw-bold">Search</h1>-->
       <!--Computer View-->
       <div class="d-none d-md-block">
@@ -71,19 +72,19 @@
               @endif
             </div>
             <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
-            <div class="card m-3 list-group"> 
-              @if ($type == 'user')
-                @foreach ($users as $user)
-                  @include('partials.listCards', ['username' => $user->username, 'description' => $user->description,
-                  'comment' => $user->email, 'days_ago'=>"User", 'link' => route('profile', ['user' => $user->id]) ])
-                @endforeach
-              @elseif ($type == 'post')
-                @foreach ($posts as $post)
-                  @include('partials.listCards', ['username' => $post->content->creator->username,
-                  'description' => $post->post_text,
-                  'comment' => "", 'days_ago'=>"Post", 'link' => route('content.show', ['id' => $post->content->id]) ])
-                @endforeach
-              @endif
+              <div class="card m-3 list-group">
+                @if ($type == 'user')
+                  @foreach ($users as $user)
+                    @include('partials.listCards', ['username' => $user->username, 'description' => $user->description,
+                    'comment' => $user->email, 'days_ago'=>"User", 'link' => route('profile', ['user' => $user->id]) ])
+                  @endforeach
+                @elseif ($type == 'post')
+                  @foreach ($posts as $post)
+                    @include('partials.listCards', ['username' => $post->content->creator->username,
+                    'description' => $post->post_text,
+                    'comment' => "", 'days_ago'=>"Post", 'link' => route('content.show', ['id' => $post->content->id]) ])
+                  @endforeach
+                @endif
               </div>
             </div>
           </div>

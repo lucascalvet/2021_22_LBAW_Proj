@@ -2,19 +2,19 @@
 
 @section('title', 'Edit Profile')
 
+@section('bg_color', '#999999')
+
 @section('content')
 
 @include('partials.navbar')
 
-<section style="background-color: #999999;" id="profile">
+<section id="editProfile">
 
-<div class="container vh-100">
+<div class="container pb-3">
       <h1 class="text-light pt-5 fw-bold">Editing Profile</h1>
       <div class="row gx-5">
         <form class="input-group" action="{{ route('profile.save', ['user' => $user->id]) }}" method="GET">
           <div class="col-6">
-
-
             <label for="name" class="form-label ps-3 mt-2 mb-0 fw-bold">Name</label>
             <input id="name" name="name" type="text" class="form-control" placeholder="{{$user->name}}" aria-label="Name"/>
 
@@ -38,7 +38,7 @@
 
           </div>
 
-          <div class="col-6 text-center">
+          <div class="col-6 text-center ps-3">
 
             <h3 class="mt-3 mb-3 fw-bold">Profile picture</h3>
             <div class="d-flex justify-content-center">

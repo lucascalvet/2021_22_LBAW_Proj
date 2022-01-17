@@ -23,7 +23,7 @@ $users = \App\Models\User::all();
 
 @section('content')
   @include('partials.navbar')
-  <div class="row vh-100 overflow-auto bg-dark text-white" style="padding: 0em; margin: 0em;">
+  <div class="row text-white" style="padding: 0em; margin: 0em;">
     <div class="col-3 d-sm-flex d-md-flex d-lg-none">
       @include('partials.side_create_buttons', ['id_group' => -1])
     </div>

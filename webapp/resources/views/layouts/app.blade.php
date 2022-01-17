@@ -28,7 +28,7 @@
   </script>
 </head>
 
-<body>
+<body class="vh-100" style="background-color: @yield('bg_color', '#212529');">
   @yield('content')
 </body>
 

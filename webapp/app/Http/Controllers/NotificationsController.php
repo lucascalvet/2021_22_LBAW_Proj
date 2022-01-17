@@ -110,7 +110,7 @@ class NotificationsController extends Controller
         })->get();
 
         $users_collection3 = DB::table('users')->whereIn('id', function ($query) use($user) {
-            $query->select('author')
+            $query->select('id_author')
                   ->from('comment')
                   ->whereIn('id', function ($query) use($user) {
                       $query->select('id_comment')
@@ -281,7 +281,7 @@ class NotificationsController extends Controller
 
         //retrieves the users that generated the notifications
         $users_collection = DB::table('users')->whereIn('id', function ($query) use($user) {
-            $query->select('author')
+            $query->select('id_author')
             ->from('comment')
             ->whereIn('id', function ($query) use($user) {
                 $query->select('id_comment')

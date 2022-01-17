@@ -7,14 +7,16 @@ $cover_pic = 'img/cover_pic.jpg';
 
 @section('title', 'Profile')
 
+@section('bg_color', '#afafaf')
+
 @section('content')
 
   @include('partials.navbar')
 
   <section id="profile">
-    <div class="container-fluid vh-100" style="padding: 0em; margin: 0em;">
+    <div class="container-fluid p-0 m-0 vh-100">
       <!--Cover Photo-->
-      <div class="row h-25 m-0 mb-4 justify-content-center bg-secondary position-relative">
+      <div class="row h-25 m-0 mb-4 justify-content-center position-relative">
         <img class="rounded h-100 p-0" style="object-fit: none;" src="{{ asset($cover_pic) }}" />
         <img class="d-none d-md-block rounded-circle w-25 position-absolute top-100 start-0 translate-middle"
           style="margin-left: 8em; max-height: 10em; max-width: 10em;" src="{{ asset($profile_pic) }}" />
@@ -73,7 +75,7 @@ $cover_pic = 'img/cover_pic.jpg';
           <div class="col-8">
 
             <!--Content Type-->
-            <div class="d-flex border-bottom border-3">
+            <div class="d-flex border-bottom border-3 mb-3">
               <div class="ps-4 pe-2 p-2 ps-xl-5 ps-lg-4 pe-xl-5 pe-sm-3 ps-sm-4">All</div>
               <div class="pe-3 pb-2 p-2 pe-xl-5 pe-sm-3">Media</div>
               <div class="pe-3 pb-2 p-2 pe-xl-5 pe-sm-3">Text</div>

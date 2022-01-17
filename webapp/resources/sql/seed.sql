@@ -541,14 +541,16 @@ CREATE TRIGGER video_disjoint
 CREATE FUNCTION like_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
+   IF NEW.id_user <> (SELECT id_creator FROM content WHERE id = NEW.id_content) THEN
    --create notification and like notification
-   WITH new_notification AS (
-      INSERT INTO notification (id_user, read)
-      VALUES ((SELECT id_creator FROM content WHERE id = NEW.id_content), FALSE)
-      RETURNING id
-   )
-   INSERT INTO like_notification (id_notification, id_like)
-   VALUES ((SELECT id FROM new_notification), NEW.id);
+      WITH new_notification AS (
+         INSERT INTO notification (id_user, read)
+         VALUES ((SELECT id_creator FROM content WHERE id = NEW.id_content), FALSE)
+         RETURNING id
+      )
+      INSERT INTO like_notification (id_notification, id_like)
+      VALUES ((SELECT id FROM new_notification), NEW.id);
+   END IF;
    RETURN NEW;
 END;
 $$;
@@ -600,18 +602,20 @@ CREATE TRIGGER friend_requests_notifications
 CREATE FUNCTION comments_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   --create notification and comment notification
-   WITH new_notification AS (
-      INSERT INTO notification (id_user, read)
-      VALUES ((SELECT id_creator
-              FROM content
-              WHERE id IN (SELECT id_content
-                           FROM media_content
-                           WHERE id_content = NEW.id_media_content)), FALSE)
-      RETURNING id
-   )
-   INSERT INTO comment_notification (id_notification, id_comment)
-   VALUES ((SELECT id FROM new_notification), NEW.id);
+   IF NEW.id_author <> (SELECT id_creator FROM content WHERE id IN (SELECT id_content FROM media_content WHERE id_content = NEW.id_media_content)) THEN
+      --create notification and comment notification
+      WITH new_notification AS (
+         INSERT INTO notification (id_user, read)
+         VALUES ((SELECT id_creator
+               FROM content
+               WHERE id IN (SELECT id_content
+                              FROM media_content
+                              WHERE id_content = NEW.id_media_content)), FALSE)
+         RETURNING id
+      )
+      INSERT INTO comment_notification (id_notification, id_comment)
+      VALUES ((SELECT id FROM new_notification), NEW.id);
+   END IF;
    RETURN NEW;
 END;
 $$;

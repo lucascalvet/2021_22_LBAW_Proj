@@ -49,14 +49,13 @@ $right_links = [
         <li class="nav-item d-flex align-items-center">
           @auth
             <div class="btn-group">
-              <a role="button" class="btn btn-light py-0 d-flex align-items-center"
+              <a role="button" class="btn btn-secondary py-0 d-flex align-items-center"
                 href="{{ route('profile', ['user' => Auth::user()->id]) }}">
-                <i class="text-secondary bi bi-person-circle {{ $icon_size }}"></i>
-                <span class="text-secondary text-truncate"
-                  style="max-width: 10em;">&nbsp;{{ Auth::user()->name }}</span>
+                <i class="bi bi-person-circle {{ $icon_size }}"></i>
+                <span class="text-truncate" style="max-width: 10em;">&nbsp;{{ Auth::user()->name }}</span>
               </a>
-              <button type="button" class="text-secondary btn btn-light dropdown-toggle dropdown-toggle-split"
-                id="dropdownProfile" data-bs-toggle="dropdown" aria-expanded="false">
+              <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfile"
+                data-bs-toggle="dropdown" aria-expanded="false">
                 <span class="visually-hidden">Toggle Dropdown</span>
               </button>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownProfile">
