@@ -57,7 +57,7 @@
               </div>
             </div>
             @auth
-              @if ((Auth::user() != $user) && !($user->gotFriendRequestFrom(Auth::user())))
+              @if ((Auth::user() != $user) && !($user->gotFriendRequestFrom(Auth::user())) && !(Auth::user()->gotFriendRequestFrom($user)))
                 <div class="d-flex justify-content-center">
                   <form method="POST" action="{{ route('profile.addFriend', ['user' => $user->id])}}">
                     @csrf

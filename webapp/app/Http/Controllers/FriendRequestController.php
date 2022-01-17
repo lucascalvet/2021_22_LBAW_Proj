@@ -19,4 +19,12 @@ class FriendRequestController extends Controller
         return redirect()->route('profile',['user'=>$user]);
     }
 
+    public function rejectFriendRequest($friend_request){
+        $friend_request->delete();
+    }
+
+    // public function acceptFriendRequest(Request $request, $friend_request){
+
+    // }
+
 }
