@@ -2,7 +2,16 @@
 $icon_size = 'fs-3';
 
 $user = Auth::user();
-$contents = \App\Models\Content::all();
+$contents = \App\Models\Content::orderBy('publishing_date', 'desc');
+if (!Auth::check() || !Auth::user()->isAdmin()) {
+    $contents = $contents->where('id_creator', '<>', 1);
+}
+$contents = $contents->get()->filter(function ($value, $key) {
+    if ($value->contentable instanceof \App\Models\TextContent) {
+        return $value->contentable->isRoot();
+    }
+    return true;
+});
 $link_create_text = route('textcontent.make');
 $link_create_media = route('mediacontent.make');
 @endphp
@@ -131,8 +140,8 @@ $link_create_media = route('mediacontent.make');
         <span class="d-none d-lg-block align-self-center ms-3">Options</span>
       </div>
     </div>
-    <div class="col-8">
-      <div class="d-flex flex-row pt-3 pl-3 pr-1" style="overflow-x: auto;">
+    <div class="col-9 px-5">
+      <div class="d-flex flex-row pt-5" style="overflow-x: auto;">
         @foreach ($contents as $content)
           <div class="d-block mx-2 pb-2">
             @include('partials.content', ['content' => $content])

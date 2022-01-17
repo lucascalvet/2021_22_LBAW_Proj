@@ -58,8 +58,16 @@ class MediaContent extends Model
     /**
      * Get the specific content.
      */
-     public function media_contentable()
-     {
+    public function media_contentable()
+    {
         return $this->morphTo(null, null, 'id_content');
-     }
+    }
+
+    /**
+     * The comments in this media content.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'id_media_content');
+    }
 }

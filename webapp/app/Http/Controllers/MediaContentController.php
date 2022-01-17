@@ -33,7 +33,6 @@ class MediaContentController extends Controller
         $mediacontent->save();
         //return redirect()->route('home');
         return redirect()->route('content.show', ['id' => $id]);
-
     }
 
     protected function validator(Request $request)
@@ -92,21 +91,20 @@ class MediaContentController extends Controller
 
         $mediacontent->save();
 
-        if(strstr(mime_content_type($mediacontent->media), "video/")){
+        if (strstr(mime_content_type($mediacontent->media), "video/")) {
             $video = new Video;
             $video->views = 0;
             $video->title = "Title";
             $video->id_media_content = $mediacontent->id_content;
             $video->save();
-        }
-        else if(strstr(mime_content_type($mediacontent->media), "image/")){
+        } else if (strstr(mime_content_type($mediacontent->media), "image/")) {
             $image = new Image;
             $image->width = 1;
             $image->height = 1;
             $image->id_media_content = $mediacontent->id_content;
             $image->save();
         }
-    
+
         return redirect()->route('content.show', ['id' => $content->id]);
     }
 }

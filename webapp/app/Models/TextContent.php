@@ -50,10 +50,34 @@ class TextContent extends Model
     }
 
     /**
-     * Get the text_content's content.
+     * Get the TextContent's content.
      */
     public function content()
     {
         return $this->morphOne(Content::class, 'contentable', null, 'id');
+    }
+
+    /**
+     * Get the TextContent's replies (other TextContents).
+     */
+    public function replies()
+    {
+        return $this->belongsToMany(TextContent::class, 'text_reply', 'parent_text', 'child_text');
+    }
+
+    /**
+     * Get the TextContent's parent (other TextContent).
+     */
+    public function parent()
+    {
+        return $this->belongsToMany(TextContent::class, 'text_reply', 'child_text', 'parent_text');
+    }
+
+    /**
+     * Check if it is a root TextContent
+     */
+    public function isRoot()
+    {
+        return $this->parent->isEmpty();
     }
 }
