@@ -57,6 +57,16 @@ $cover_pic = 'img/cover_pic.jpg';
                 <div class="bg-secondary rounded-3 ms-0 p-2 m-2">Interest3</div>
               </div>
             </div>
+            @auth
+              @if ((Auth::user() != $user) && !($user->gotFriendRequestFrom(Auth::user())) && !(Auth::user()->gotFriendRequestFrom($user)))
+                <div class="d-flex justify-content-center">
+                  <form method="POST" action="{{ route('profile.addFriend', ['user' => $user->id])}}">
+                    @csrf
+                    <button class="btn btn-secondary" type="submit">Add Friend</button>
+                  </form>
+                </div>
+              @endif
+            @endauth
           </div>
 
           <!--User Content-->
@@ -82,11 +92,11 @@ $cover_pic = 'img/cover_pic.jpg';
 
             <!--Actual Content for md screen and beyond-->
             <div class="d-flex flex-row text-light overflow-auto">
-              @foreach ($user->contents->sortBy(['publishing_date', 'desc']) as $content)
-                <div class="d-block mx-3 bg-secondary rounded-3"> @include('partials.content', ['content' => $content])
+                @foreach($user->contents->sortBy(['publishing_date', 'desc']) as $content)
+                <div class="d-block mx-2 pb-2">
+                    @include('partials.content', ['content' => $content, 'show_group' => true])
                 </div>
-                {{-- <div class="p-5 m-2 mx-1 bg-secondary shadow rounded-3"> @include('partials.mini_post', ['content' => $content]) --}}
-              @endforeach
+                @endforeach
             </div>
 
             <div class="row d-none d-md-block mt-5 text-end">

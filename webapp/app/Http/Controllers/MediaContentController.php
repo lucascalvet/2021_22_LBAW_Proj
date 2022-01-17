@@ -8,12 +8,24 @@ use App\Models\MediaContent;
 use App\Models\Video;
 use App\Models\Image;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\URL;
 
 class MediaContentController extends Controller
 {
-    public function create()
+    public function create($id_group)
     {
-        return view('content.media_create');
+        /*
+        $url = url()->previous();
+        $path = parse_url($url)["path"];
+        
+        if (substr($path, 1, 5) == "group") {
+            return view('content.media_create', ['id_group' => intval(substr($path, 7))]);
+        } else {
+            return view('content.media_create', ['id_group' => -1]);
+        }
+        */
+        
+        return view('content.media_create', ['id_group' => $id_group]);
     }
 
     public function edit($id)
@@ -84,6 +96,10 @@ class MediaContentController extends Controller
 
         $mediacontent->alt_text = $request->alt_text;
         $mediacontent->fullscreen = false;
+
+        if($request->id_group != null){
+            $content->id_group = $request->id_group;
+        }
 
         $content->save();
 

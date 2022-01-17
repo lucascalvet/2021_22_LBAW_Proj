@@ -38,11 +38,19 @@ class Content extends Model
     protected $dates = ['publishing_date'];
 
     /**
-     * The contents published by this user.
+     * The creator of the content.
      */
     public function creator()
     {
         return $this->belongsTo(User::class, 'id_creator');
+    }
+
+    /**
+     * The group where the content is posted.
+     */
+    public function group()
+    {
+        return $this->belongsTo(Group::class, 'id_group');
     }
 
     /**
@@ -60,5 +68,20 @@ class Content extends Model
     {
         if ($this->contentable instanceof MediaContent) return $this->contentable->comments->count();
         else if ($this->contentable instanceof TextContent) return $this->contentable->replies->count();
+    }
+
+    /**
+     * The likes a content has
+     */
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'id_content');
+    }
+
+    public function numberOfLikes()
+    {
+        $nLikes = $this->likes->count();
+
+        return $nLikes;
     }
 }

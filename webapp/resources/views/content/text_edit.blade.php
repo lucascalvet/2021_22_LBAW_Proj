@@ -36,7 +36,7 @@ $user = Auth::user();
                 </div>
 
                 <div class="d-flex justify-content-around mb-3">
-                  <button type="submit" class="btn btn-outline-success btn-lg text-dark">Change Media Content</button>
+                  <button type="submit" class="btn btn-outline-success btn-lg text-dark">Change Text Content</button>
                   <a href="{{ $link_back }}"><button type="button"
                       class="btn btn-outline-secondary btn-lg bg-dark text-white">Discard Changes</button></i></a>
                 </div>

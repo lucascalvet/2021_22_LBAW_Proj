@@ -24,6 +24,10 @@
                   @endif
                 </div>
 
+                @if($id_group >= 0)
+                <input type="hidden" id="id_group" name="id_group" value="{{ $id_group }}" />
+                @endif
+
                 <div class="form-check d-flex justify-content-center mb-5">
                 </div>
 

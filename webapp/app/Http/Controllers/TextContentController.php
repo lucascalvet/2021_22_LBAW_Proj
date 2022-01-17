@@ -9,9 +9,19 @@ use Illuminate\Support\Facades\Validator;
 
 class TextContentController extends Controller
 {
-    public function create()
-    {
-        return view('content.text_create');
+    public function create($id_group = false)
+    {   /*
+        $url = url()->previous();
+        $path = parse_url($url)["path"];
+        
+        if (substr($path, 1, 5) == "group") {
+            return view('content.text_create', ['id_group' => intval(substr($path, 7))]);
+        } else {
+            return view('content.text_create', ['id_group' => -1]);
+        }
+        */
+
+        return view('content.text_create', ['id_group' => $id_group]);
     }
 
     public function edit($id)
@@ -79,6 +89,10 @@ class TextContentController extends Controller
         $content->id_creator = $user->id;
         $textcontent = new TextContent;
         $textcontent->post_text = $request->post_text;
+
+        if($request->id_group != null){
+            $content->id_group = $request->id_group;
+        }
 
         $content->save();
 

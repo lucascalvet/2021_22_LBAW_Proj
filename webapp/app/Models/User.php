@@ -56,4 +56,35 @@ class User extends Authenticatable
     {
         return DB::table('admin_user')->where('id_user', $this->id)->exists();
     }
+
+
+    public function friendRequests(){
+        return $this->hasMany(FriendRequest::class, 'id_receiver');
+    }
+
+    public function gotFriendRequestFrom($sender){
+        foreach($this->friendRequests as $friend_request){
+            if ($friend_request->id_sender == $sender->id)
+                return true;
+        }
+        return false;
+    }
+    
+
+    /**
+     * The groups that the user is member of.
+     */
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_member', 'id_user_member', 'id_group');
+    }
+
+    /**
+     * The groups that the user is moderator of.
+     */
+    public function mod_groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_moderator', 'id_user_moderator', 'id_group');
+    }
+
 }

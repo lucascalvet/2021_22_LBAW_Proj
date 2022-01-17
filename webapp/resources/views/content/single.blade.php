@@ -5,6 +5,7 @@ $icon_size = 'fs-3';
 $user = Auth::user();
 
 $link_edit = route('content.edit', ['id' => $content->id]);
+$link_remove = route('content.remove', ['id' => $content->id]);
 
 $profile_pic = 'img/profile_pic.png';
 $n_hearts = '3000';
@@ -43,14 +44,25 @@ $time = '10 days ago';
       </div>
     </div>
 
-    @if ($content->contentable instanceof App\Models\MediaContent)
-      <div class="row justify-content-center m-0 p-0">
-        @if ($content->contentable->media_contentable instanceof App\Models\Video)
-          <video src="{{ asset($content->contentable->media) }}" controls style="max-width: 50em;"></video>
-        @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
-          <img src="{{ asset($content->contentable->media) }}" style="max-width: 40em;" />
-        @endif
-      </div>
+    <h1 class="text-center mt-5 fw-bold"><a
+        href="{{ route('profile', ['user' => $content->creator->id]) }}">{{ $content->creator->username }}</a>
+      @if ($content->id_group != null)
+        @ <a href="{{ route('group.show', ['id' => $content->id_group]) }}">
+          {{ App\Models\Group::find($content->id_group)->name }}</a>
+      @endif
+    </h1>
+
+    <div>
+      @if ($content->contentable instanceof App\Models\MediaContent)
+        <div class="row justify-content-center m-0 p-0">
+          @if ($content->contentable->media_contentable instanceof App\Models\Video)
+            <video src="{{ asset($content->contentable->media) }}" controls style="max-width: 50em;"></video>
+          @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
+            <img src="{{ asset($content->contentable->media) }}" style="max-width: 40em;" />
+          @endif
+        </div>
+      @endif
+    </div>
     @endif
 
     <div class="d-flex justify-content-center mt-3 mb-3">
@@ -190,6 +202,7 @@ $time = '10 days ago';
         </ul>
       </div>
     @endif
+  </div>
   </div>
 
 @endsection
