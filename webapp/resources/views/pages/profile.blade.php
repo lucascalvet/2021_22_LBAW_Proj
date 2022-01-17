@@ -1,6 +1,7 @@
 @php
   $profile_pic = 'img/profile_pic.png';
   $cover_pic = 'img/cover_pic.jpg';
+
 @endphp
 
 @extends('layouts.app')
@@ -55,6 +56,16 @@
                 <div class="bg-secondary rounded-3 ms-0 p-2 m-2">Interest3</div>
               </div>
             </div>
+            @auth
+              @if ((Auth::user() != $user) && !($user->gotFriendRequestFrom(Auth::user())) && !(Auth::user()->gotFriendRequestFrom($user)))
+                <div class="d-flex justify-content-center">
+                  <form method="POST" action="{{ route('profile.addFriend', ['user' => $user->id])}}">
+                    @csrf
+                    <button class="btn btn-secondary" type="submit">Add Friend</button>
+                  </form>
+                </div>
+              @endif
+            @endauth
           </div>
 
           <!--User Content-->
