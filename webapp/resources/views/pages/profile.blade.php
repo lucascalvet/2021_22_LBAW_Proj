@@ -82,15 +82,7 @@
             <div class="d-flex flex-row text-light overflow-auto">
                 @foreach($user->contents as $content)
                 <div class="d-block mx-2 pb-2">
-                  @if(Auth::user())
-                    @if(\App\Models\Like::where('id_user', $user->id)->where('id_content', $content->id)->count() == 0)
-                      @include('partials.content', ['content' => $content, 'liked' => false,'show_group' => true])
-                    @else
-                      @include('partials.content', ['content' => $content, 'liked' => true, 'show_group' => true])
-                    @endif
-                  @else
-                    @include('partials.content', ['content' => $content, 'liked' => false, 'show_group' => true])
-                  @endif
+                    @include('partials.content', ['content' => $content, 'show_group' => true])
                 </div>
                 @endforeach
             </div>
