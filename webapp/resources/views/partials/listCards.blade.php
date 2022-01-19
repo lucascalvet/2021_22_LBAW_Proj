@@ -11,11 +11,11 @@
     </div>
     <div class="col">
       <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1">{{ $username }}</h5>
-        <small>{{ $days_ago }}</small>
+        <h5 class="mb-1">{{ $title }}</h5>
+        <small>{{ $date }}</small>
       </div>
-      <p class="mb-1">{{ $description }}</p>
-      <small>{{ $comment }}</small>
+      <p class="mb-1 text-truncate">{{ $description }}</p>
+      <small>{{ $subtitle }}</small>
     </div>
   </div>
 </a>

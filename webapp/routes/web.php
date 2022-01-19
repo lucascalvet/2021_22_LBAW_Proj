@@ -57,13 +57,6 @@ Route::get('admin/accounts', 'AdminController@showAccounts');
 Route::get('admin/posts', 'AdminController@showPosts');
 Route::get('admin/statistics', 'AdminController@showStatistics');
 
-// API
-Route::put('api/cards', 'CardController@create');
-Route::delete('api/cards/{card_id}', 'CardController@delete');
-Route::put('api/cards/{card_id}/', 'ItemController@create');
-Route::post('api/item/{id}', 'ItemController@update');
-Route::delete('api/item/{id}', 'ItemController@delete');
-
 // Authentication
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
@@ -74,13 +67,11 @@ Route::post('register', 'Auth\RegisterController@register')->name('register');
 // Recover Password
 Route::get('recoverPassword', 'ForgotController@show');
 
-// List Card
-Route::get('listCards', 'ListCardsController@show');
-
 //Search
 Route::get('search/users', 'SearchController@searchUsers')->name('search.users');
 Route::get('search/content', 'SearchController@searchPosts')->name('search.content');
-Route::get('search', 'SearchController@searchUsers')->name('search');
+Route::get('search/groups', 'SearchController@searchGroups')->name('search.groups');
+Route::redirect('search', 'search/content')->name('search');
 
 // Notifications
 Route::get('/notifications', 'NotificationsController@all')->middleware('auth')->name('notifications');

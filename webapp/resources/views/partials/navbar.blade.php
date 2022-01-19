@@ -1,13 +1,13 @@
 @php
 $icon_size = 'fs-4';
 $left_links = [
-    'home' => ['title' => 'Home', 'icon' => 'bi bi-house-fill'],
-    'notifications' => ['title' => 'Notifications', 'icon' => 'bi bi-bell-fill'],
-    'search' => ['title' => 'Search', 'icon' => 'bi bi-search'],
+  ['routes' => ['home'], 'title' => 'Home', 'icon' => 'bi bi-house-fill'],
+  ['routes' => ['notifications'], 'title' => 'Notifications', 'icon' => 'bi bi-bell-fill'],
+  ['routes' => ['search', 'search.content', 'search.users', 'search.groups'], 'title' => 'Search', 'icon' => 'bi bi-search'],
 ];
 $right_links = [
-    'chat' => ['title' => 'Chat', 'icon' => 'bi bi-chat-fill'],
-    'groups' => ['title' => 'Groups', 'icon' => 'bi bi-people-fill'],
+  ['routes' => ['chat'], 'title' => 'Chat', 'icon' => 'bi bi-chat-fill'],
+  ['routes' => ['groups'], 'title' => 'Groups', 'icon' => 'bi bi-people-fill'],
 ];
 @endphp
 
@@ -20,10 +20,9 @@ $right_links = [
   <div class="row flex-grow-1 align-items-center m-0">
     <div class="col-12 col-sm-5 order-2 order-sm-1 collapse multi-collapse navbar-collapse">
       <ul class="align-items-center navbar-nav justify-content-evenly flex-grow-1" id="leftIcons">
-        @foreach ($left_links as $page => $props)
+        @foreach ($left_links as $props)
           <li class="nav-item">
-            <a class="nav-link{{ Route::currentRouteName() == $page ? ' active' : '' }}"
-              {{ Route::currentRouteName() == $page ? 'aria-current=page' : '' }} href="{{ route($page) }}">
+            <a class="nav-link @if (in_array(Route::currentRouteName(), $props['routes'])) active" aria-current=page @else " @endif href=" {{ route($props['routes'][0]) }}">
               <i class="{{ $props['icon'] }} {{ $icon_size }}" aria-label="{{ $props['title'] }}"></i>
               <span class="d-sm-none">{{ $props['title'] }}</span>
             </a>
@@ -37,10 +36,9 @@ $right_links = [
     </div>
     <div class="col-12 col-sm-5 order-last collapse multi-collapse navbar-collapse">
       <ul class="align-items-center navbar-nav justify-content-evenly flex-grow-1" id="rightIcons">
-        @foreach ($right_links as $page => $props)
+        @foreach ($right_links as $props)
           <li class="nav-item">
-            <a class="nav-link {{ Route::currentRouteName() == $page ? 'active' : '' }}"
-              {{ Route::currentRouteName() == $page ? 'aria-current="page"' : '' }} href="{{ route($page) }}">
+            <a class="nav-link @if ($props['title'] == 'Chat') disabled @endif @if (in_array(Route::currentRouteName(), $props['routes'])) active" aria-current=page @else " @endif href=" {{ route($props['routes'][0]) }}">
               <i class="{{ $props['icon'] }} {{ $icon_size }}" aria-label="{{ $props['title'] }}"></i>
               <span class="d-sm-none">{{ $props['title'] }}</span>
             </a>

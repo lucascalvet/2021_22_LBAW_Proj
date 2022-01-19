@@ -14,7 +14,9 @@ $n_shares = '100';
 $time = '10 days ago';
 @endphp
 
+@section('title', 'Post')
 
+@section('bg_color', 'white')
 
 @section('content')
   @include('partials.navbar')

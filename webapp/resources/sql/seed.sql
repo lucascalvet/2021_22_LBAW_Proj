@@ -304,111 +304,69 @@ CREATE INDEX end_campaign ON campaign USING btree (finishing_date);
 --Full Text Search Indexes
 
 -- IDX 11
--- Add column to text_content to store computed ts_vectors.
-ALTER TABLE text_content
+-- Add column to content to store computed ts_vectors.
+ALTER TABLE content
 ADD COLUMN tsvectors TSVECTOR;
 
 -- Create a function to automatically update ts_vectors.
+CREATE FUNCTION content_search_update(input_id INTEGER) RETURNS VOID LANGUAGE plpgsql AS
+$$
+BEGIN
+   UPDATE content
+   SET tsvectors = (
+      setweight(to_tsvector('english', coalesce((SELECT post_text FROM text_content WHERE id_content = input_id), '')), 'A') ||
+      setweight(to_tsvector('english', coalesce((SELECT title FROM video WHERE id_media_content = input_id), '')), 'A') ||
+      setweight(to_tsvector('english', coalesce((SELECT description FROM media_content WHERE id_content = input_id), '')), 'B') ||
+      setweight(to_tsvector('english', coalesce((SELECT alt_text FROM media_content WHERE id_content = input_id), '')), 'C')
+   )
+   WHERE id = input_id;
+END
+$$;
+
+-- Create a GIN index for ts_vectors.
+CREATE INDEX content_search_idx ON content USING GIN (tsvectors);
+
 CREATE FUNCTION text_content_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF TG_OP = 'INSERT' THEN
-      NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.post_text), 'A')
-      );
-   END IF;
-   IF TG_OP = 'UPDATE' THEN
-      IF (NEW.post_text <> OLD.post_text) THEN
-         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.post_text), 'A')
-         );
-      END IF;
-   END IF;
+   PERFORM content_search_update(NEW.id_content);
    RETURN NEW;
 END
 $$;
 
 -- Create a trigger before insert or update on text_content.
 CREATE TRIGGER text_content_search_update
-   BEFORE INSERT OR UPDATE ON text_content
+   AFTER INSERT OR UPDATE ON text_content
    FOR EACH ROW
    EXECUTE PROCEDURE text_content_search_update();
 
--- Finally, create a GIN index for ts_vectors.
-CREATE INDEX text_content_search_idx ON text_content USING GIN (tsvectors);
-
-
--- IDX12
--- Add column to media_content to store computed ts_vectors.
-ALTER TABLE media_content
-ADD COLUMN tsvectors TSVECTOR;
-
--- Create a function to automatically update ts_vectors.
 CREATE FUNCTION media_content_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF TG_OP = 'INSERT' THEN
-      NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.description), 'A') ||
-         setweight(to_tsvector('english', NEW.alt_text), 'B')
-      );
-   END IF;
-   IF TG_OP = 'UPDATE' THEN
-      IF (NEW.description <> OLD.description OR NEW.alt_text <> OLD.alt_text) THEN
-         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.description), 'A') ||
-            setweight(to_tsvector('english', NEW.alt_text), 'B')
-         );
-      END IF;
-   END IF;
+   PERFORM content_search_update(NEW.id_content);
    RETURN NEW;
 END
 $$;
 
 -- Create a trigger before insert or update on media_content.
 CREATE TRIGGER media_content_search_update
-   BEFORE INSERT OR UPDATE ON media_content
+   AFTER INSERT OR UPDATE ON media_content
    FOR EACH ROW
    EXECUTE PROCEDURE media_content_search_update();
 
--- Finally, create a GIN index for ts_vectors.
-CREATE INDEX media_content_search_idx ON media_content USING GIN (tsvectors);
-
-
--- IDX 13
--- Add column to video to store computed ts_vectors.
-ALTER TABLE video
-ADD COLUMN tsvectors TSVECTOR;
-
--- Create a function to automatically update ts_vectors.
 CREATE FUNCTION video_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF TG_OP = 'INSERT' THEN
-      NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.title), 'A')
-      );
-   END IF;
-   IF TG_OP = 'UPDATE' THEN
-      IF (NEW.title <> OLD.title) THEN
-         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.title), 'A')
-         );
-      END IF;
-   END IF;
+   PERFORM content_search_update(NEW.id_media_content);
    RETURN NEW;
 END
 $$;
 
 -- Create a trigger before insert or update on video.
 CREATE TRIGGER video_search_update
-   BEFORE INSERT OR UPDATE ON video
+   AFTER INSERT OR UPDATE ON video
    FOR EACH ROW
    EXECUTE PROCEDURE video_search_update();
-
--- Finally, create a GIN index for ts_vectors.
-CREATE INDEX video_search_idx ON video USING GIN (tsvectors);
-
 
 --------------------------------------------
 --TRIGGERS
