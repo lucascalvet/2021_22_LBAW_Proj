@@ -4,6 +4,19 @@
 
 @section('bg_color', '#afafaf')
 
+@php
+$is_result = isset($users) || isset($posts) || isset($groups);
+$has_results = (isset($users) && count($users) > 0) || (isset($posts) && count($posts) > 0) || (isset($groups) && count($groups) > 0);
+$search_bar = '';
+if (Route::currentRouteName() == 'search.content') {
+    $search_bar = ' for content';
+} elseif (Route::currentRouteName() == 'search.users') {
+    $search_bar = ' for people';
+} elseif (Route::currentRouteName() == 'search.groups') {
+    $search_bar = ' for groups';
+}
+@endphp
+
 @section('content')
 
   @include('partials.navbar')
@@ -26,8 +39,8 @@
                   href="{{ route('search.users') }}" role="tab" aria-controls="list-people">People</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link custom-tab-left disabled" id="list-groups-list" data-bs-toggle="tab" href="#"
-                  role="tab" aria-controls="list-groups">Groups</a>
+                <a class="nav-link custom-tab-left @if (Route::currentRouteName() == 'search.groups') active @endif" id="list-groups-list"
+                  href="{{ route('search.groups') }}" role="tab" aria-controls="list-groups">Groups</a>
               </li>
             </ul>
           </div>
@@ -37,21 +50,26 @@
             <div class="form-floating m-3 w-100">
               <form action="{{ Request::url() }}" method="GET">
                 <div class="d-flex flex-row">
-                  <input type="text" class="form-control" id="searchInput" name="search" placeholder="Search query">
-                  <button type="submit" class="btn btn-secondary ms-3">Search</button>
+                  <input type="text" class="form-control" id="searchInput" name="search"
+                    placeholder="Search{{ $search_bar }}">
+                  <button type=" submit" class="btn btn-secondary ms-3">Search</button>
                   {{-- <label for="floatingInput"><i class="bi bi-search"></i></label> --}}
                 </div>
               </form>
             </div>
             <div class=" ms-3 d-flex justify-content-between">
               <button disabled class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
-              @if (isset($users))
-                <label class="align-items-center pt-2">{{ count($users) }} results found</label>
-              @elseif (isset($posts))
-                <label class="align-items-center pt-2">{{ count($posts) }} results found</label>
+              @if ($is_result)
+                <label class="align-items-center pt-2">
+                  @if (isset($users)) {{ count($users) }}
+                  @elseif (isset($posts)) {{ count($posts) }}
+                  @elseif (isset($groups)) {{ count($groups) }}
+                  @endif
+                  results found
+                </label>
               @endif
             </div>
-            @if ((isset($users) && count($users) > 0) || (isset($posts) && count($posts) > 0))
+            @if ($has_results)
               <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
                 <div class="card m-3 list-group">
                   @if (isset($users))
@@ -82,6 +100,11 @@
                         route('content.show', ['id' => $post->id])
                         ])
                       @endif
+                    @endforeach
+                  @elseif(isset($groups))
+                    @foreach ($groups as $group)
+                      @include('partials.listCards', ['title' => $group->name, 'description' => $group->description,
+                      'subtitle' => '', 'date'=> '', 'link' => route('group.show', ['id' => $group->id]) ])
                     @endforeach
                   @endif
                 </div>

@@ -368,6 +368,32 @@ CREATE TRIGGER video_search_update
    FOR EACH ROW
    EXECUTE PROCEDURE video_search_update();
 
+
+-- Add column to groups to store computed ts_vectors.
+ALTER TABLE groups
+ADD COLUMN tsvectors TSVECTOR;
+
+-- Create a function to automatically update ts_vectors.
+CREATE FUNCTION groups_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NEW.name <> OLD.name OR NEW.description <> OLD.description)) THEN
+      NEW.tsvectors = (
+         setweight(to_tsvector('english', NEW.name), 'A') ||
+         setweight(to_tsvector('english', NEW.description), 'B')
+      );
+   END IF;
+   RETURN NEW;
+END
+$$;
+
+-- Create a trigger before insert or update on media_content.
+CREATE TRIGGER groups_search_update
+   BEFORE INSERT OR UPDATE ON groups
+   FOR EACH ROW
+   EXECUTE PROCEDURE groups_search_update();
+
+
 --------------------------------------------
 --TRIGGERS
 --------------------------------------------
