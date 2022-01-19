@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'name', 'email', 'hashed_password', 'phone_number', 'birthday', 'id_country', 'description',
+        'username', 'name', 'email', 'profile_picture', 'private', 'hashed_password', 'phone_number', 'birthday', 'id_country', 'description',
     ];
 
     /**
@@ -70,6 +70,14 @@ class User extends Authenticatable
         return false;
     }
     
+    public function likes(){
+        return $this->hasMany(Like::class, 'id_user');
+    }
+
+    public function comments(){
+        return $this->hasMany(Comment::class, 'id_author');
+    }
+
 
     /**
      * The groups that the user is member of.

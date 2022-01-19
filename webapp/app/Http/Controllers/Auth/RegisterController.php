@@ -54,6 +54,8 @@ class RegisterController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'phone_number' => 'nullable|numeric',
+            'profile_picture' => 'required|file|mimetypes:image/jpeg,image/png',
+            'private' => 'required',
             'birthday' => 'required|date',
         ]);
     }
@@ -76,6 +78,8 @@ class RegisterController extends Controller
             'username' => $data['username'],
             'email' => $data['email'],
             'hashed_password' => bcrypt($data['password']),
+            'profile_picture' => $data['profile_picture']->store('media', ['disk' => 'my_files']),
+            'private' => $data['private'],
             'phone_number' => $data['phone_number'],
             'birthday' => $data['birthday'],
             'id_country' => $data['country'],

@@ -24,7 +24,7 @@ $link_remove = route('content.remove', ['id' => $content->id]);
   <div class="card-header">
     <div class="d-flex flex-row justify-content-between">
       <div class="d-block">
-        <img src="{{ asset($profile_pic) }}" class="rounded-circle align-self-center" style="width: 3em; height: 3em;"
+        <img src="{{ asset($content->creator->profile_picture) }}" class="rounded-circle align-self-center" style="width: 3em; height: 3em;"
           alt="Profile Picture" />
       </div>
       <div class="d-block">

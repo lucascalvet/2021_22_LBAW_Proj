@@ -45,6 +45,7 @@ Route::post('content/{id}/comment', 'ContentController@comment')->name('content.
 
 // Profile
 Route::get('profile/{user}', 'ProfileController@show')->name('profile');
+Route::delete('profile/{user}/delete', 'ProfileController@destroy')->name('profile.destroy');
 Route::get('profile/{user}/edit', 'ProfileController@showEdit')->name('profile.edit');
 Route::get('profile/{user}/save', 'ProfileController@save')->name('profile.save');
 Route::post('profile/{user}/friendRequest', 'FriendRequestController@addFriend')->name('profile.addFriend');
@@ -104,6 +105,9 @@ Route::get('group/{id}/join/{user}', 'GroupController@memberJoin')->middleware('
 Route::get('group/{id}/leave/{user}', 'GroupController@memberLeave')->middleware('auth')->name('group.member.leave');
 Route::get('group/{id}/modjoin/{user}', 'GroupController@modJoin')->middleware('auth')->name('group.mod.join');
 Route::get('group/{id}/modleave/{user}', 'GroupController@modLeave')->middleware('auth')->name('group.mod.leave');
+
+//Comments
+Route::delete('comment/{id}/delete', 'CommentController@destroy')->middleware('auth')->name('comment.destroy');
 
 //Static Pages
 Route::get('faq', 'StaticPagesController@showFAQ')->name('faq');

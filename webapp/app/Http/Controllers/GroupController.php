@@ -85,7 +85,7 @@ class GroupController extends Controller
     abort_if(is_null($group = Group::find($id)), 404);
     //$this->authorize('delete', $content);
 
-    
+
     foreach ($group->contents as $content) {
       $content->group()->dissociate();
       $content->save();
@@ -99,26 +99,34 @@ class GroupController extends Controller
     return redirect()->route('groups');
   }
 
-  public function memberJoin($id, $user){
+  public function memberJoin($id, $user)
+  {
     $group = Group::find($id);
     $group->members()->attach($user);
 
     return redirect()->route('group.show', ['id' => $group->id]);
   }
 
-  public function memberLeave($id, $user){
+  public function memberLeave($id, $user)
+  {
     $group = Group::find($id);
-    if($group->moderators->contains(User::find($user))){
+    if ($group->moderators->contains(User::find($user))) {
       $group->moderators()->detach($user);
     }
     $group->members()->detach($user);
 
+    if ($group->moderators()->count() == 0) {
+      $this->destroy($group->id);
+      return redirect()->route('groups');
+    }
+
     return redirect()->route('group.show', ['id' => $group->id]);
   }
 
-  public function modJoin($id, $user){
+  public function modJoin($id, $user)
+  {
     $group = Group::find($id);
-    if(!($group->members->contains(User::find($user)))){
+    if (!($group->members->contains(User::find($user)))) {
       $group->members()->attach($user);
     }
     $group->moderators()->attach($user);
@@ -126,9 +134,14 @@ class GroupController extends Controller
     return redirect()->route('group.show', ['id' => $group->id]);
   }
 
-  public function modLeave($id, $user){
+  public function modLeave($id, $user)
+  {
     $group = Group::find($id);
     $group->moderators()->detach($user);
+    if ($group->moderators()->count() == 0) {
+      $this->destroy($group->id);
+      return redirect()->route('groups');
+    }
 
     return redirect()->route('group.show', ['id' => $group->id]);
   }
