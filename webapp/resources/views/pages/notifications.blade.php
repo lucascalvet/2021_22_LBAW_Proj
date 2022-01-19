@@ -65,7 +65,7 @@ $only_viewed = false;  //not doing anything yet
 
              <!--Actual Notifications-->
             <div class="m-3 list-group">
-             @if($users->count() != 0)
+             @if(count($users) != 0)
               @if ($type == 'like')
                 @for($i = $content_likes->count()-1; $i >= 0; $i--)
 
@@ -100,6 +100,7 @@ $only_viewed = false;  //not doing anything yet
                               date_parse($friend_requests[$i]->creation_date)['minute'],
                     'notification_generator_link' => '',
                     'description' => "Sent you a friend request",
+                    'friendRequest' => $friend_requests[$i],
                   ])
                 @endfor
               @endif
@@ -187,7 +188,7 @@ $only_viewed = false;  //not doing anything yet
 
         <!--Actual Notifications-->
         <div class="me-5 ms-5">
-          @if($users->count() != 0)
+          @if(count($users) != 0)
           @if ($type == 'like')
             @for($i = $content_likes->count()-1; $i >= 0; $i--)
 
@@ -222,6 +223,7 @@ $only_viewed = false;  //not doing anything yet
                           date_parse($friend_requests[$i]->creation_date)['minute'],
                 'notification_generator_link' => '',
                 'description' => "Sent you a friend request",
+                'friendRequest' => $friend_requests[$i],
               ])
             @endfor
           @endif

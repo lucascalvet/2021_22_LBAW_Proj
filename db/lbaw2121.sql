@@ -168,15 +168,15 @@ CREATE TABLE friend_request (
    id_receiver INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE accepted_friend_request (
-   id_friend_request INTEGER PRIMARY KEY REFERENCES friend_request(id) ON UPDATE CASCADE,
-   accepted_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
-);
+-- CREATE TABLE accepted_friend_request (
+--    id_friend_request INTEGER PRIMARY KEY REFERENCES friend_request(id) ON UPDATE CASCADE,
+--    accepted_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
+-- );
 
-CREATE TABLE rejected_friend_request (
-   id_friend_request INTEGER PRIMARY KEY REFERENCES friend_request(id) ON UPDATE CASCADE,
-   rejected_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
-);
+-- CREATE TABLE rejected_friend_request (
+--    id_friend_request INTEGER PRIMARY KEY REFERENCES friend_request(id) ON UPDATE CASCADE,
+--    rejected_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
+-- );
 
 CREATE TABLE message (
    id SERIAL PRIMARY KEY,

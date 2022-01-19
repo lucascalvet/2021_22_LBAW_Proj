@@ -1,7 +1,6 @@
 @php
   $profile_pic = 'img/profile_pic.png';
   $cover_pic = 'img/cover_pic.jpg';
-
 @endphp
 
 @extends('layouts.app')
