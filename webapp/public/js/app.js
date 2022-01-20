@@ -214,7 +214,6 @@ function addLikeListeners(){
       sendAjaxRequest('post', '/content' + '/like/' + parsedId, null, likeResponseHandler);
     });
   }
-
 }
 
 function likeResponseHandler(){
@@ -245,6 +244,29 @@ function toggleLikeIcon(icon, liked){
 
 addLikeListeners();
 
+function addRemoveFriendListeners(){
+  let remove_buttons = document.getElementsByClassName('a-remove-friend');
+
+  for(let i = 0; i < remove_buttons.length; i++){
+    let idStr = remove_buttons[i].id;
+    let parsedId = idStr.replace('a-remove-friend-', '');
+
+    remove_buttons[i].addEventListener('click', () => {
+      sendAjaxRequest('post', '/profile/' + parsedId + '/friendRemove', null, removeResponseHandler);
+    });
+  }
+}
+
+function removeResponseHandler(){
+  console.log(this.responseText);
+  
+  let res = JSON.parse(this.responseText);
+
+  let button = document.getElementById('a-remove-friend-' + res.user_id);
+  button.classList.add("d-none");
+}
+
+addRemoveFriendListeners();
 /*
 function addNotificationsFilterListen(){
   let viewd_icon = document.getElementById('a-only-viewed');

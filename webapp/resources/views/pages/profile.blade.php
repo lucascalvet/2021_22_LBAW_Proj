@@ -36,7 +36,7 @@
             <h2 class="pt-4">{{$user->username}}</h2>
 
             <div class="d-flex">
-              <div class="pb-2 pe-2"><strong>120</strong></div>
+              <div class="pb-2 pe-2"><strong>{{$user->userFriends->count()}}</strong></div>
               friends
               </div>
 
@@ -48,17 +48,28 @@
 
             <div class="row">
               <h5 class="text-center">Interests</h5>
-
-              <div class="d-flex flex-wrap text-light justify-content-evenly">
-                <div class="bg-secondary rounded-3 ms-0 p-2 m-2">Interest1</div>
-                <div class="bg-secondary rounded-3 ms-0 p-2 m-2">Interest2</div>
-                <div class="bg-secondary rounded-3 ms-0 p-2 m-2">Interest3</div>
+      
+              <div class="d-flex flex-wrap justify-content-evenly">
+                @foreach($user->userFriends as $friend)
+                <div class="d-block mx-2 pb-2">
+                    <a hre="{{ route('profile', ['user' => $friend->id]) }}"><div>{{$friend->username}}</div></a>
+                    @if(Auth::user()->id == $user->id)
+                      <a id="a-remove-friend-{{$friend->id}}" class="a-remove-friend"> <!--REMOVE FRIEND -->
+                        <button class="border-0 p-0"><i class="bi bi-x-square-fill"></i></button>
+                      </a>
+                    @endif
+                </div>
+                @endforeach
               </div>
+              @auth
             </div>
-            @auth
-              @if ((Auth::user() != $user) && !($user->gotFriendRequestFrom(Auth::user())) && !(Auth::user()->gotFriendRequestFrom($user)))
+              @if(Auth::user()->isFriendOf($user->id))
                 <div class="d-flex justify-content-center">
-                  <form method="POST" action="{{ route('profile.addFriend', ['user' => $user->id])}}">
+                  <a id="a-remove-friend-{{$user->id}}" class="a-remove-friend"><button class="btn btn-secondary" type="submit">Remove Friend</button></a>
+                </div>
+              @elseif ((Auth::user()->id != $user->id) && !($user->gotFriendRequestFrom(Auth::user())) && !(Auth::user()->gotFriendRequestFrom($user)))
+                <div class="d-flex justify-content-center">
+                  <form id="form-add-friend" method="POST" action="{{ route('profile.addFriend', ['user' => $user->id])}}">
                     @csrf
                     <button class="btn btn-secondary" type="submit">Add Friend</button>
                   </form>

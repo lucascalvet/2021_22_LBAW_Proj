@@ -69,19 +69,29 @@ class User extends Authenticatable
         return false;
     }
     
-    public  function friend(){
+    public  function friends(){
         return $this->belongsToMany(Friends::class, 'friends', 'id_user1', 'id_user2');
     }
-    public  function friend2(){
-        return $this->belongsToMany(User::class, 'friends', 'id_user2', 'id_user1');
+
+    public function isFriendOf($user_id){
+        foreach($this->userFriends as $friend){
+            if ($friend->id == $user_id)
+                return true;
+        }
+        return false;
     }
-    public function getFriends()
-    {
-        $f1 = $this->friend();
-        $f2 = $this->friend2();
-        $friends = $f1->union($f2);
-        return $friends;
+
+    public function userFriends(){
+        return $this->belongsToMany(User::class, 'friends', 'id_user2', 'id_user1')->union($this->belongsToMany(User::class, 'friends', 'id_user1', 'id_user2'));
     }
+
+    // public function getFriends()
+    // {
+    //     $f1 = $this->friend();
+    //     $f2 = $this->friend2();
+    //     $friends = $f1->union($f2);
+    //     return $friends;
+    // }
 
     /**
      * The groups that the user is member of.
