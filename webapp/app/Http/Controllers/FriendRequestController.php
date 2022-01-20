@@ -16,7 +16,11 @@ class FriendRequestController extends Controller
 
         $friend_request->save();
 
-        return redirect()->route('profile',['user'=>$user]);
+        $res = json_encode(array(
+            'user_id' => $user,
+        ));
+
+        return $res;
     }
 
   

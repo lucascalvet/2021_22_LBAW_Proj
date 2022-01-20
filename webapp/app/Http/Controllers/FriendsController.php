@@ -34,15 +34,15 @@ class FriendsController extends Controller
     public function removeFriend(Request $request, $user_id){
         //this gives us the currently logged in user
         $user = $request->user();
-        $user->friends()->detach($user_id);
+        // $user->friends()->detach($user_id);              NOT WORKING EVERY TIME
 
-        // DB::table('friends')
-        //         ->where('id_user1', $user_id)
-        //         ->where('id_user2', $user->id)->delete();
+        DB::table('friends')                                // ALWAYS WORKING
+                ->where('id_user1', $user_id)
+                ->where('id_user2', $user->id)->delete();
 
-        // DB::table('friends')
-        //         ->where('id_user2', $user_id)
-        //         ->where('id_user1', $user->id)->delete();
+        DB::table('friends')
+                ->where('id_user2', $user_id)
+                ->where('id_user1', $user->id)->delete();
 
         
         $res = json_encode(array(

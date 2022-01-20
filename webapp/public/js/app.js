@@ -264,9 +264,64 @@ function removeResponseHandler(){
 
   let button = document.getElementById('a-remove-friend-' + res.user_id);
   button.classList.add("d-none");
+  let div = document.getElementById("a-remove-friend-div-" + res.user_id);
+  div.classList.add("d-none");
 }
 
 addRemoveFriendListeners();
+
+function addRemoveFriendOnProfileListeners(){
+  let remove_buttons = document.getElementsByClassName('remove-friend');
+
+  for(let i = 0; i < remove_buttons.length; i++){
+    let idStr = remove_buttons[i].id;
+    let parsedId = idStr.replace('remove-friend-', '');
+
+    remove_buttons[i].addEventListener('click', () => {
+      sendAjaxRequest('post', '/profile/' + parsedId + '/friendRemove', null, removeOnProfileResponseHandler);
+    });
+  }
+}
+
+function removeOnProfileResponseHandler(){
+  console.log(this.responseText);
+  
+  let res = JSON.parse(this.responseText);
+
+  let remove_button = document.getElementById('remove-friend-' + res.user_id);
+  remove_button.classList.add("d-none");
+  let add_button = document.getElementById('friend-button');
+  console.log(add_button);
+  // $("#friend-button").load("/profile/" + res.user_id + "#friend-button>*", "");
+}
+
+addRemoveFriendOnProfileListeners();
+
+function addFriendRequestButtonListeners(){
+  let remove_buttons = document.getElementsByClassName('form-add-friend');
+
+  for(let i = 0; i < remove_buttons.length; i++){
+    let idStr = remove_buttons[i].id;
+    let parsedId = idStr.replace('form-add-friend-', '');
+
+    remove_buttons[i].addEventListener('click', () => {
+      sendAjaxRequest('post', '/profile/' + parsedId + '/friendRequest', null, FriendRequestButtonHandler);
+    });
+  }
+}
+
+function FriendRequestButtonHandler(){
+  console.log(this.responseText);
+  
+  let res = JSON.parse(this.responseText);
+
+  let button = document.getElementById('form-add-friend-' + res.user_id);
+  button.classList.add("d-none");
+}
+
+addFriendRequestButtonListeners();
+
+
 /*
 function addNotificationsFilterListen(){
   let viewd_icon = document.getElementById('a-only-viewed');

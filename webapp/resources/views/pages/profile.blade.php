@@ -51,7 +51,7 @@
       
               <div class="d-flex flex-wrap justify-content-evenly">
                 @foreach($user->userFriends as $friend)
-                <div class="d-block mx-2 pb-2">
+                <div id="a-remove-friend-div-{{$friend->id}}" class="d-block mx-2 pb-2">
                     <a hre="{{ route('profile', ['user' => $friend->id]) }}"><div>{{$friend->username}}</div></a>
                     @if(Auth::user()->id == $user->id)
                       <a id="a-remove-friend-{{$friend->id}}" class="a-remove-friend"> <!--REMOVE FRIEND -->
@@ -63,18 +63,19 @@
               </div>
               @auth
             </div>
+            <div id="friend-button">
               @if(Auth::user()->isFriendOf($user->id))
                 <div class="d-flex justify-content-center">
-                  <a id="a-remove-friend-{{$user->id}}" class="a-remove-friend"><button class="btn btn-secondary" type="submit">Remove Friend</button></a>
+                  <a id="remove-friend-{{$user->id}}" class="remove-friend"><button class="btn btn-secondary" type="submit">Remove Friend</button></a>
                 </div>
               @elseif ((Auth::user()->id != $user->id) && !($user->gotFriendRequestFrom(Auth::user())) && !(Auth::user()->gotFriendRequestFrom($user)))
                 <div class="d-flex justify-content-center">
-                  <form id="form-add-friend" method="POST" action="{{ route('profile.addFriend', ['user' => $user->id])}}">
-                    @csrf
-                    <button class="btn btn-secondary" type="submit">Add Friend</button>
-                  </form>
+                  {{-- <form id="form-add-friend-{{$user->id}}" class="form-add-friend" method="POST" action="{{ route('profile.addFriend', ['user' => $user->id])}}">
+                  </form> --}}
+                  <a id="form-add-friend-{{$user->id}}" class="form-add-friend"><button class="btn btn-secondary" type="submit">Add Friend</button></a>
                 </div>
               @endif
+            </div>
             @endauth
           </div>
 
