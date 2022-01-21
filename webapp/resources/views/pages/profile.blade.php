@@ -56,16 +56,20 @@ $cover_pic = 'img/cover_pic.jpg';
               <h5 class="text-center">Friends</h5>
 
               <div class="d-flex flex-wrap justify-content-evenly">
-                @foreach($user->userFriends as $friend)
-                <div id="a-remove-friend-div-{{$friend->id}}" class="d-block mx-2 pb-2">
-                    <a hre="{{ route('profile', ['user' => $friend->id]) }}"><div>{{$friend->username}}</div></a>
-                    @if(Auth::user()->id == $user->id)
-                      <a id="a-remove-friend-{{$friend->id}}" class="a-remove-friend"> <!--REMOVE FRIEND -->
-                        <button class="border-0 p-0"><i class="bi bi-x-square-fill"></i></button>
-                      </a>
-                    @endif
-                </div>
-                @endforeach
+                @if ($user->userFriends->count() != 0)
+                  @foreach($user->userFriends as $friend)
+                  <div id="a-remove-friend-div-{{$friend->id}}" class="d-block mx-2 pb-2">
+                      <a hre="{{ route('profile', ['user' => $friend->id]) }}"><div>{{$friend->username}}</div></a>
+                      @if(Auth::user()->id == $user->id)
+                        <a id="a-remove-friend-{{$friend->id}}" class="a-remove-friend">
+                          <button class="border-0 p-0"><i class="bi bi-x-square-fill"></i></button>
+                        </a>
+                      @endif
+                  </div>
+                  @endforeach
+                @else
+                    <p>This user has no friends. Step him up!</p>
+                @endif
               </div>
               @auth
             </div>

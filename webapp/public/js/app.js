@@ -111,9 +111,17 @@ function addRemoveFriendOnProfileListeners(){
     remove_buttons[i].addEventListener('click', () => {
       updateFriendsCount();
       removeRemoveFriendButtonOnProfile(parsedId);
-      sendAjaxRequest('post', '/profile/' + parsedId + '/friendRemove', null, null);
+
+      sendAjaxRequest('post', '/profile/' + parsedId + '/friendRemove', null, removeFriendOnProfileHandler);
     });
   }
+}
+
+function removeFriendOnProfileHandler(){
+  console.log(this.responseText);
+  let res = JSON.parse(this.responseText);
+  let div = document.getElementById("a-remove-friend-div-" + res.auth_id);
+  div.classList.add("d-none");
 }
 
 function removeRemoveFriendButtonOnProfile(id){

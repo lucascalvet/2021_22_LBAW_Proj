@@ -20,6 +20,7 @@
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
     'username' => $notification->friend_request()->sender->username,
     'date' => $notification->date()->format('D, Y-m-d H:i:s'),
+    'friendRequest'=> $notification->friend_request(),
     ])
   @endif
   @if (!is_null($notification->comment()))
