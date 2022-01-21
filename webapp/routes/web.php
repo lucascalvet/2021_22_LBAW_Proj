@@ -48,6 +48,7 @@ Route::get('profile/{user}', 'ProfileController@show')->name('profile');
 Route::get('profile/{user}/edit', 'ProfileController@showEdit')->name('profile.edit');
 Route::get('profile/{user}/save', 'ProfileController@save')->name('profile.save');
 Route::post('profile/{user}/friendRequest', 'FriendRequestController@addFriend')->name('profile.addFriend');
+Route::post('profile/{user}/cancelFriendRequest', 'FriendRequestController@cancelFriend')->name('profile.cancelFriend');
 Route::post('profile/friendRequest/{friendRequestId}/accept', 'FriendsController@acceptFriend')->name('profile.acceptFriend');
 Route::post('profile/friendRequest/{friendRequestId}/reject', 'FriendsController@rejectFriend')->name('profile.rejectFriend');
 Route::post('profile/{user}/friendRemove', 'FriendsController@removeFriend')->name('profile.removeFriend');

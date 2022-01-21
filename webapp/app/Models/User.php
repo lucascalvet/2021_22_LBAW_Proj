@@ -63,6 +63,7 @@ class User extends Authenticatable
     public function friendRequests(){
         return $this->hasMany(FriendRequest::class, 'id_receiver');
     }
+    
 
     public function gotFriendRequestFrom($sender){
         foreach($this->friendRequests as $friend_request){
