@@ -18,12 +18,12 @@
                 <div>
                     <form method="POST" action="{{ route('profile.acceptFriend', ['friendRequestId' => $friendRequest->id])}}">
                         @csrf
-                        <button class="border-0 p-0 me-1" type="submit"><i class="bi bi-check-square-fill"></i></button>
+                        <button data-bs-toggle="tooltip" data-bs-placement="right" title="Accept friend request"  class="border-0 py-0 px-1" type="submit"><i class="bi bi-check-square-fill"></i></button>
                     </form>
                     <form method="POST" action="{{ route('profile.rejectFriend', ['friendRequestId' => $friendRequest->id])}}">
                         @csrf
                         <!-- <input type="hidden" name="friend_request_id" value="{{ $friendRequest->id }}"> -->
-                        <button class="border-0 p-0" type="submit"><i class="bi bi-x-square-fill"></i></button>
+                        <button data-bs-toggle="tooltip" data-bs-placement="right" title="Reject friend request" class="border-0 py-0 px-1" type="submit"><i class="bi bi-x-square-fill"></i></button>
                     </form>
                 </div>
             </div>

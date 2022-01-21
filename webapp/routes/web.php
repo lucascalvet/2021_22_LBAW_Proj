@@ -18,7 +18,7 @@ Route::get('/', 'HomeController@show')->name('home');
 /*
 Route::get($known_route, function() use ($id) {
     return App::make('SomeController')->someMethod($id);
-}); 
+});
 */
 Route::get('content/text/create/{id_group?}', 'TextContentController@create')->middleware('auth')->name('textcontent.make');
 Route::get('content/media/create/{id_group?}', 'MediaContentController@create')->middleware('auth')->name('mediacontent.make');

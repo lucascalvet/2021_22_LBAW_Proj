@@ -19,7 +19,7 @@ $users = \App\Models\User::all();
       @include('partials.side_create_buttons', ['id_group' => -1])
     </div>
 
-    <div class="col-8 text-center mt-3">
+    <div class="col-8 text-center pt-3">{{--vh-100" style="background-color: rgba(128, 128, 128, 0.027)">--}}
       @if($contents->count() != 0)
         @foreach ($contents as $content)
          <div class="d-inline-block ms-1 my-1">

@@ -45,13 +45,13 @@ $link_create_group = route('group.make');
 
         @include('partials.side_grouphub_buttons')
     </div>
-    <div class="col-8">
-        <div class="d-flex flex-column pt-3 pl-3 pr-1" style="overflow-y: visible;">
+    <div class="col-8 mt-3">
+        <div class="d-flex flex-column pt-3 ps-3 pr-1" style="overflow-y: visible;">
             @foreach ($groups as $group)
             @if (count($group->contents) > 0)
-            <h5><a href="{{ route('group.show', ['id' => $group->id])}}">{{ $group-> name }}</a></h5>
+            <h5><a class="ms-3 fs-4" href="{{ route('group.show', ['id' => $group->id])}}">{{ $group->name }}</a></h5>
             @endif
-            <div class="d-flex flex-row mx-2 mb-2 pb-2" style="overflow-x: auto;">
+            <div class="d-flex flex-row mx-2 my-3 pb-2" style="overflow-x: auto;">
                 @foreach ($group->contents as $content)
                 <div class="d-block mx-2 pb-2">
                 @include('partials.content', ['content' => $content, 'show_group' => false])
