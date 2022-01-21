@@ -15,13 +15,13 @@ $user = Auth::user();
             <div class="card-body p-5">
               <h2 class="text-uppercase text-center mb-5">Edit Text Content</h2>
 
-              <form method="POST" action="{{ route('textcontent.update', ['id' => $text_content->id_content]) }}"
+              <form method="POST" action="{{ route('content.update', ['id' => $text_content->id_content]) }}"
                 enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
 
                 <div class="form-floating mb-2">
-                  <textarea class="form-control" type="text" id="post_text" name="post_text" rows="30"
+                  <textarea class="form-control @if ($errors->has('post_text')) is-invalid @endif" type="text" id="post_text" name="post_text" rows="30"
                     placeholder="* Post Text" autofocus required rows="10">{{ $text_content->post_text }}</textarea>
                   <label for="post_text">* Post Text</label>
 
@@ -36,9 +36,8 @@ $user = Auth::user();
                 </div>
 
                 <div class="d-flex justify-content-around mb-3">
-                  <button type="submit" class="btn btn-outline-success btn-lg text-dark">Change Media Content</button>
-                  <a href="{{ $link_back }}"><button type="button"
-                      class="btn btn-outline-secondary btn-lg bg-dark text-white">Discard Changes</button></i></a>
+                  <button type="submit" class="btn btn-outline-success btn-lg text-dark">Change Text Content</button>
+                  <a class="btn btn-outline-secondary btn-lg bg-dark text-white" href="{{ $link_back }}">Discard Changes</a>
                 </div>
 
               </form>

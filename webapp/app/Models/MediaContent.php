@@ -60,6 +60,14 @@ class MediaContent extends Model
      */
     public function media_contentable()
     {
-        return $this->morphTo(null, null, 'id');
+        return $this->morphTo(null, null, 'id_content');
+    }
+
+    /**
+     * The comments in this media content.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'id_media_content');
     }
 }

@@ -26,7 +26,7 @@
 
                 <div class="form-floating mb-2">
                   <input type="file" accept="image/*,video/*" id="media" name="media" class="form-control form-control-lg"
-                    placeholder="* Media">
+                    placeholder="* Media" required>
                   <label for="media">* Media</label>
                   @if ($errors->has('media'))
                     <span class="invalid-feedback">
@@ -46,7 +46,9 @@
                   @endif
                 </div>
 
-
+                @if ($id_group >= 0)
+                  <input type="hidden" id="id_group" name="id_group" value="{{ $id_group }}" />
+                @endif
 
                 <div class="form-check d-flex justify-content-center mb-5">
                 </div>

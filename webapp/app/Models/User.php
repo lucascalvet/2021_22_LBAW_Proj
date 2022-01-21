@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -13,12 +14,19 @@ class User extends Authenticatable
     public $timestamps  = false;
 
     /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['birthday'];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'username', 'name', 'email', 'hashed_password', 'phone_number', 'birthday', 'id_country', 'description',
+        'username', 'name', 'email', 'profile_picture', 'private', 'hashed_password', 'phone_number', 'birthday', 'id_country', 'description',
     ];
 
     /**
@@ -53,6 +61,75 @@ class User extends Authenticatable
      */
     public function isAdmin()
     {
-        return $this->id == 22;
+        return DB::table('admin_user')->where('id_user', $this->id)->exists();
     }
+
+    /**
+     * Get the user's friend requests
+     */
+    public function friendRequests(){
+        return $this->hasMany(FriendRequest::class, 'id_receiver');
+    }
+
+
+    public function gotFriendRequestFrom($sender){
+        foreach($this->friendRequests as $friend_request){
+            if ($friend_request->id_sender == $sender->id)
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * The user's comments.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'id_author');
+    }
+
+    /**
+     * The user's notifications.
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'id_user');
+    }
+
+    public  function friends(){
+        return $this->belongsToMany(Friends::class, 'friends', 'id_user1', 'id_user2');
+    }
+
+    public function isFriendOf($user_id){
+        foreach($this->userFriends as $friend){
+            if ($friend->id == $user_id)
+                return true;
+        }
+        return false;
+    }
+
+    public function userFriends(){
+        return $this->belongsToMany(User::class, 'friends', 'id_user2', 'id_user1')->union($this->belongsToMany(User::class, 'friends', 'id_user1', 'id_user2'));
+    }
+
+    public function likes(){
+        return $this->hasMany(Like::class, 'id_user');
+    }
+
+    /**
+     * The groups that the user is member of.
+     */
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_member', 'id_user_member', 'id_group');
+    }
+
+    /**
+     * The groups that the user is moderator of.
+     */
+    public function mod_groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_moderator', 'id_user_moderator', 'id_group');
+    }
+
 }

@@ -15,13 +15,13 @@ $user = Auth::user();
             <div class="card-body p-5">
               <h2 class="text-uppercase text-center mb-5">Edit Media Content</h2>
 
-              <form method="POST" action="{{ route('mediacontent.update', ['id' => $media_content->id_content]) }}"
+              <form method="POST" action="{{ route('content.update', ['id' => $media_content->id_content]) }}"
                 enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
 
                 <div class="form-floating mb-2">
-                  <textarea class="form-control" type="text" id="description" name="description"
+                  <textarea class="form-control @if ($errors->has('description')) is-invalid @endif" type="text" id="description" name="description"
                     placeholder="* Description" autofocus rows="10" required
                     value="{{ $media_content->description }}"></textarea>
                   <label for="description">* Description</label>
@@ -34,7 +34,7 @@ $user = Auth::user();
                 </div>
 
                 <div class="form-floating mb-2">
-                  <input type="file" accept="image/*,video/*" id="media" name="media" class="form-control form-control-lg"
+                  <input type="file" accept="image/*,video/*" id="media" name="media" class="form-control form-control-lg @if ($errors->has('media')) is-invalid @endif"
                     placeholder="* Media" required value="{{ $media_content->media }}">
                   <label for="media">* Media</label>
                   @if ($errors->has('media'))
@@ -45,7 +45,7 @@ $user = Auth::user();
                 </div>
 
                 <div class="form-floating mb-2">
-                  <input type="text" id="alt_text" name="alt_text" class="form-control form-control-lg"
+                  <input type="text" id="alt_text" name="alt_text" class="form-control form-control-lg @if ($errors->has('alt_text')) is-invalid @endif"
                     placeholder="Media's Text Alternative" value="{{ $media_content->alt_text }}">
                   <label for="alt_text">Media's Text Alternative</label>
                   @if ($errors->has('alt_text'))
@@ -60,8 +60,7 @@ $user = Auth::user();
 
                 <div class="d-flex justify-content-around mb-3">
                   <button type="submit" class="btn btn-outline-success btn-lg text-dark">Change Media Content</button>
-                  <a href="{{ $link_back }}"><button type="button"
-                      class="btn btn-outline-secondary btn-lg bg-dark text-white">Discard Changes</button></i></a>
+                  <a class="btn btn-outline-secondary btn-lg bg-dark text-white" href="{{ $link_back }}">Discard Changes</a>
                 </div>
 
               </form>

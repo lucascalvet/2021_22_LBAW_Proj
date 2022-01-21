@@ -74,7 +74,7 @@
               </div>
 
               <div>
-                <p class="mb-0">Forgot your password? <a href="#!" class="text-white-50 fw-bold">Recover it</a>
+                {{--<p class="mb-0">Forgot your password? <a href="#!" class="text-white-50 fw-bold">Recover it</a>--}}
                 </p>
               </div>
 
@@ -83,13 +83,7 @@
         </div>
       </div>
     </div>
-    <div class="position-absolute bottom-0 end-0 m-5">
-      <a href="#!" class="text-white"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-          fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-          <path fill-rule="evenodd"
-            d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
-        </svg></a>
-    </div>
+
     <div class="modal top fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
       data-mdb-backdrop="true" data-mdb-keyboard="true">
       <div class="modal-dialog modal-lg ">
@@ -109,32 +103,4 @@
       </div>
     </div>
   </section>
-  <!--
-                                                                                                          <h2>Step it up</h2>
-                                                                                                          <form method="POST" action="{{ route('login') }}">
-                                                                                                              {{ csrf_field() }}
-
-                                                                                                              <label for="email">E-mail</label>
-                                                                                                              <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus>
-                                                                                                              @if ($errors->has('email'))
-                                                                                                                  <span class="error">
-                                                                                                                    {{ $errors->first('email') }}
-                                                                                                                  </span>
-                                                                                                              @endif
-
-                                                                                                              <label for="password" >Password</label>
-                                                                                                              <input id="password" type="password" name="password" required>
-                                                                                                              @if ($errors->has('password'))
-                                                                                                                  <span class="error">
-                                                                                                                      {{ $errors->first('password') }}
-                                                                                                                  </span>
-                                                                                                              @endif
-
-                                                                                                              <label>
-                                                                                                                  <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
-                                                                                                              </label>
-
-                                                                                                              <button type="submit">Sign In</button>
-                                                                                                              <a class="button button-outline" href="{{ route('register') }}">Sign Up</a>
-                                                                                                          </form>-->
 @endsection

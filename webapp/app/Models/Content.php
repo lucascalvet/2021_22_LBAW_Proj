@@ -31,13 +31,28 @@ class Content extends Model
     protected $fillable = ['id_creator'];
 
     /**
-     * The contents published by this user.
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['publishing_date'];
+
+    /**
+     * The creator of the content.
      */
     public function creator()
     {
         return $this->belongsTo(User::class, 'id_creator');
     }
-    
+
+    /**
+     * The group where the content is posted.
+     */
+    public function group()
+    {
+        return $this->belongsTo(Group::class, 'id_group');
+    }
+
     /**
      * Get the specific content.
      */
@@ -46,4 +61,27 @@ class Content extends Model
         return $this->morphTo(null, null, 'id');
     }
 
+    /**
+     * Get the number of comments or text replies
+     */
+    public function comment_count()
+    {
+        if ($this->contentable instanceof MediaContent) return $this->contentable->comments->count();
+        else if ($this->contentable instanceof TextContent) return $this->contentable->replies->count();
+    }
+
+    /**
+     * The likes a content has
+     */
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'id_content');
+    }
+
+    public function numberOfLikes()
+    {
+        $nLikes = $this->likes->count();
+
+        return $nLikes;
+    }
 }

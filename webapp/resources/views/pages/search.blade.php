@@ -1,14 +1,28 @@
 @extends('layouts.app')
 
-@section('title', 'Profile')
+@section('title', 'Search')
+
+@section('bg_color', '#afafaf')
+
+@php
+$is_result = isset($users) || isset($posts) || isset($groups);
+$has_results = (isset($users) && count($users) > 0) || (isset($posts) && count($posts) > 0) || (isset($groups) && count($groups) > 0);
+$search_bar = '';
+if (Route::currentRouteName() == 'search.content') {
+    $search_bar = ' for content';
+} elseif (Route::currentRouteName() == 'search.users') {
+    $search_bar = ' for people';
+} elseif (Route::currentRouteName() == 'search.groups') {
+    $search_bar = ' for groups';
+}
+@endphp
 
 @section('content')
 
   @include('partials.navbar')
 
   <section id="profile">
-    <div class="container-fluid vh-100 overflow-auto"
-      style="padding: 0em;padding-top: 5em; margin: 0em; background-color: #afafaf">
+    <div class="container-fluid p-0 pt-5 m-0">
       <!--<h1 class="ms-3 me-4 mt-0 text-light fw-bold">Search</h1>-->
       <!--Computer View-->
       <div class="d-none d-md-block">
@@ -17,34 +31,16 @@
           <div class="col-2 m-3">
             <ul class="nav nav-pills flex-column" id="pills-tab" role="tablist">
               <li class="nav-item">
-                <a class="nav-link custom-tab-left disabled" id="list-all-list" data-bs-toggle="tab" href="#" role="tab"
-                  aria-controls="list-all">All</a>
+                <a class="nav-link custom-tab-left @if (Route::currentRouteName() == 'search.content') active @endif" id="list-posts-list"
+                  href="{{ route('search.content') }}" role="tab" aria-controls="list-posts">Posts</a>
               </li>
               <li class="nav-item">
-                @if ($type == 'user')
-                  <a class="nav-link custom-tab-left" id="list-posts-list" href="{{ route('search.content') }}"
-                    role="tab" aria-controls="list-posts">Posts</a>
-                @elseif ($type == 'post')
-                  <a class="nav-link custom-tab-left active" id="list-posts-list" href="{{ route('search.content') }}"
-                    role="tab" aria-controls="list-posts">Posts</a>
-                @endif
+                <a class="nav-link custom-tab-left @if (Route::currentRouteName() == 'search.users') active @endif" id="list-people-list"
+                  href="{{ route('search.users') }}" role="tab" aria-controls="list-people">People</a>
               </li>
               <li class="nav-item">
-                @if ($type == 'user')
-                  <a class="nav-link active custom-tab-left" id="list-people-list" href="{{ route('search.users') }}"
-                    role="tab" aria-controls="list-people">People</a>
-                @elseif ($type == 'post')
-                  <a class="nav-link custom-tab-left" id="list-people-list" href="{{ route('search.users') }}"
-                    role="tab" aria-controls="list-people">People</a>
-                @endif
-              </li>
-              <li class="nav-item">
-                <a class="nav-link custom-tab-left disabled" id="list-groups-list" data-bs-toggle="tab" href="#"
-                  role="tab" aria-controls="list-groups">Groups</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link custom-tab-left disabled" id="list-organizations-list" data-bs-toggle="tab" href="#"
-                  role="tab" aria-controls="list-organizations">Organizations</a>
+                <a class="nav-link custom-tab-left @if (Route::currentRouteName() == 'search.groups') active @endif" id="list-groups-list"
+                  href="{{ route('search.groups') }}" role="tab" aria-controls="list-groups">Groups</a>
               </li>
             </ul>
           </div>
@@ -52,39 +48,68 @@
           <!--Search Bar-->
           <div class="col-8">
             <div class="form-floating m-3 w-100">
-              @if ($type == 'user')
-                <form action="{{ route('search.users') }}" method="GET">
-                @elseif ($type == 'post')
-                  <form action="{{ route('search.content') }}" method="GET">
-              @endif
-
-              <input type="text" class="form-control" id="floatingInput" name="search" placeholder="Search">
-              {{-- <label for="floatingInput"><i class="bi bi-search"></i></label> --}}
+              <form action="{{ Request::url() }}" method="GET">
+                <div class="d-flex flex-row">
+                  <input type="text" class="form-control" id="searchInput" name="search"
+                    placeholder="Search{{ $search_bar }}">
+                  <button type=" submit" class="btn btn-secondary ms-3">Search</button>
+                  {{-- <label for="floatingInput"><i class="bi bi-search"></i></label> --}}
+                </div>
               </form>
             </div>
             <div class=" ms-3 d-flex justify-content-between">
               <button disabled class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
-              @if ($type == 'user')
-                <label class="align-items-center pt-2">{{ count($users) }} results found</label>
-              @elseif ($type == 'post')
-                <label class="align-items-center pt-2">{{ count($posts) }} results found</label>
+              @if ($is_result)
+                <label class="align-items-center pt-2">
+                  @if (isset($users)) {{ count($users) }}
+                  @elseif (isset($posts)) {{ count($posts) }}
+                  @elseif (isset($groups)) {{ count($groups) }}
+                  @endif
+                  results found
+                </label>
               @endif
             </div>
-            <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
-
-              @if ($type == 'user')
-                @foreach ($users as $user)
-                  @include('partials.listCards', ['username'=>$user->username, 'description'=>$user->description,
-                  'comment'=>$user->email, 'days_ago'=>"User"])
-                @endforeach
-              @elseif ($type == 'post')
-                @foreach ($posts as $post)
-                  @include('partials.listCards', ['username'=>$post->content->creator->username,
-                  'description'=>$post->post_text,
-                  'comment'=>"", 'days_ago'=>"Post"])
-                @endforeach
-              @endif
-            </div>
+            @if ($has_results)
+              <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
+                <div class="card m-3 list-group">
+                  @if (isset($users))
+                    @foreach ($users as $user)
+                      @include('partials.listCards', ['title' => $user->name, 'description' => $user->description,
+                      'subtitle' => $user->username, 'date'=> $user->email, 'link' => route('profile', ['user' =>
+                      $user->id]) ])
+                    @endforeach
+                  @elseif (isset($posts))
+                    @foreach ($posts as $post)
+                      @if ($post->contentable instanceof App\Models\TextContent)
+                        @include('partials.listCards', ['title' => $post->creator->name,
+                        'description' => $post->contentable->post_text,
+                        'subtitle' => "", 'date'=>$post->publishing_date->format('D, Y-m-d H:i:s'), 'link' =>
+                        route('content.show', ['id' => $post->id])
+                        ])
+                      @elseif ($post->contentable instanceof App\Models\MediaContent)
+                        @php
+                          if ($post->contentable instanceof App\Models\Video) {
+                              $description = $post->contentable->media_contentable->title;
+                          } else {
+                              $description = $post->contentable->description;
+                          }
+                        @endphp
+                        @include('partials.listCards', ['title' => $post->creator->name,
+                        'description' => $description,
+                        'subtitle' => "", 'date'=>$post->publishing_date->format('D, Y-m-d H:i:s'), 'link' =>
+                        route('content.show', ['id' => $post->id])
+                        ])
+                      @endif
+                    @endforeach
+                  @elseif(isset($groups))
+                    @foreach ($groups as $group)
+                      @include('partials.listCards', ['title' => $group->name, 'description' => $group->description,
+                      'subtitle' => '', 'date'=> '', 'link' => route('group.show', ['id' => $group->id]) ])
+                    @endforeach
+                  @endif
+                </div>
+              </div>
+            @endif
           </div>
           {{-- <div class="col-1 m-3">
             <button class="btn" style="font-size: 2em;"><i class="bi bi-sort-down"></i></button>
@@ -126,10 +151,6 @@
           <div class=" ms-3 d-flex justify-content-between">
             <button class="btn"><i class="bi bi-funnel-fill"></i>Other filters</button>
             <label class="align-items-center pt-2">137 results found</label>
-          </div>
-          <div class="card w-100 m-3 bg-white" style="border-radius: 1em;">
-            @include('partials.listCards',['username'=>'John Doe', 'description'=>'Studied at FEUP, currently working on
-            fixing is life.', 'comment'=>'Son of a gun','days_ago'=>'3 hours ago'])
           </div>
         </div>
       </div>

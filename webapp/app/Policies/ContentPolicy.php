@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Content;
 use App\Models\User;
+use App\Models\Group;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -68,7 +69,9 @@ class ContentPolicy
      */
     public function update(User $user, Content $content)
     {
-        return $user->id === $content->id_creator;
+        return $user->id === $content->id_creator
+            ? Response::allow()
+            : Response::deny('You do not own this post.');
     }
 
     /**
@@ -83,6 +86,20 @@ class ContentPolicy
         return $user->id === $content->id_creator
             ? Response::allow()
             : Response::deny('You do not own this post.');
+    }
+
+    /**
+     * Determine whether the user can remove the model from its group.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Content  $content
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function deleteFromGroup(User $user, Content $content)
+    {
+        return ($content->id_group != null && ($user->id === $content->id_creator || Group::find($content->id_group)->moderators->contains($user)))
+            ? Response::allow()
+            : Response::deny('You cannot remove this post from its group.');
     }
 
     /**
@@ -107,5 +124,17 @@ class ContentPolicy
     public function forceDelete(User $user, Content $content)
     {
         //
+    }
+
+    /**
+     * Determine whether the user can comment on the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Content  $content
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function comment(User $user, Content $content)
+    {
+        return true;
     }
 }
