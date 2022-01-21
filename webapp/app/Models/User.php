@@ -57,7 +57,6 @@ class User extends Authenticatable
         return DB::table('admin_user')->where('id_user', $this->id)->exists();
     }
 
-
     public function friendRequests(){
         return $this->hasMany(FriendRequest::class, 'id_receiver');
     }

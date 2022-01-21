@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Nullable;
 
 class RegisterController extends Controller
 {
@@ -54,8 +55,7 @@ class RegisterController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'phone_number' => 'nullable|numeric',
-            'profile_picture' => 'required|file|mimetypes:image/jpeg,image/png',
-            'private' => 'required',
+            'profile_picture' => 'nullable|file|mimetypes:image/jpeg,image/png',
             'birthday' => 'required|date',
         ]);
     }
@@ -73,13 +73,19 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        
+        if(!isset($data['profile_picture'])){
+            $path = "img/profile_pic.png";
+        }
+        else{
+            $path = $data['profile_picture']->store('media', ['disk' => 'my_files']);
+        }
         return User::create([
             'name' => $data['name'],
             'username' => $data['username'],
             'email' => $data['email'],
             'hashed_password' => bcrypt($data['password']),
-            'profile_picture' => $data['profile_picture']->store('media', ['disk' => 'my_files']),
-            'private' => $data['private'],
+            'profile_picture' => $path,
             'phone_number' => $data['phone_number'],
             'birthday' => $data['birthday'],
             'id_country' => $data['country'],

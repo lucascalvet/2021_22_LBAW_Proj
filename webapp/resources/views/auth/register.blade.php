@@ -9,7 +9,7 @@ $inputs = [
 ['name' => 'password_confirmation', 'id' => 'password-confirm', 'type' => 'password', 'label' => '* Confirm Password', 'required' => true],
 ['name' => 'phone_number', 'id' => 'phone-number', 'type' => 'tel', 'label' => 'Phone Number', 'required' => false],
 ['name' => 'birthday', 'id' => 'birthday', 'type' => 'date', 'label' => '* Birthday', 'required' => true],
-['name' => 'profile_picture', 'id' => 'profile_picture', 'type' => 'file', 'accept' => 'image/*', 'label' => '* Profile Picture', 'required' => true],
+['name' => 'profile_picture', 'id' => 'profile-picture', 'type' => 'file', 'accept' => 'image/*', 'label' => 'Profile Picture', 'required' => false],
 ];
 @endphp
 
@@ -25,7 +25,7 @@ $inputs = [
             <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
               @csrf
               <input type="hidden" name="country" value="1">
-              <input type="hidden" name="private" value="on">
+              
 
               @foreach ($inputs as $idx => $props)
               <div class="form-floating mb-2">

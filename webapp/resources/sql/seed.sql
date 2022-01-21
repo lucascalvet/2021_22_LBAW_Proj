@@ -21,16 +21,16 @@ DROP TABLE IF EXISTS comment CASCADE;
 DROP TABLE IF EXISTS friend_request CASCADE;
 DROP TABLE IF EXISTS accepted_friend_request CASCADE;
 DROP TABLE IF EXISTS rejected_friend_request CASCADE;
-DROP TABLE IF EXISTS message CASCADE;
+/*DROP TABLE IF EXISTS message CASCADE;*/
 DROP TABLE IF EXISTS groups CASCADE;
 DROP TABLE IF EXISTS group_moderator CASCADE;
 DROP TABLE IF EXISTS group_member CASCADE;
 DROP TABLE IF EXISTS interest CASCADE;
-DROP TABLE IF EXISTS user_interest CASCADE;
+/*DROP TABLE IF EXISTS user_interest CASCADE;*/
 DROP TABLE IF EXISTS locale CASCADE;
 DROP TABLE IF EXISTS country CASCADE;
 DROP TABLE IF EXISTS payment_method CASCADE;
-DROP TABLE IF EXISTS campaign CASCADE;
+/*DROP TABLE IF EXISTS campaign CASCADE;*/
 DROP TABLE IF EXISTS notification CASCADE;
 DROP TABLE IF EXISTS like_notification CASCADE;
 DROP TABLE IF EXISTS reply_notification CASCADE;
@@ -38,7 +38,7 @@ DROP TABLE IF EXISTS friend_request_notification CASCADE;
 DROP TABLE IF EXISTS comment_notification CASCADE;
 DROP TABLE IF EXISTS text_content_reply_notification CASCADE;
 DROP TABLE IF EXISTS game_session CASCADE;
-DROP TABLE IF EXISTS game_stats CASCADE;
+/*DROP TABLE IF EXISTS game_stats CASCADE;*/
 DROP TABLE IF EXISTS friends CASCADE;
 DROP FUNCTION IF EXISTS comment_date CASCADE;
 DROP FUNCTION IF EXISTS text_date CASCADE;
@@ -70,7 +70,6 @@ CREATE TABLE users (
    profile_picture TEXT,
    cover_picture TEXT,
    phone_number TEXT,
-   private BOOLEAN NOT NULL,
    id_country INTEGER NOT NULL REFERENCES country(id) ON UPDATE CASCADE,
    birthday TIMESTAMP WITH TIME ZONE NOT NULL,
    description TEXT,
@@ -231,11 +230,11 @@ CREATE TABLE like_notification (
    --FOREIGN KEY (id_user, id_content) REFERENCES content_like(id_user, id_content) ON UPDATE CASCADE  --see content_like explanation
 );
 
-/*
+
 CREATE TABLE reply_notification (
    id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE
 );
-*/
+
 
 CREATE TABLE friend_request_notification (
    id_notification INTEGER PRIMARY KEY REFERENCES notification(id) ON UPDATE CASCADE,
@@ -247,12 +246,12 @@ CREATE TABLE comment_notification (
    id_comment INTEGER NOT NULL REFERENCES comment(id) ON UPDATE CASCADE
 );
 
-/*
+
 CREATE TABLE text_content_reply_notification (
    id_reply_notification INTEGER PRIMARY KEY REFERENCES reply_notification(id_notification) ON UPDATE CASCADE,
    id_text_content INTEGER NOT NULL REFERENCES text_content(id_content) ON UPDATE CASCADE
 );
-*/
+
 
 CREATE TABLE payment_method (
    id SERIAL PRIMARY KEY,
@@ -316,7 +315,7 @@ CREATE INDEX mediacontent_location ON media_content USING btree (id_locale);
 CLUSTER media_content USING mediacontent_location;
 
 -- IDX03
-CREATE INDEX end_campaign ON campaign USING btree (finishing_date);
+/*CREATE INDEX end_campaign ON campaign USING btree (finishing_date);*/
 
 
 --Full Text Search Indexes
@@ -664,7 +663,7 @@ CREATE TRIGGER text_replies_notifications
 --Create anonymous user (shared user for deleted accounts)
 INSERT INTO country (id, iso_3166, name) VALUES (1, '', '');
 SELECT setval('country_id_seq', (SELECT max(id) FROM country));
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday, description) VALUES (1, 'anonymous', 'Anonymous User', 'support@socialup.com', '', NULL, NULL, NULL, 'TRUE', 1, '1970-1-1', 'A random test user description');
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday, description) VALUES (1, 'anonymous', 'Anonymous User', 'support@socialup.com', '', 'img/profile_pic.png', NULL, NULL, 1, '1970-1-1', 'A random test user description');
 SELECT setval('users_id_seq', (SELECT max(id) FROM users));
 
 --Alpha-3 code
@@ -694,27 +693,27 @@ INSERT INTO locale (id, region, id_country) VALUES (10, 'Saint John', 10);
 INSERT INTO locale (id, region, id_country) VALUES (11, 'Porto', 11);
 SELECT setval('locale_id_seq', (SELECT max(id) FROM locale));
 
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (2, 'Prabovers', 'David N. Thomas', 'user@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '561-883-6567', FALSE, 12, '1988-2-13'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (3, 'Rivinquister', 'Robert A. West', 'RobertAWest@armyspy.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '616-261-7167', FALSE, 2, '1962-10-20'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (4, 'Hoppled91', 'Isaac K. Spencer', 'IsaacKSpencer@dayrep.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '914-964-9238', FALSE, 2, '1991-8-6'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (5, 'Ingled91', 'Tim K. Gutierrez', 'TimKGutierrez@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '270-379-5170', FALSE, 3, '1991-10-28'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (6, 'Daimpas1985', 'William T. Hancock', 'WilliamTHancock@jourrapide.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '504-491-4903', FALSE, 3, '1985-7-13'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (7, 'Forneved', 'Paul J. Gillen', 'PaulJGillen@jourrapide.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '203-509-4665', FALSE, 4, '1947-10-27'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (8, 'Stoonce', 'Clarence S. Catron', 'ClarenceSCatron@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '406-775-1564', FALSE, 4, '1995-4-20'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (9, 'Walcon', 'Susanne M. Miller', 'SusanneMMiller@dayrep.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '631-444-4388', FALSE, 5, '1986-11-29'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (10, 'Museltole', 'John K. Shuman', 'JohnKShuman@jourrapide.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '919-484-3756', FALSE, 5, '1983-9-22'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (11, 'Hatecrable2000', 'Jeniffer J. Parsons', 'JenifferJParsons@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '814-845-9721', FALSE, 6, '2000-3-1'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (12, 'Dights1956', 'Kim B. McClain', 'KimBMcClain@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '702-243-7350', FALSE, 6, '1956-12-17'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (13, 'Examated', 'Casey J. Russo', 'CaseyJRusso@jourrapide.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '314-765-9362', FALSE, 7, '1996-8-24'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (14, 'Thenly', 'Ines C. Yancey', 'InesCYancey@jourrapide.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '203-736-5651', FALSE, 7, '1992-4-27'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (15, 'Caus1973', 'Patricia E. Horton', 'PatriciaEHorton@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '336-750-8290', FALSE, 8, '1973-7-23'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (16, 'Lighbothe', 'Cathy F. McBride', 'CathyFMcBride@jourrapide.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '801-667-2817', FALSE, 8, '1958-8-15'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (17, 'Hatumer', 'Betty R. Seamon', 'BettyRSeamon@rhyta.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '302-570-5766', FALSE, 9, '1985-11-8'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (18, 'Buls1950', 'Silvia P. Broadhurst', 'SilviaPBroadhurst@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '781-727-1458', FALSE, 9, '1950-2-21'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (19, 'Ourne2001', 'Scott K. Goode', 'ScottKGoode@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '352-431-8723', FALSE, 10, '2001-4-13'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (20, 'Miltary58', 'Carmela H. Choi', 'CarmelaHChoi@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '360-697-3591', FALSE, 11, '1958-6-2'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (21, 'Evernshould', 'Evelyn M. Dudley', 'EvelynMDudley@rhyta.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'media/cute.png', NULL, '561-265-2290', FALSE, 12, '1956-3-4'); --1234
-INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, private, id_country, birthday) VALUES (22, 'admin', 'SU Admin', 'admin@socialup.com', '$2y$10$EOAidWrMdRctCQLsICSVXuLvTEquByvzlAMbd31Vm7io4r3O5xJy6', 'media/cute.png', NULL, '931234567', TRUE, 11, '1990-5-7'); --admin
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (2, 'Prabovers', 'David N. Thomas', 'user@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '561-883-6567', 12, '1988-2-13'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (3, 'Rivinquister', 'Robert A. West', 'RobertAWest@armyspy.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '616-261-7167', 2, '1962-10-20'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (4, 'Hoppled91', 'Isaac K. Spencer', 'IsaacKSpencer@dayrep.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '914-964-9238', 2, '1991-8-6'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (5, 'Ingled91', 'Tim K. Gutierrez', 'TimKGutierrez@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '270-379-5170', 3, '1991-10-28'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (6, 'Daimpas1985', 'William T. Hancock', 'WilliamTHancock@jourrapide.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '504-491-4903', 3, '1985-7-13'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (7, 'Forneved', 'Paul J. Gillen', 'PaulJGillen@jourrapide.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '203-509-4665', 4, '1947-10-27'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (8, 'Stoonce', 'Clarence S. Catron', 'ClarenceSCatron@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '406-775-1564', 4, '1995-4-20'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (9, 'Walcon', 'Susanne M. Miller', 'SusanneMMiller@dayrep.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '631-444-4388', 5, '1986-11-29'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (10, 'Museltole', 'John K. Shuman', 'JohnKShuman@jourrapide.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '919-484-3756', 5, '1983-9-22'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (11, 'Hatecrable2000', 'Jeniffer J. Parsons', 'JenifferJParsons@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '814-845-9721', 6, '2000-3-1'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (12, 'Dights1956', 'Kim B. McClain', 'KimBMcClain@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '702-243-7350', 6, '1956-12-17'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (13, 'Examated', 'Casey J. Russo', 'CaseyJRusso@jourrapide.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '314-765-9362', 7, '1996-8-24'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (14, 'Thenly', 'Ines C. Yancey', 'InesCYancey@jourrapide.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '203-736-5651', 7, '1992-4-27'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (15, 'Caus1973', 'Patricia E. Horton', 'PatriciaEHorton@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '336-750-8290', 8, '1973-7-23'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (16, 'Lighbothe', 'Cathy F. McBride', 'CathyFMcBride@jourrapide.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '801-667-2817', 8, '1958-8-15'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (17, 'Hatumer', 'Betty R. Seamon', 'BettyRSeamon@rhyta.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '302-570-5766', 9, '1985-11-8'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (18, 'Buls1950', 'Silvia P. Broadhurst', 'SilviaPBroadhurst@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '781-727-1458', 9, '1950-2-21'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (19, 'Ourne2001', 'Scott K. Goode', 'ScottKGoode@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '352-431-8723', 10, '2001-4-13'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (20, 'Miltary58', 'Carmela H. Choi', 'CarmelaHChoi@teleworm.us', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '360-697-3591', 11, '1958-6-2'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (21, 'Evernshould', 'Evelyn M. Dudley', 'EvelynMDudley@rhyta.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'img/profile_pic.png', NULL, '561-265-2290', 12, '1956-3-4'); --1234
+INSERT INTO users (id, username, name, email, hashed_password, profile_picture, cover_picture, phone_number, id_country, birthday) VALUES (22, 'admin', 'SU Admin', 'admin@socialup.com', '$2y$10$EOAidWrMdRctCQLsICSVXuLvTEquByvzlAMbd31Vm7io4r3O5xJy6', 'img/profile_pic.png', NULL, '931234567', 11, '1990-5-7'); --admin
 SELECT setval('users_id_seq', (SELECT max(id) FROM users));
 
 INSERT INTO admin_user (id_user) VALUES (21);
@@ -836,12 +835,14 @@ INSERT INTO accepted_friend_request (id_friend_request, accepted_date) VALUES (3
 INSERT INTO rejected_friend_request (id_friend_request, rejected_date) VALUES (4, '2021-10-23');
 INSERT INTO rejected_friend_request (id_friend_request, rejected_date) VALUES (5, '2021-7-23');
 
+/*
 INSERT INTO message (id, text, id_user_sender, id_user_receiver, msg_date) VALUES (1, 'Hello', 1, 2, '2021-10-15');
 INSERT INTO message (id, text, id_user_sender, id_user_receiver, msg_date) VALUES (2, 'Hi', 2, 3, '2021-10-23');
 INSERT INTO message (id, text, id_user_sender, id_user_receiver, msg_date) VALUES (3, 'Can I ask you something?', 3, 4, '2021-10-27');
 INSERT INTO message (id, text, id_user_sender, id_user_receiver, msg_date) VALUES (4, 'Hey there!', 4, 5, '2021-10-3');
 INSERT INTO message (id, text, id_user_sender, id_user_receiver, msg_date) VALUES (5, 'I would like to meet you!', 5, 6, '2021-10-1');
 SELECT setval('message_id_seq', (SELECT max(id) FROM message));
+*/
 
 INSERT INTO group_moderator (id_group, id_user_moderator) VALUES (1, 1);
 

@@ -18,10 +18,8 @@ $cover_pic = 'img/cover_pic.jpg';
     <!--Cover Photo-->
     <div class="row h-25 m-0 mb-4 justify-content-center position-relative">
       <img class="rounded h-100 p-0" style="object-fit: none;" src="{{ asset($cover_pic) }}" />
-      @if(!$user->private)
       <img class="d-none d-md-block rounded-circle w-25 position-absolute top-100 start-0 translate-middle" style="margin-left: 8em; max-height: 10em; max-width: 10em;" src="{{ asset($user->profile_picture) }}" />
       <img class="d-block d-md-none rounded-circle w-25 position-absolute top-100 start-50 translate-middle" style="max-height: 10em; max-width: 10em;" src="{{ asset($user->profile_picture) }}" />
-      @endif
       <div class="d-flex m-2">
         @if (Auth::check() && Auth::user()->can('update', $user))
         <a class="me-auto" href=" {{ route('profile.edit', ['user' => $user->id]) }}">

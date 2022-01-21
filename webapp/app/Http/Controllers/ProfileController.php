@@ -78,6 +78,8 @@ class ProfileController extends Controller
       $comment->save();
     }
 
+    
+
     $user->delete();
 
     return redirect('login');
