@@ -40,9 +40,11 @@ $cover_pic = 'img/cover_pic.jpg';
             <h2 class="pt-4">{{ $user->username }}</h2>
 
             <div class="d-flex">
-              <div class="pb-2 pe-2"><strong>120</strong></div>
-              friends
-            </div>
+              <div class="pb-2 pe-2"><strong id="strong-friends-count">{{$user->userFriends->count()}}</strong></div>
+              @if ($user->userFriends->count() == 1) friend
+              @else friends
+              @endif
+              </div>
 
             <div class="pb-2">{{ $user->name }}</div>
             <div class="pb-2">{{ $user->description }}</div>
@@ -51,23 +53,29 @@ $cover_pic = 'img/cover_pic.jpg';
             <div class="pb-2 mb-4">{{ $user->phone_number }}</div>
 
             <div class="row">
-              <h5 class="text-center">Interests</h5>
+              <h5 class="text-center">Friends</h5>
 
-              <div class="d-flex flex-wrap text-light justify-content-evenly">
-                <div class="bg-secondary rounded-3 ms-0 p-2 m-2">Interest1</div>
-                <div class="bg-secondary rounded-3 ms-0 p-2 m-2">Interest2</div>
-                <div class="bg-secondary rounded-3 ms-0 p-2 m-2">Interest3</div>
-              </div>
-            </div>
-            @auth
-              @if ((Auth::user() != $user) && !($user->gotFriendRequestFrom(Auth::user())) && !(Auth::user()->gotFriendRequestFrom($user)))
-                <div class="d-flex justify-content-center">
-                  <form method="POST" action="{{ route('profile.addFriend', ['user' => $user->id])}}">
-                    @csrf
-                    <button class="btn btn-secondary" type="submit">Add Friend</button>
-                  </form>
+              <div class="d-flex flex-wrap justify-content-evenly">
+                @foreach($user->userFriends as $friend)
+                <div id="a-remove-friend-div-{{$friend->id}}" class="d-block mx-2 pb-2">
+                    <a hre="{{ route('profile', ['user' => $friend->id]) }}"><div>{{$friend->username}}</div></a>
+                    @if(Auth::user()->id == $user->id)
+                      <a id="a-remove-friend-{{$friend->id}}" class="a-remove-friend"> <!--REMOVE FRIEND -->
+                        <button class="border-0 p-0"><i class="bi bi-x-square-fill"></i></button>
+                      </a>
+                    @endif
                 </div>
+                @endforeach
+              </div>
+              @auth
+            </div>
+            <div id="d-friend-request" class="d-flex justify-content-center">
+              @if(Auth::user()->isFriendOf($user->id))
+                <a id="remove-friend-{{$user->id}}" class="remove-friend"><button class="btn btn-secondary" type="submit">Remove Friend</button></a>
+              @elseif ((Auth::user()->id != $user->id) && !($user->gotFriendRequestFrom(Auth::user())) && !(Auth::user()->gotFriendRequestFrom($user)))
+                <a id="a-add-friend-{{$user->id}}" class="a-add-friend"><button class="btn btn-secondary" type="submit">Add Friend</button></a>
               @endif
+            </div>
             @endauth
           </div>
 

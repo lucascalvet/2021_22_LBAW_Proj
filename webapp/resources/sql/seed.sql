@@ -19,8 +19,8 @@ DROP TABLE IF EXISTS video CASCADE;
 DROP TABLE IF EXISTS image CASCADE;
 DROP TABLE IF EXISTS comment CASCADE;
 DROP TABLE IF EXISTS friend_request CASCADE;
-DROP TABLE IF EXISTS accepted_friend_request CASCADE;
-DROP TABLE IF EXISTS rejected_friend_request CASCADE;
+-- DROP TABLE IF EXISTS accepted_friend_request CASCADE;
+-- DROP TABLE IF EXISTS rejected_friend_request CASCADE;
 DROP TABLE IF EXISTS message CASCADE;
 DROP TABLE IF EXISTS groups CASCADE;
 DROP TABLE IF EXISTS group_moderator CASCADE;
@@ -169,15 +169,15 @@ CREATE TABLE friend_request (
    id_receiver INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE accepted_friend_request (
-   id_friend_request INTEGER PRIMARY KEY REFERENCES friend_request(id) ON UPDATE CASCADE,
-   accepted_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
-);
+-- CREATE TABLE accepted_friend_request (
+--    id_friend_request INTEGER PRIMARY KEY REFERENCES friend_request(id) ON UPDATE CASCADE,
+--    accepted_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
+-- );
 
-CREATE TABLE rejected_friend_request (
-   id_friend_request INTEGER PRIMARY KEY REFERENCES friend_request(id) ON UPDATE CASCADE,
-   rejected_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
-);
+-- CREATE TABLE rejected_friend_request (
+--    id_friend_request INTEGER PRIMARY KEY REFERENCES friend_request(id) ON UPDATE CASCADE,
+--    rejected_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
+-- );
 
 CREATE TABLE message (
    id SERIAL PRIMARY KEY,
@@ -581,6 +581,21 @@ CREATE TRIGGER friend_requests_notifications
    FOR EACH ROW
    EXECUTE PROCEDURE friend_requests_notifications();
 
+----- FRIEND REQUEST DELETE TRIGGER
+CREATE FUNCTION delete_friend_requests_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   DELETE FROM friend_request_notification
+   WHERE OLD.id = id_friend_request;
+   RETURN OLD;
+END;
+$$;
+
+CREATE TRIGGER delete_friend_requests_notifications
+   BEFORE DELETE ON friend_request
+   FOR EACH ROW
+   EXECUTE PROCEDURE delete_friend_requests_notifications();
+
 
 ----- COMMENT TRIGGER
 CREATE FUNCTION comments_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
@@ -793,12 +808,12 @@ INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (5
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (6, '2021-12-31', 10, 11);
 SELECT setval('friend_request_id_seq', (SELECT max(id) FROM friend_request));
 
-INSERT INTO accepted_friend_request (id_friend_request, accepted_date) VALUES (1, '2021-7-24');
-INSERT INTO accepted_friend_request (id_friend_request, accepted_date) VALUES (2, '2021-7-23');
-INSERT INTO accepted_friend_request (id_friend_request, accepted_date) VALUES (3, '2021-11-23');
+-- INSERT INTO accepted_friend_request (id_friend_request, accepted_date) VALUES (1, '2021-7-24');
+-- INSERT INTO accepted_friend_request (id_friend_request, accepted_date) VALUES (2, '2021-7-23');
+-- INSERT INTO accepted_friend_request (id_friend_request, accepted_date) VALUES (3, '2021-11-23');
 
-INSERT INTO rejected_friend_request (id_friend_request, rejected_date) VALUES (4, '2021-10-23');
-INSERT INTO rejected_friend_request (id_friend_request, rejected_date) VALUES (5, '2021-7-23');
+-- INSERT INTO rejected_friend_request (id_friend_request, rejected_date) VALUES (4, '2021-10-23');
+-- INSERT INTO rejected_friend_request (id_friend_request, rejected_date) VALUES (5, '2021-7-23');
 
 INSERT INTO message (id, text, id_user_sender, id_user_receiver, msg_date) VALUES (1, 'Hello', 1, 2, '2021-10-15');
 INSERT INTO message (id, text, id_user_sender, id_user_receiver, msg_date) VALUES (2, 'Hi', 2, 3, '2021-10-23');
@@ -863,6 +878,11 @@ INSERT INTO game_stats (id_user, id_game_session, score) VALUES (4, 2, 5);
 INSERT INTO game_stats (id_user, id_game_session, score) VALUES (5, 2, 8);
 INSERT INTO game_stats (id_user, id_game_session, score) VALUES (6, 2, 7);
 
-INSERT INTO friends (id_user1, id_user2) VALUES (2, 1);
+-- INSERT INTO friends (id_user1, id_user2) VALUES (2, 1);
 INSERT INTO friends (id_user1, id_user2) VALUES (3, 1);
 INSERT INTO friends (id_user1, id_user2) VALUES (4, 2);
+
+INSERT INTO friends (id_user1, id_user2) VALUES (6, 2);
+INSERT INTO friends (id_user1, id_user2) VALUES (6, 3);
+INSERT INTO friends (id_user1, id_user2) VALUES (6, 4);
+INSERT INTO friends (id_user1, id_user2) VALUES (6, 5);
