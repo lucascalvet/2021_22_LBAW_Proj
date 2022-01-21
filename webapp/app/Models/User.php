@@ -14,6 +14,13 @@ class User extends Authenticatable
     public $timestamps  = false;
 
     /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['birthday'];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -63,7 +70,7 @@ class User extends Authenticatable
     public function friendRequests(){
         return $this->hasMany(FriendRequest::class, 'id_receiver');
     }
-    
+
 
     public function gotFriendRequestFrom($sender){
         foreach($this->friendRequests as $friend_request){
@@ -104,7 +111,7 @@ class User extends Authenticatable
     public function userFriends(){
         return $this->belongsToMany(User::class, 'friends', 'id_user2', 'id_user1')->union($this->belongsToMany(User::class, 'friends', 'id_user1', 'id_user2'));
     }
-    
+
     public function likes(){
         return $this->hasMany(Like::class, 'id_user');
     }

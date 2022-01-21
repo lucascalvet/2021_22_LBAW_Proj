@@ -1,6 +1,6 @@
 @php
-$profile_pic = 'img/profile_pic.png';
-$cover_pic = 'img/cover_pic.jpg';
+$profile_pic = $user->profile_picture;
+$cover_pic = $user->cover_picture;
 @endphp
 
 @extends('layouts.app')
@@ -48,7 +48,7 @@ $cover_pic = 'img/cover_pic.jpg';
 
             <div class="pb-2">{{ $user->name }}</div>
             <div class="pb-2">{{ $user->description }}</div>
-            <div class="pb-2">{{ $user->birthday }}</div>
+            <div class="pb-2">{{ $user->birthday->format('Y-m-d')}}</div>
             <div class="pb-2">{{ $user->email }}</div>
             <div class="pb-2 mb-4">{{ $user->phone_number }}</div>
 
@@ -123,15 +123,6 @@ $cover_pic = 'img/cover_pic.jpg';
                   <i class="bi bi-pencil-square"></i>
                 </a>
               @endif
-
-
-              <form method="POST" action="{{ route('profile.save', ['user' => $user->id]) }}">
-                @csrf
-                <input type="hidden" name="_method" value="DELETE" />
-                <button type="submit" value="Delete" class="btn btn-outline-danger btn-lg text-white">Delete Profile</button>
-              </form>
-
-
 
             </div>
           </div>

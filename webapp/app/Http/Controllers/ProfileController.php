@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
+use Illuminate\Validation\Rule;
 
 use App\Models\User;
 
@@ -41,23 +44,54 @@ class ProfileController extends Controller
   {
     $user = User::findOrFail($userId);
     $this->authorize('update', $user);
-    (new Auth\RegisterController)->validator($request->all())->validate();
+
+    Validator::make($request->all(), [
+      'name' => 'required|string|max:255',
+      'password' => 'nullable|string|min:6|confirmed',
+      'email' => ['required', Rule::unique('users')->ignore($userId), 'string', 'email', 'max:255'],
+      'phone_number' => 'nullable|numeric',
+      'profile_picture' => 'nullable|file|image',//'nullable|file|mimetypes:image/jpeg,image/png',
+      'cover_picture' => 'nullable|file|image',//'nullable|file|mimetypes:image/jpeg,image/png',
+      'birthday' => 'required|date',
+    ])->validate();
 
     $user->name = $request->name;
     $user->birthday = $request->birthday;
     $user->email = $request->email;
     $user->description = $request->description;
-    $user->password = bcrypt($request->password);
-    $user->phone_number = $request->phone;
+    if(!is_null($request->password)) $user->password = bcrypt($request->password);
+    if(!is_null($request->phone_number)) $user->phone_number = $request->phone;
+    if(!is_null($request->profile_picture)){
+      $imgFile = Image::make($request->profile_picture->getRealPath());
 
-    return view('pages.profile', [
-      'user' => $user,
+      $imgFile->fit(200)->encode('jpg');
+
+      $hash = md5($imgFile->__toString());
+      $path = "media/{$hash}.jpg";
+      $imgFile->save(public_path($path));
+
+      $user->profile_picture = $path;
+    }
+    if(!is_null($request->cover_picture)){
+      $imgFile = Image::make($request->cover_picture->getRealPath());
+      $imgFile->fit(1700, 200)->encode('jpg');
+
+      $hash = md5($imgFile->__toString());
+      $path = "media/{$hash}.jpg";
+      $imgFile->save(public_path($path));
+
+      $user->cover_picture = $path;
+    }
+    $user->save();
+
+    return redirect()->route('profile', [
+      'user' => $user->id,
     ]);
   }
 
   public function destroy($userId)
   {
-    
+
     $user = User::findOrFail($userId);
     $this->authorize('delete', $user);
     foreach ($user->groups as $group) {
