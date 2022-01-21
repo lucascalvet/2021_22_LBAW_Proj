@@ -68,7 +68,7 @@ $time = '10 days ago';
 
     <div class="d-flex justify-content-center mt-3 mb-3">
       @auth
-        @if (Auth::user()->can('deleteFromGroup', $content))
+        @if ($content->id_group != null && Auth::user()->can('deleteFromGroup', $content))
           <a href="{{ $link_remove }}"><button type="button" class="btn btn-outline-warning btn-lg text-dark me-3">Remove
               from Group</button></i></a>
         @endif
