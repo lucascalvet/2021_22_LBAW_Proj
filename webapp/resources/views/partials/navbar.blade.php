@@ -12,7 +12,7 @@ $right_links = [
 @endphp
 
 <nav class="navbar navbar-expand-sm navbar-dark bg-secondary py-0">
-  <button class="order-first navbar-toggler m-2 fs-6 align-self-start" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="order-first navbar-toggler m-2 fs-6 align-self-start" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="row flex-grow-1 align-items-center m-0">

@@ -54,7 +54,7 @@ $link_create_group = route('group.make');
             <div class="d-flex flex-row mx-2 my-3 pb-2" style="overflow-x: auto;">
                 @foreach ($group->contents as $content)
                 <div class="d-block mx-2 pb-2">
-                @include('partials.content', ['content' => $content, 'show_group' => false])
+                    @include('partials.content', ['content' => $content, 'show_group' => false])
                 </div>
                 @endforeach
             </div>
@@ -64,13 +64,11 @@ $link_create_group = route('group.make');
 
         {{--
         <div class="d-none d-lg-flex justify-content-center py-3">
-            <a href="{{ $link_create_group }}">
-                <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                    <i class="bi bi-plus-circle {{ $icon_size }}"></i>
-                </button>
-            </a>
-        </div>
-        --}}
+            <a class="btn btn-secondary" href="{{ $link_create_group }}">
+        <i class="bi bi-plus-circle {{ $icon_size }}"></i>
+        </a>
     </div>
+    --}}
+</div>
 </div>
 @endsection

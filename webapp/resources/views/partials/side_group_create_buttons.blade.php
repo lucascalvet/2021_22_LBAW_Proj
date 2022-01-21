@@ -14,18 +14,14 @@ $link_create_media = route('mediacontent.make', ['id_group' => $group->id]);
     @if($user != null)
     @if($group->members->contains($user))
     <div class="d-flex flex-row my-3">
-        <a href="{{ $link_create_text }}">
-            <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
-                <i class="bi bi-pencil-square {{ $icon_size }}"></i>
-            </button>
+        <a class="btn btn-secondary" href="{{ $link_create_text }}">
+            <i class="bi bi-pencil-square {{ $icon_size }}"></i>
         </a>
         <span class="d-none d-md-block d-lg-none align-self-center ms-3">Create Text Content</span>
     </div>
     <div class="d-flex flex-row my-3">
-        <a href="{{ $link_create_media }}">
-            <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
+        <a class="btn btn-secondary" href="{{ $link_create_media }}">
                 <i class="bi bi-file-earmark-richtext {{ $icon_size }}"></i>
-            </button>
         </a>
         <span class="d-none d-md-block d-lg-none align-self-center ms-3">Create Media Content</span>
     </div>

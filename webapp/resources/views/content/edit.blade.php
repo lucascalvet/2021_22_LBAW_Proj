@@ -58,8 +58,7 @@ $user = Auth::user();
 
                   <div class="d-flex justify-content-around mb-3">
                     <button type="submit" class="btn btn-outline-danger btn-lg text-dark">Change Post</button>
-                    <a href="{{ $link_back }}"><button type="button"
-                        class="btn btn-outline-secondary btn-lg bg-dark text-white">Discard Changes</button></i></a>
+                    <a class="btn btn-outline-secondary btn-lg bg-dark text-white" href="{{ $link_back }}">Discard Changes</a>
                   </div>
 
                 </form>

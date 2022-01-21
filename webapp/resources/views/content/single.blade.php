@@ -59,7 +59,7 @@ $time = '10 days ago';
         @if ($content->contentable->media_contentable instanceof App\Models\Video)
         <video src="{{ asset($content->contentable->media) }}" controls style="max-width: 50em;"></video>
         @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
-        <img src="{{ asset($content->contentable->media) }}" style="max-width: 40em;" />
+        <img src="{{ asset($content->contentable->media) }}" alt="{{ $content->contentable->alt_text }}" style="max-width: 40em;" />
         @endif
       </div>
       @endif
@@ -76,7 +76,7 @@ $time = '10 days ago';
       </form>
       @endif
       @if (Auth::user()->can('update', $content))
-      <a href="{{ $link_edit }}"><button type="button" class="btn btn-outline-secondary btn-lg bg-dark text-white me-3">Edit Post</button></i></a>
+      <a class="btn btn-outline-secondary btn-lg bg-dark text-white me-3" href="{{ $link_edit }}">Edit Post</a>
       @endif
       @if (Auth::user()->can('delete', $content))
       <form method="POST" action="{{ route('content.destroy', $content) }}">

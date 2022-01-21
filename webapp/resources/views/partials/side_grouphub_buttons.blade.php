@@ -11,10 +11,8 @@ $link_create_group = route('group.make');
         <span class="d-none d-md-block align-self-center ms-3">Messages</span>
     </div>
     <div class="d-flex flex-row my-3">
-        <a href="{{ $link_create_group }}">
-            <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
+        <a class="btn btn-secondary" href="{{ $link_create_group }}">
                 <i class="bi bi-plus-circle {{ $icon_size }}"></i>
-            </button>
         </a>
         <span class="d-none d-md-block align-self-center ms-3">Create Group</span>
     </div>

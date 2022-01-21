@@ -18,6 +18,8 @@ $user = Auth::user();
 $link_edit = route('content.edit', ['id' => $content->id]);
 $link_view = route('content.show', ['id' => $content->id]);
 $link_remove = route('content.remove', ['id' => $content->id]);
+
+$dropdownid = "dropdownPost" . $content->id;
 @endphp
 
 <div class="card text-black p-0" style="width: 19em; height: 30em; overflow-y: auto;">
@@ -31,18 +33,16 @@ $link_remove = route('content.remove', ['id' => $content->id]);
         <a href="{{ route('profile', ['user' => $content->creator->id]) }}"><span class="mx-3">{{ $content->creator->username }}</span></a>
       </div>
       <div class="d-flex flex-row align-self-center ms-auto">
-        <a href="{{ $link_view }}" class="ms-2">
-          <button type="button" class="btn btn-secondary">
+        <a href="{{ $link_view }}" class="btn btn-secondary ms-2">
             <i class="bi bi-arrows-angle-expand {{ $icon_size }}"></i>
-          </button>
         </a>
         @if (Auth::check() && (Auth::user()->can('update', $content) || Auth::user()->can('deleteFromGroup', $content)))
         <div class="dropdown">
-          <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split ms-2" id="dropdownPost" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split ms-2" id="{{ $dropdownid }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="bi bi-three-dots {{ $icon_size }}"></i>
           </button>
 
-          <div class="dropdown-menu" aria-labelledby="dropdownPost">
+          <div class="dropdown-menu" aria-labelledby="{{ $dropdownid }}">
 
             @if (Auth::check() && Auth::user()->can('update', $content))
             <a class="dropdown-item" href="{{ $link_edit }}">Edit Post</a>
@@ -86,7 +86,7 @@ $link_remove = route('content.remove', ['id' => $content->id]);
         @if ($content->contentable->media_contentable instanceof App\Models\Video)
         <video src="{{ asset($content->contentable->media) }}" class="align-self-centre" controls style="max-width: 18em; max-height: 30em;"></video>
         @elseif ($content->contentable->media_contentable instanceof App\Models\Image)
-        <img src="{{ asset($content->contentable->media) }}" class="align-self-centre" style="max-width: 20em; max-height: 30em;" />
+        <img src="{{ asset($content->contentable->media) }}" alt="{{ $content->contentable->alt_text }}" class="align-self-centre" style="max-width: 20em; max-height: 30em;" />
         @endif
       </div>
       @endif
