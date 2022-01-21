@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Models\FriendRequest;
 
+use Illuminate\Support\Facades\DB;
+
 class FriendRequestController extends Controller
 {
     public function addFriend(Request $request, $user){
@@ -16,6 +18,18 @@ class FriendRequestController extends Controller
 
         $friend_request->save();
 
+        $res = json_encode(array(
+            'user_id' => $user,
+        ));
+
+        return $res;
+    }
+
+    public function cancelFriend(Request $request, $user){
+        $auth_user = $request->user();
+        DB::table('friend_request')
+                ->where('id_sender', $auth_user->id)
+                ->where('id_receiver', $user)->delete();
         $res = json_encode(array(
             'user_id' => $user,
         ));

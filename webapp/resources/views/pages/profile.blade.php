@@ -70,6 +70,8 @@
                 <a id="remove-friend-{{$user->id}}" class="remove-friend"><button class="btn btn-secondary" type="submit">Remove Friend</button></a>
               @elseif ((Auth::user()->id != $user->id) && !($user->gotFriendRequestFrom(Auth::user())) && !(Auth::user()->gotFriendRequestFrom($user)))
                 <a id="a-add-friend-{{$user->id}}" class="a-add-friend"><button class="btn btn-secondary" type="submit">Add Friend</button></a>
+              @elseif ($user->gotFriendRequestFrom(Auth::user()))
+                <a id="a-cancel-friend-{{$user->id}}" class="a-cancel-friend"><button class="btn btn-secondary" type="submit">Cancel Friend Request</button></a>
               @endif
             </div>
             @endauth

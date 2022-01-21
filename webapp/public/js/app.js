@@ -157,8 +157,26 @@ function addFriendRequestButtonListeners(){
 }
 
 function removeAddFriendButton(id){
-  let button = document.getElementById('a-add-friend-' + id);
-  button.classList.add("d-none");
+  let add_button = document.getElementById('a-add-friend-' + id);
+  add_button.remove();
+
+  //creating add friend button dynamically
+  const a = document.createElement("a");
+  a.classList.add('a-cancel-friend');
+  a.id = "a-cancel-friend-" + id;
+
+  const but = document.createElement("button");
+  but.classList.add('btn');
+  but.classList.add('btn-secondary');
+  but.innerHTML = "Cancel Friend Request";
+
+  const addDiv = document.getElementById("d-friend-request");
+  console.log(addDiv);
+  console.log(a);
+  addDiv.appendChild(a);
+  a.appendChild(but);
+
+  addCancelRequestButtonListeners();  //could be adding only one new listener
 }
 
 addFriendRequestButtonListeners();
@@ -166,4 +184,45 @@ addFriendRequestButtonListeners();
 function updateFriendsCount(){
   let friendsCount = document.getElementById("strong-friends-count");
   if(friendsCount.innerHTML != 0) friendsCount.innerHTML = friendsCount.innerHTML - 1;
+}
+
+
+
+function addCancelRequestButtonListeners(){
+  let cancel_buttons = document.getElementsByClassName('a-cancel-friend');
+
+  for(let i = 0; i < cancel_buttons.length; i++){
+    let idStr = cancel_buttons[i].id;
+    let parsedId = idStr.replace('a-cancel-friend-', '');
+
+    cancel_buttons[i].addEventListener('click', () => {
+      removeCancelFriendButton(parsedId);
+      sendAjaxRequest('post', '/profile/' + parsedId + '/cancelFriendRequest', null, null);
+    });
+  }
+}
+
+addCancelRequestButtonListeners();
+
+function removeCancelFriendButton(id){
+  let cancel_button = document.getElementById('a-cancel-friend-' + id);
+  cancel_button.remove();
+
+  //creating add friend button dynamically
+  const a = document.createElement("a");
+  a.classList.add('a-add-friend');
+  a.id = "a-add-friend-" + id;
+
+  const but = document.createElement("button");
+  but.classList.add('btn');
+  but.classList.add('btn-secondary');
+  but.innerHTML = "Add Friend";
+
+  const addDiv = document.getElementById("d-friend-request");
+  console.log(addDiv);
+  console.log(a);
+  addDiv.appendChild(a);
+  a.appendChild(but);
+
+  addFriendRequestButtonListeners();  //could be adding only one new listener
 }
