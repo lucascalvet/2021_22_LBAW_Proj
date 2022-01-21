@@ -2,17 +2,7 @@
 $icon_size = 'fs-5';
 $font_size = 'fs-6';
 
-$profile_pic = 'img/profile_pic.png';
-$username = 'John Doe';
-$time = '10 days ago';
-$title = 'Wari(El)o(n)';
-$n_hearts = '3000';
 $n_comments = $content->comment_count();
-$description = 'Description: Elon vestido de Wario porque reasons.';
-$video = '';
-$image = 'img/cont_elon.jpg';
-$example_video = 'vid/ex.mp4';
-$example_image = 'img/cont_elon.jpg';
 
 $user = Auth::user();
 $link_edit = route('content.edit', ['id' => $content->id]);

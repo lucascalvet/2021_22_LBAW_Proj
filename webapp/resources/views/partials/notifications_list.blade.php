@@ -3,8 +3,7 @@
     @include('partials.notification',
     [
     'user_link' => route('profile', ['user' => $notification->like()->creator->id]),
-    'profile_picture' =>
-    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+    'profile_picture' => asset($notification->like()->creator->profile_picture),
     'username' => $notification->like()->creator->username,
     'date' => $notification->date()->format('D, Y-m-d H:i:s'),
     'notification_generator_link' => route('content.show', ['id' => $notification->like()->id_content]),
@@ -16,8 +15,7 @@
     @include('partials.notification_friend_request',
     [
     'user_link' => route('profile', ['user' => $notification->friend_request()->sender->id]),
-    'profile_picture' =>
-    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+    'profile_picture' => asset($notification->friend_request()->sender->profile_picture),
     'username' => $notification->friend_request()->sender->username,
     'date' => $notification->date()->format('D, Y-m-d H:i:s'),
     'friendRequest'=> $notification->friend_request(),
@@ -27,8 +25,7 @@
     @include('partials.notification',
     [
     'user_link' => route('profile', ['user' => $notification->comment()->id_author]),
-    'profile_picture' =>
-    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+    'profile_picture' => asset($notification->comment()->author->profile_picture),
     'username' => $notification->comment()->author->username,
     'date' => $notification->date()->format('D, Y-m-d H:i:s'),
     'notification_generator_link' => route('content.show', ['id' =>
