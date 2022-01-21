@@ -802,7 +802,7 @@ SELECT setval('comment_id_seq', (SELECT max(id) FROM comment));
 
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (1, '2020-7-23', 1, 2);
 --INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (2, '2021-3-2', 1, 3);
-INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (3, '2021-10-11', 3, 6);
+--INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (3, '2021-10-11', 3, 6);
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (4, '2020-9-8', 4, 5);
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (5, '2021-6-11', 6, 7);
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (6, '2021-12-31', 10, 11);

@@ -13,12 +13,12 @@ $link_edit = route('group.edit', ['id' => $group->id]);
   @include('partials.navbar')
   <div class="vh-100 row bg-dark text-white" style="padding: 0em; margin: 0em; overflow: visible;">
     <h3 class="d-block d-lg-none text-center my-3"> {{ $group->name }}</h3>
-    <div class="col-3 d-sm-flex d-md-flex d-lg-none">
+    <div class="col-2 d-sm-flex d-md-flex d-lg-none">
       @include('partials.side_group_create_buttons', ['group' => $group, 'user' => $user])
     </div>
 
-    <div class="col-3 d-lg-block d-none align-self-center">
-      <div class="row justify-content-center mb-3 py-3">
+    <div class="col-2 d-lg-block d-none align-self-center mt-5">
+      <div class="row justify-content-center mb-3 pb-3">
         <div style="height: auto; max-height: 15em; overflow-y: auto;">
           <table class="table table-hover table-dark">
             <thead>
@@ -74,23 +74,17 @@ $link_edit = route('group.edit', ['id' => $group->id]);
       @include('partials.side_group_buttons', ['group' => $group, 'user' => $user])
     </div>
 
-    <div class="col-8">
-      <h3 class="d-none d-lg-block text-center my-3"> {{ $group->name }}</h3>
+    <div class="col-8 mt-4">
+      <h3 class="d-none d-lg-block mt-4 mb-3 ms-3"> {{ $group->name }}</h3>
 
-      <div class="d-flex flex-row pt-3 pl-3 pr-1" style="overflow-x: auto;">
+      <div class="d-none d-md-block ms-3 mb-3">{{ $group->description }}</div>
+
+      <div class="d-flex flex-row pt-3 ms-1" style="overflow-x: auto;">
         @foreach ($group->contents as $content)
           <div class="d-block mx-2 pb-2">
             @include('partials.content', ['content' => $content, 'show_group' => false])
           </div>
         @endforeach
-      </div>
-
-      @if ($group->members->contains($user))
-        @include('partials.create_buttons', ['id_group' => $group->id])
-      @endif
-
-      <div class="d-none d-md-block text-center my-3">
-        {{ $group->description }}
       </div>
 
       <div class="d-flex justify-content-center mt-3 mb-3">
@@ -104,6 +98,12 @@ $link_edit = route('group.edit', ['id' => $group->id]);
           </form>
         @endif
       </div>
+    </div>
+
+    <div class="col-2 mt-5 pt-5">
+      @if ($group->members->contains($user))
+      @include('partials.create_buttons', ['id_group' => $group->id])
+    @endif
     </div>
   </div>
 @endsection

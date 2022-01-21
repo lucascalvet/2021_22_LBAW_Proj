@@ -34,7 +34,7 @@ $cover_pic = 'img/cover_pic.jpg';
 
       <!--Computer View-->
       <div class="d-none d-md-block">
-        <div class="row gx-5 me-2" style="margin-left: 3em;">
+        <div class="row me-2" style="margin-left: 3em;">
           <!--User Info-->
           <div class="col-4 mt-5">
             <h2 class="pt-4">{{ $user->username }}</h2>
@@ -58,11 +58,11 @@ $cover_pic = 'img/cover_pic.jpg';
               <div class="d-flex flex-wrap justify-content-evenly">
                 @if ($user->userFriends->count() != 0)
                   @foreach($user->userFriends as $friend)
-                  <div id="a-remove-friend-div-{{$friend->id}}" class="d-block mx-2 pb-2">
-                      <a hre="{{ route('profile', ['user' => $friend->id]) }}"><div>{{$friend->username}}</div></a>
+                  <div id="a-remove-friend-div-{{$friend->id}}" class="d-flex mx-2 pb-2">
+                      <a href="{{ route('profile', ['user' => $friend->id]) }}">{{$friend->username}}</a>
                       @if(Auth::user()->id == $user->id)
-                        <a id="a-remove-friend-{{$friend->id}}" class="a-remove-friend">
-                          <button class="border-0 p-0"><i class="bi bi-x-square-fill"></i></button>
+                        <a id="a-remove-friend-{{$friend->id}}" class="a-remove-friend ms-2">
+                          <button type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unfriend" class="btn btn-primary m-0 py-0 px-1 border-0" style="color:black; background-color:grey;"><i class="bi bi-x-square-fill"></i></button>
                         </a>
                       @endif
                   </div>
@@ -108,11 +108,13 @@ $cover_pic = 'img/cover_pic.jpg';
 
             <!--Actual Content for md screen and beyond-->
             {{--<div class="d-flex text-light">--}}
+              <div class="d-flex-column justify-content-evenly">
                 @foreach($user->contents->sortBy(['publishing_date', 'desc']) as $content)
                 <div class="d-inline-block ms-1 mt-2">
                     @include('partials.content', ['content' => $content, 'show_group' => true])
                 </div>
                 @endforeach
+              </div>
             {{--</div>--}}
 
             <div class="row d-none d-md-block mt-5 text-end">
@@ -121,19 +123,33 @@ $cover_pic = 'img/cover_pic.jpg';
                   <i class="bi bi-pencil-square"></i>
                 </a>
               @endif
+
+
+              <form method="POST" action="{{ route('profile.save', ['user' => $user->id]) }}">
+                @csrf
+                <input type="hidden" name="_method" value="DELETE" />
+                <button type="submit" value="Delete" class="btn btn-outline-danger btn-lg text-white">Delete Profile</button>
+              </form>
+
+
+
             </div>
           </div>
         </div>
       </div>
 
       <!--Mobile View-->
-      <div class="d-block d-md-none text-center">
+      <div class="d-block d-md-none text-center overflow-hidden">
         <div class="mt-5">
           <h2 class="pt-5">{{ $user->username }}</h2>
 
           <div class="d-flex justify-content-center">
-            <div class="pb-2 pe-2"><strong>120</strong></div>
-            friends
+            <div class="d-flex">
+              <div class="pb-2 pe-2"><strong id="strong-friends-count">{{$user->userFriends->count()}}</strong></div>
+              @if ($user->userFriends->count() == 1) friend
+              @else friends
+              @endif
+              </div>
           </div>
 
           <div class="pb-2">{{ $user->name }}</div>
@@ -142,13 +158,34 @@ $cover_pic = 'img/cover_pic.jpg';
           <div class="pb-2">{{ $user->email }}</div>
           <div class="pb-2 mb-4">{{ $user->phone_number }}</div>
 
-          <div class="row">
-            <h5>Interests</h5>
+          <div class="row mb-2">
+            <h5 class="text-center">Friends</h5>
 
-            <div class="d-flex text-light justify-content-center">
-              <div class="bg-secondary rounded-3 ms-0 p-2 m-2">Interest1</div>
-              <div class="bg-secondary rounded-3 ms-0 p-2 m-2">Interest2</div>
-              <div class="bg-secondary rounded-3 ms-0 p-2 m-2">Interest3</div>
+            <div class="d-flex flex-wrap justify-content-evenly">
+              @if ($user->userFriends->count() != 0)
+                @foreach($user->userFriends as $friend)
+                <div id="a-remove-friend-div-{{$friend->id}}" class="d-block mx-2 pb-2">
+                    <a hre="{{ route('profile', ['user' => $friend->id]) }}"><div>{{$friend->username}}</div></a>
+                    @if(Auth::user()->id == $user->id)
+                      <a id="a-remove-friend-{{$friend->id}}" class="a-remove-friend m-0 p-0">
+                        <button class="border-0 p-0"><i class="bi bi-x-square-fill"></i></button>
+                      </a>
+                    @endif
+                </div>
+                @endforeach
+              @else
+                  <p>This user has no friends. Step them up!</p>
+              @endif
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="d-flex-column justify-content-evenly">
+              @foreach($user->contents->sortBy(['publishing_date', 'desc']) as $content)
+              <div class="d-inline-block ms-1 mt-2">
+                  @include('partials.content', ['content' => $content, 'show_group' => true])
+              </div>
+              @endforeach
             </div>
           </div>
         </div>
