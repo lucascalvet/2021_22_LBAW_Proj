@@ -105,7 +105,7 @@ $time = '10 days ago';
               <div class="d-flex flex-row align-items-center">
                 <span class="me-auto">
                   <a @if ($content->creator == $comment->author) class="fw-bold" @endif href="{{ route('profile', ['user' => $comment->author->id]) }}">
-                    {{ $comment->author->name }}</a>
+                    {{ $comment->author->username }}</a>
                   @if ($content->creator == $comment->author)<sup class="text-primary fw-bold">OP</sup> @endif
                   : {{ $comment->comment_text }}
                 </span>
@@ -158,7 +158,7 @@ $time = '10 days ago';
               <div class="d-flex flex-row align-items-center">
                 <span class="me-auto">
                   <a @if ($content->creator == $reply->content->creator) class="fw-bold" @endif href="{{ route('profile', ['user' => $reply->content->creator]) }}">
-                    {{ $reply->content->creator->name }}</a>
+                    {{ $reply->content->creator->username }}</a>
                   @if ($content->creator == $reply->content->creator)<sup class="text-primary fw-bold">OP</sup> @endif
                   : {{ $reply->post_text }}
                 </span>

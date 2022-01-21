@@ -38,7 +38,7 @@ $right_links = [
       <ul class="align-items-center navbar-nav justify-content-evenly flex-grow-1" id="rightIcons">
         @foreach ($right_links as $props)
           <li class="nav-item">
-            <a class="nav-link @if ($props['title'] == 'Chat') disabled @endif @if (in_array(Route::currentRouteName(), $props['routes'])) active" aria-current=page @else " @endif href=" {{ route($props['routes'][0]) }}">
+            <a class="nav-link @if ($props['title'] == 'Chat') disabled @endif @if (in_array(Route::currentRouteName(), $props['routes'])) active" aria-current=page @else " @endif title="{{ $props['title'] }}" href=" {{ route($props['routes'][0]) }}">
               <i class="{{ $props['icon'] }} {{ $icon_size }}" aria-label="{{ $props['title'] }}"></i>
               <span class="d-sm-none">{{ $props['title'] }}</span>
             </a>
@@ -50,7 +50,7 @@ $right_links = [
               <a role="button" class="btn btn-secondary py-0 d-flex align-items-center"
                 href="{{ route('profile', ['user' => Auth::user()->id]) }}">
                 <i class="bi bi-person-circle {{ $icon_size }}"></i>
-                <span class="text-truncate" style="max-width: 10em;">&nbsp;{{ Auth::user()->name }}</span>
+                <span class="text-truncate" style="max-width: 10em;">&nbsp;{{ Auth::user()->username }}</span>
               </a>
               <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownProfile"
                 data-bs-toggle="dropdown" aria-expanded="false">

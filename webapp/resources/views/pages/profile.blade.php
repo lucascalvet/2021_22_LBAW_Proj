@@ -68,7 +68,7 @@ $cover_pic = 'img/cover_pic.jpg';
                   </div>
                   @endforeach
                 @else
-                    <p>This user has no friends. Step him up!</p>
+                    <p>This user has no friends. Step them up!</p>
                 @endif
               </div>
               @auth
@@ -87,7 +87,7 @@ $cover_pic = 'img/cover_pic.jpg';
           <div class="col-8">
 
             <!--Content Type-->
-            <div class="d-flex border-bottom border-3 mb-3">
+            <div class="d-flex border-bottom border-3 mb-3 disabled">
               <div class="ps-4 pe-2 p-2 ps-xl-5 ps-lg-4 pe-xl-5 pe-sm-3 ps-sm-4">All</div>
               <div class="pe-3 pb-2 p-2 pe-xl-5 pe-sm-3">Media</div>
               <div class="pe-3 pb-2 p-2 pe-xl-5 pe-sm-3">Text</div>
@@ -105,13 +105,13 @@ $cover_pic = 'img/cover_pic.jpg';
             </div>
 
             <!--Actual Content for md screen and beyond-->
-            <div class="d-flex flex-row text-light overflow-auto">
+            {{--<div class="d-flex text-light">--}}
                 @foreach($user->contents->sortBy(['publishing_date', 'desc']) as $content)
-                <div class="d-block mx-2 pb-2">
+                <div class="d-inline-block ms-1 mt-2">
                     @include('partials.content', ['content' => $content, 'show_group' => true])
                 </div>
                 @endforeach
-            </div>
+            {{--</div>--}}
 
             <div class="row d-none d-md-block mt-5 text-end">
               @if (Auth::check() && Auth::user()->can('update', $user))
