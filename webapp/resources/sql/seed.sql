@@ -158,7 +158,7 @@ CREATE TABLE comment (
    id SERIAL PRIMARY KEY,
    comment_text TEXT NOT NULL,
    comment_date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
-   author INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
+   id_author INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE,
    id_media_content INTEGER NOT NULL REFERENCES media_content(id_content) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -304,110 +304,94 @@ CREATE INDEX end_campaign ON campaign USING btree (finishing_date);
 --Full Text Search Indexes
 
 -- IDX 11
--- Add column to text_content to store computed ts_vectors.
-ALTER TABLE text_content
+-- Add column to content to store computed ts_vectors.
+ALTER TABLE content
 ADD COLUMN tsvectors TSVECTOR;
 
 -- Create a function to automatically update ts_vectors.
+CREATE FUNCTION content_search_update(input_id INTEGER) RETURNS VOID LANGUAGE plpgsql AS
+$$
+BEGIN
+   UPDATE content
+   SET tsvectors = (
+      setweight(to_tsvector('english', coalesce((SELECT post_text FROM text_content WHERE id_content = input_id), '')), 'A') ||
+      setweight(to_tsvector('english', coalesce((SELECT title FROM video WHERE id_media_content = input_id), '')), 'A') ||
+      setweight(to_tsvector('english', coalesce((SELECT description FROM media_content WHERE id_content = input_id), '')), 'B') ||
+      setweight(to_tsvector('english', coalesce((SELECT alt_text FROM media_content WHERE id_content = input_id), '')), 'C')
+   )
+   WHERE id = input_id;
+END
+$$;
+
+-- Create a GIN index for ts_vectors.
+CREATE INDEX content_search_idx ON content USING GIN (tsvectors);
+
 CREATE FUNCTION text_content_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF TG_OP = 'INSERT' THEN
-      NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.post_text), 'A')
-      );
-   END IF;
-   IF TG_OP = 'UPDATE' THEN
-      IF (NEW.post_text <> OLD.post_text) THEN
-         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.post_text), 'A')
-         );
-      END IF;
-   END IF;
+   PERFORM content_search_update(NEW.id_content);
    RETURN NEW;
 END
 $$;
 
 -- Create a trigger before insert or update on text_content.
 CREATE TRIGGER text_content_search_update
-   BEFORE INSERT OR UPDATE ON text_content
+   AFTER INSERT OR UPDATE ON text_content
    FOR EACH ROW
    EXECUTE PROCEDURE text_content_search_update();
 
--- Finally, create a GIN index for ts_vectors.
-CREATE INDEX text_content_search_idx ON text_content USING GIN (tsvectors);
-
-
--- IDX12
--- Add column to media_content to store computed ts_vectors.
-ALTER TABLE media_content
-ADD COLUMN tsvectors TSVECTOR;
-
--- Create a function to automatically update ts_vectors.
 CREATE FUNCTION media_content_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF TG_OP = 'INSERT' THEN
-      NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.description), 'A') ||
-         setweight(to_tsvector('english', NEW.alt_text), 'B')
-      );
-   END IF;
-   IF TG_OP = 'UPDATE' THEN
-      IF (NEW.description <> OLD.description OR NEW.alt_text <> OLD.alt_text) THEN
-         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.description), 'A') ||
-            setweight(to_tsvector('english', NEW.alt_text), 'B')
-         );
-      END IF;
-   END IF;
+   PERFORM content_search_update(NEW.id_content);
    RETURN NEW;
 END
 $$;
 
 -- Create a trigger before insert or update on media_content.
 CREATE TRIGGER media_content_search_update
-   BEFORE INSERT OR UPDATE ON media_content
+   AFTER INSERT OR UPDATE ON media_content
    FOR EACH ROW
    EXECUTE PROCEDURE media_content_search_update();
 
--- Finally, create a GIN index for ts_vectors.
-CREATE INDEX media_content_search_idx ON media_content USING GIN (tsvectors);
-
-
--- IDX 13
--- Add column to video to store computed ts_vectors.
-ALTER TABLE video
-ADD COLUMN tsvectors TSVECTOR;
-
--- Create a function to automatically update ts_vectors.
 CREATE FUNCTION video_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   IF TG_OP = 'INSERT' THEN
-      NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.title), 'A')
-      );
-   END IF;
-   IF TG_OP = 'UPDATE' THEN
-      IF (NEW.title <> OLD.title) THEN
-         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.title), 'A')
-         );
-      END IF;
-   END IF;
+   PERFORM content_search_update(NEW.id_media_content);
    RETURN NEW;
 END
 $$;
 
 -- Create a trigger before insert or update on video.
 CREATE TRIGGER video_search_update
-   BEFORE INSERT OR UPDATE ON video
+   AFTER INSERT OR UPDATE ON video
    FOR EACH ROW
    EXECUTE PROCEDURE video_search_update();
 
--- Finally, create a GIN index for ts_vectors.
-CREATE INDEX video_search_idx ON video USING GIN (tsvectors);
+
+-- Add column to groups to store computed ts_vectors.
+ALTER TABLE groups
+ADD COLUMN tsvectors TSVECTOR;
+
+-- Create a function to automatically update ts_vectors.
+CREATE FUNCTION groups_search_update() RETURNS TRIGGER LANGUAGE plpgsql AS
+$$
+BEGIN
+   IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NEW.name <> OLD.name OR NEW.description <> OLD.description)) THEN
+      NEW.tsvectors = (
+         setweight(to_tsvector('english', NEW.name), 'A') ||
+         setweight(to_tsvector('english', NEW.description), 'B')
+      );
+   END IF;
+   RETURN NEW;
+END
+$$;
+
+-- Create a trigger before insert or update on media_content.
+CREATE TRIGGER groups_search_update
+   BEFORE INSERT OR UPDATE ON groups
+   FOR EACH ROW
+   EXECUTE PROCEDURE groups_search_update();
 
 
 --------------------------------------------
@@ -541,14 +525,16 @@ CREATE TRIGGER video_disjoint
 CREATE FUNCTION like_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
+   IF NEW.id_user <> (SELECT id_creator FROM content WHERE id = NEW.id_content) THEN
    --create notification and like notification
-   WITH new_notification AS (
-      INSERT INTO notification (id_user, read)
-      VALUES ((SELECT id_creator FROM content WHERE id = NEW.id_content), FALSE)
-      RETURNING id
-   )
-   INSERT INTO like_notification (id_notification, id_like)
-   VALUES ((SELECT id FROM new_notification), NEW.id);
+      WITH new_notification AS (
+         INSERT INTO notification (id_user, read)
+         VALUES ((SELECT id_creator FROM content WHERE id = NEW.id_content), FALSE)
+         RETURNING id
+      )
+      INSERT INTO like_notification (id_notification, id_like)
+      VALUES ((SELECT id FROM new_notification), NEW.id);
+   END IF;
    RETURN NEW;
 END;
 $$;
@@ -615,18 +601,20 @@ CREATE TRIGGER delete_friend_requests_notifications
 CREATE FUNCTION comments_notifications() RETURNS TRIGGER LANGUAGE plpgsql AS
 $$
 BEGIN
-   --create notification and comment notification
-   WITH new_notification AS (
-      INSERT INTO notification (id_user, read)
-      VALUES ((SELECT id_creator
-              FROM content
-              WHERE id IN (SELECT id_content
-                           FROM media_content
-                           WHERE id_content = NEW.id_media_content)), FALSE)
-      RETURNING id
-   )
-   INSERT INTO comment_notification (id_notification, id_comment)
-   VALUES ((SELECT id FROM new_notification), NEW.id);
+   IF NEW.id_author <> (SELECT id_creator FROM content WHERE id IN (SELECT id_content FROM media_content WHERE id_content = NEW.id_media_content)) THEN
+      --create notification and comment notification
+      WITH new_notification AS (
+         INSERT INTO notification (id_user, read)
+         VALUES ((SELECT id_creator
+               FROM content
+               WHERE id IN (SELECT id_content
+                              FROM media_content
+                              WHERE id_content = NEW.id_media_content)), FALSE)
+         RETURNING id
+      )
+      INSERT INTO comment_notification (id_notification, id_comment)
+      VALUES ((SELECT id FROM new_notification), NEW.id);
+   END IF;
    RETURN NEW;
 END;
 $$;
@@ -743,7 +731,7 @@ SELECT setval('groups_id_seq', (SELECT max(id) FROM groups));
 
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (1, '2021-5-23', NULL, 1);
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (2, '2015-7-28', 2, 2);
-INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (3, '2020-4-3', NULL, 3);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (3, '2021-10-3 15:03:25', NULL, 3);
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (4, '2021-10-12', 1, 4);
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (5, '2019-1-10', NULL, 5);
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (6, '2018-9-20', NULL, 6);
@@ -751,6 +739,12 @@ INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (7, '2021
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (8, '2020-2-16', 1, 8);
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (9, '2021-6-29', NULL, 9);
 INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (10, '2020-1-3', NULL, 10);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (11, '2021-10-3 15:32:13', NULL, 4);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (12, '2021-10-3 15:51:37', NULL, 7);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (13, '2021-10-3 16:08:54', NULL, 4);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (14, '2021-10-3 16:14:34', NULL, 9);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (15, '2021-10-3 16:34:28', NULL, 10);
+INSERT INTO content (id, publishing_date, id_group, id_creator) VALUES (16, '2021-10-3 16:37:09', NULL, 8);
 SELECT setval('content_id_seq', (SELECT max(id) FROM content));
 
 INSERT INTO content_like (id, date, id_user, id_content) VALUES (1, '2021-5-23', 1, 1);
@@ -770,9 +764,20 @@ INSERT INTO text_content (id_content, post_text) VALUES (2, 'I love to write SQL
 INSERT INTO text_content (id_content, post_text) VALUES (3, 'LBAW is the best course in the world');
 INSERT INTO text_content (id_content, post_text) VALUES (4, 'Who is the best football player?');
 INSERT INTO text_content (id_content, post_text) VALUES (5, 'Take it easy, keep calm');
+INSERT INTO text_content (id_content, post_text) VALUES (11, 'I agree, it''s pretty interesting! ╰(*°▽°*)╯');
+INSERT INTO text_content (id_content, post_text) VALUES (12, 'I''ll have to disagree, because all of the courses are great 🤩');
+INSERT INTO text_content (id_content, post_text) VALUES (13, 'ahah you had us in the first part ngl.');
+INSERT INTO text_content (id_content, post_text) VALUES (14, 'Yes, but we are expected to work too much, considering the time we have and the other courses that also expect a lot of work from us');
+INSERT INTO text_content (id_content, post_text) VALUES (15, 'Laravel is cool');
+INSERT INTO text_content (id_content, post_text) VALUES (16, 'Agreed 😕');
 
 INSERT INTO text_reply (child_text, parent_text) VALUES (1, 2);
-INSERT INTO text_reply (child_text, parent_text) VALUES (4, 3);
+INSERT INTO text_reply (child_text, parent_text) VALUES (11, 3);
+INSERT INTO text_reply (child_text, parent_text) VALUES (12, 11);
+INSERT INTO text_reply (child_text, parent_text) VALUES (13, 12);
+INSERT INTO text_reply (child_text, parent_text) VALUES (14, 3);
+INSERT INTO text_reply (child_text, parent_text) VALUES (15, 11);
+INSERT INTO text_reply (child_text, parent_text) VALUES (16, 14);
 
 INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (6, 'Just a cute cat', 'media/cute.png', 'Photo of a cat playing', TRUE, 6);
 INSERT INTO media_content (id_content, description, media, alt_text, fullscreen, id_locale) VALUES (7, 'BMW', 'media/moto.jpeg', NULL, FALSE, 7);
@@ -787,16 +792,16 @@ INSERT INTO image (id_media_content, width, height) VALUES (8, 500, 100);
 INSERT INTO video (id_media_content, title, views) VALUES (9, 'SQL Tutorial 2021', 100);
 INSERT INTO video (id_media_content, title, views) VALUES (10, 'Game', 300);
 
-INSERT INTO comment (id, comment_text, comment_date, author, id_media_content) VALUES (1, 'So cute!', '2021-10-11', 1, 6);
-INSERT INTO comment (id, comment_text, comment_date, author, id_media_content) VALUES (2, 'Very good brand', '2021-10-12', 2, 7);
-INSERT INTO comment (id, comment_text, comment_date, author, id_media_content) VALUES (3, 'I do not like that car', '2021-10-13', 3, 8);
-INSERT INTO comment (id, comment_text, comment_date, author, id_media_content) VALUES (4, 'Great tutorial', '2021-10-14', 4, 9);
-INSERT INTO comment (id, comment_text, comment_date, author, id_media_content) VALUES (5, 'I play this game all the time', '2021-10-15', 5, 10);
-INSERT INTO comment (id, comment_text, comment_date, author, id_media_content) VALUES (6, 'Best Dev Interview I have seen!', '2020-05-22', 5, 10);
+INSERT INTO comment (id, comment_text, comment_date, id_author, id_media_content) VALUES (1, 'So cute!', '2021-10-11', 1, 6);
+INSERT INTO comment (id, comment_text, comment_date, id_author, id_media_content) VALUES (2, 'Very good brand', '2021-10-12', 2, 7);
+INSERT INTO comment (id, comment_text, comment_date, id_author, id_media_content) VALUES (3, 'I do not like that car', '2021-10-13', 3, 8);
+INSERT INTO comment (id, comment_text, comment_date, id_author, id_media_content) VALUES (4, 'Great tutorial', '2021-10-14', 4, 9);
+INSERT INTO comment (id, comment_text, comment_date, id_author, id_media_content) VALUES (5, 'I play this game all the time', '2021-10-15', 5, 10);
+INSERT INTO comment (id, comment_text, comment_date, id_author, id_media_content) VALUES (6, 'Best Dev Interview I have seen!', '2020-05-22', 5, 10);
 SELECT setval('comment_id_seq', (SELECT max(id) FROM comment));
 
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (1, '2020-7-23', 1, 2);
-INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (2, '2021-3-2', 1, 3);
+--INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (2, '2021-3-2', 1, 3);
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (3, '2021-10-11', 3, 6);
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (4, '2020-9-8', 4, 5);
 INSERT INTO friend_request (id, creation_date, id_sender, id_receiver) VALUES (5, '2021-6-11', 6, 7);

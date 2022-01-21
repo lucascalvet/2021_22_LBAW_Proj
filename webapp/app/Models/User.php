@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -53,10 +54,12 @@ class User extends Authenticatable
      */
     public function isAdmin()
     {
-        return $this->id == 22;
+        return DB::table('admin_user')->where('id_user', $this->id)->exists();
     }
 
-
+    /**
+     * Get the user's friend requests
+     */
     public function friendRequests(){
         return $this->hasMany(FriendRequest::class, 'id_receiver');
     }
@@ -69,7 +72,23 @@ class User extends Authenticatable
         }
         return false;
     }
-    
+
+    /**
+     * The user's comments.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'id_author');
+    }
+
+    /**
+     * The user's notifications.
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'id_user');
+    }
+
     public  function friends(){
         return $this->belongsToMany(Friends::class, 'friends', 'id_user1', 'id_user2');
     }

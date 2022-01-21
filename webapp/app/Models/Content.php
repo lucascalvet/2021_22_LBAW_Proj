@@ -31,6 +31,13 @@ class Content extends Model
     protected $fillable = ['id_creator'];
 
     /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['publishing_date'];
+
+    /**
      * The creator of the content.
      */
     public function creator()
@@ -45,13 +52,22 @@ class Content extends Model
     {
         return $this->belongsTo(Group::class, 'id_group');
     }
-    
+
     /**
      * Get the specific content.
      */
     public function contentable()
     {
         return $this->morphTo(null, null, 'id');
+    }
+
+    /**
+     * Get the number of comments or text replies
+     */
+    public function comment_count()
+    {
+        if ($this->contentable instanceof MediaContent) return $this->contentable->comments->count();
+        else if ($this->contentable instanceof TextContent) return $this->contentable->replies->count();
     }
 
     /**
@@ -62,10 +78,10 @@ class Content extends Model
         return $this->hasMany(Like::class, 'id_content');
     }
 
-    public function numberOfLikes(){
+    public function numberOfLikes()
+    {
         $nLikes = $this->likes->count();
 
         return $nLikes;
     }
-
 }

@@ -13,9 +13,9 @@ class ProfileController extends Controller
      *
      * @return Response
      */
-    public function show($userId)
+    public function show($user_id)
     {
-      $user = User::find($userId);
+      $user = User::findOrFail($user_id);
 
       return view('pages.profile', [
         'user' => $user,
@@ -29,7 +29,7 @@ class ProfileController extends Controller
      */
     public function showEdit($userId)
     {
-      abort_if(is_null($user = User::find($userId)), 404);
+      $user = User::findOrFail($userId);
       $this->authorize('update', $user);
 
       return view('pages.edit_profile', [
@@ -38,7 +38,7 @@ class ProfileController extends Controller
     }
 
     public function save($userId){
-      abort_if(is_null($user = User::find($userId)), 404);
+      $user = User::findOrFail($userId);
       $this->authorize('update', $user);
 
       $user->name = request()->name;

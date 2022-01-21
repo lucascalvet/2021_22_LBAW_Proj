@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Content;
 use App\Models\TextContent;
 use App\Models\MediaContent;
+use App\Models\Comment;
 use App\Models\Like;
 
 
@@ -20,13 +21,13 @@ class ContentController extends Controller
 
     public function edit($id)
     {
-        abort_if(is_null($content = Content::find($id)), 404);
+        $content = Content::findOrFail($id);
 
         $this->authorize('update', $content);
 
-        if ($content->contentable instanceof \App\Models\TextContent) {
+        if ($content->contentable instanceof TextContent) {
             return view('content.text_edit', ['text_content' => $content->contentable]);
-        } else if ($content->contentable instanceof \App\Models\MediaContent) {
+        } else if ($content->contentable instanceof MediaContent) {
             return view('content.media_edit', ['media_content' => $content->contentable]);
         }
 
@@ -47,9 +48,7 @@ class ContentController extends Controller
 
     public function destroy($id)
     {
-
-        abort_if(is_null($content = Content::find($id)), 404);
-
+        $content = Content::findOrFail($id);
         $this->authorize('delete', $content);
 
         /*
@@ -88,9 +87,9 @@ class ContentController extends Controller
         return view('content.list', ['contents' => $contents]);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        abort_if(is_null($content = Content::find($id)), 404);
+        $content = Content::findOrFail($id);
         $this->authorize('view', $content);
 
         return view('content.single', ['content' => $content]);
@@ -103,7 +102,7 @@ class ContentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $content = Content::find($id);
+        $content = Content::findOrFail($id);
         $content->title = $request->title;
         $content->description = $request->description;
 
@@ -158,16 +157,34 @@ class ContentController extends Controller
         return view('content.single', ['content' => $content]);
     }
 
-    /**
-     * Likes
-     */
-    public function like(Request $request, $id){
+    public function comment(Request $request, $id)
+    {
+        $content = Content::findOrFail($id);
+        $this->authorize('comment', $content);
+
+        $request->validate([
+            'comment_text' => 'required|string|max:255',
+        ]);
+
+        if ($content->contentable instanceof MediaContent) {
+            $comment = new Comment;
+            $comment->comment_text = $request->input('comment_text');
+            $comment->id_author = $request->user()->id;
+            $comment->id_media_content = $content->id;
+            $comment->save();
+        } else if ($content->contentable instanceof TextContent) {
+        }
+        return redirect()->route('content.show', ['id' => $content->id, '#comments']);
+    }
+
+    public function like(Request $request, $id)
+    {
         abort_if(is_null($content = Content::find($id)), 404);
 
         //this gives us the currently logged in user
         $user = $request->user();
 
-        if(Like::where('id_content', $content->id)->where('id_user', $user->id)->count() == 0){
+        if (Like::where('id_content', $content->id)->where('id_user', $user->id)->count() == 0) {
             $like = new Like;
             $like->id_user = $user->id;
             $like->id_content = $content->id;
@@ -181,8 +198,7 @@ class ContentController extends Controller
                 'liked' => true,
                 'nLikes' => $nLikes,
             ));
-        }
-        else{
+        } else {
             $like = Like::where('id_content', $content->id)->where('id_user', $user->id)->first();
 
             $like->delete();

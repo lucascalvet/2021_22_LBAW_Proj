@@ -44,9 +44,10 @@ class FriendsController extends Controller
                 ->where('id_user2', $user_id)
                 ->where('id_user1', $user->id)->delete();
 
-        
+
         $res = json_encode(array(
             'user_id' => $user_id,
+            'auth_id' => $user->id,
         ));
 
         return $res;

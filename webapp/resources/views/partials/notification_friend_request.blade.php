@@ -14,9 +14,7 @@
                 </div>
             </div>
                 <div class="d-flex w-100 justify-content-between">
-                <a href="{{ $notification_generator_link }}">
-                    <p class="mb-1">{{ $description }}</p>
-                </a>
+                    <p class="mb-1">Sent you a friend request</p>
                 <div>
                     <form method="POST" action="{{ route('profile.acceptFriend', ['friendRequestId' => $friendRequest->id])}}">
                         @csrf

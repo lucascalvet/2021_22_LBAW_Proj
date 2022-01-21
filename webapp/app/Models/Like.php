@@ -19,5 +19,19 @@ class Like extends Model
      * @var bool
      */
     public $timestamps = false;
-}
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['date'];
+
+    /**
+     * The creator of the like.
+     */
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
+}

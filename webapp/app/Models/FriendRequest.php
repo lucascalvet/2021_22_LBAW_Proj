@@ -39,4 +39,18 @@ class FriendRequest extends Model
      */
     protected $fillable = ['id_sender', 'id_receiver'];
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['creation_date'];
+
+    /**
+     * The sender of the request.
+     */
+    public function sender()
+    {
+        return $this->belongsTo(User::class, 'id_sender');
+    }
 }

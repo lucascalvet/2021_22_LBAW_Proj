@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\URL;
 
 class MediaContentController extends Controller
 {
-    public function create($id_group)
+    public function create($id_group = false)
     {
         /*
         $url = url()->previous();
