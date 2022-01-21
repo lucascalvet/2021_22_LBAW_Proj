@@ -1,6 +1,6 @@
 @php
-$profile_pic = 'img/profile_pic.png';
-$cover_pic = 'img/cover_pic.jpg';
+$profile_pic = $user->profile_picture;
+$cover_pic = $user->cover_picture;
 @endphp
 
 @extends('layouts.app')
@@ -17,9 +17,9 @@ $cover_pic = 'img/cover_pic.jpg';
   <div class="container-fluid p-0 m-0 vh-100">
     <!--Cover Photo-->
     <div class="row h-25 m-0 mb-4 justify-content-center position-relative">
-      <img class="rounded h-100 p-0" style="object-fit: none;" src="{{ asset($cover_pic) }}" alt="Cover Picture" />
-      <img class="d-none d-md-block rounded-circle w-25 position-absolute top-100 start-0 translate-middle" style="margin-left: 8em; max-height: 10em; max-width: 10em;" src="{{ asset($profile_pic) }}" alt="Profile Picture" />
-      <img class="d-block d-md-none rounded-circle w-25 position-absolute top-100 start-50 translate-middle" style="max-height: 10em; max-width: 10em;" src="{{ asset($profile_pic) }}" alt="Profile Picture" />
+      <img class="rounded h-100 p-0" style="object-fit: none;" src="{{ asset($cover_pic) }}" alt="Cover Picture"/>
+      <img class="d-none d-md-block rounded-circle w-25 position-absolute top-100 start-0 translate-middle" style="margin-left: 8em; max-height: 10em; max-width: 10em;" src="{{ asset($profile_pic) }}" alt="Profile Picture"/>
+      <img class="d-block d-md-none rounded-circle w-25 position-absolute top-100 start-50 translate-middle" style="max-height: 10em; max-width: 10em;" src="{{ asset($profile_pic) }}" alt="Profile Picture"/>
       <div class="d-flex m-2">
         @if (Auth::check() && Auth::user()->can('update', $user))
         <a class="me-auto" href=" {{ route('profile.edit', ['user' => $user->id]) }}">
@@ -46,7 +46,7 @@ $cover_pic = 'img/cover_pic.jpg';
 
           <div class="pb-2">{{ $user->name }}</div>
           <div class="pb-2">{{ $user->description }}</div>
-          <div class="pb-2">{{ $user->birthday }}</div>
+          <div class="pb-2">{{ $user->birthday->format('Y-m-d')}}</div>
           <div class="pb-2">{{ $user->email }}</div>
           <div class="pb-2 mb-4">{{ $user->phone_number }}</div>
 
@@ -73,11 +73,11 @@ $cover_pic = 'img/cover_pic.jpg';
           </div>
           <div id="d-friend-request" class="d-flex justify-content-center">
             @if(Auth::user()->isFriendOf($user->id))
-            <a id="remove-friend-{{$user->id}}" class="remove-friend btn btn-secondary">Remove Friend</a>
+            <a id="remove-friend-{{$user->id}}" class="remove-friend"><button class="btn btn-secondary" type="submit">Remove Friend</button></a>
             @elseif ((Auth::user()->id != $user->id) && !($user->gotFriendRequestFrom(Auth::user())) && !(Auth::user()->gotFriendRequestFrom($user)))
-            <a id="a-add-friend-{{$user->id}}" class="a-add-friend btn btn-secondary">Add Friend</a>
+            <a id="a-add-friend-{{$user->id}}" class="a-add-friend"><button class="btn btn-secondary" type="submit">Add Friend</button></a>
             @elseif ($user->gotFriendRequestFrom(Auth::user()))
-            <a id="a-cancel-friend-{{$user->id}}" class="a-cancel-friend btn btn-secondary">Cancel Friend Request</a>
+            <a id="a-cancel-friend-{{$user->id}}" class="a-cancel-friend"><button class="btn btn-secondary" type="submit">Cancel Friend Request</button></a>
             @endif
           </div>
           @endauth
@@ -159,7 +159,7 @@ $cover_pic = 'img/cover_pic.jpg';
               </a>
               @if(Auth::user()->id == $user->id)
               <a id="a-remove-friend-{{$friend->id}}" class="a-remove-friend m-0 p-0">
-                <i class="bi bi-x-square-fill"></i>
+                <button class="border-0 p-0"><i class="bi bi-x-square-fill"></i></button>
               </a>
               @endif
             </div>
