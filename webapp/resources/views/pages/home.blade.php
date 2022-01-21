@@ -4,7 +4,6 @@ $icon_size = 'fs-3';
 $user = Auth::user();
 $users = \App\Models\User::all();
 $contents = \App\Models\Content::all();
-
 @endphp
 
 @extends('layouts.app')

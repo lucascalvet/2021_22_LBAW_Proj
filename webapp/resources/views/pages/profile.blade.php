@@ -36,8 +36,10 @@
             <h2 class="pt-4">{{$user->username}}</h2>
 
             <div class="d-flex">
-              <div class="pb-2 pe-2"><strong>{{$user->userFriends->count()}}</strong></div>
-              friends
+              <div class="pb-2 pe-2"><strong id="strong-friends-count">{{$user->userFriends->count()}}</strong></div>
+              @if ($user->userFriends->count() == 1) friend
+              @else friends
+              @endif
               </div>
 
             <div class="pb-2">{{$user->name}}</div>
@@ -47,8 +49,8 @@
             <div class="pb-2 mb-4">{{$user->phone_number}}</div>
 
             <div class="row">
-              <h5 class="text-center">Interests</h5>
-      
+              <h5 class="text-center">Friends</h5>
+
               <div class="d-flex flex-wrap justify-content-evenly">
                 @foreach($user->userFriends as $friend)
                 <div id="a-remove-friend-div-{{$friend->id}}" class="d-block mx-2 pb-2">
@@ -63,17 +65,11 @@
               </div>
               @auth
             </div>
-            <div id="friend-button">
+            <div id="d-friend-request" class="d-flex justify-content-center">
               @if(Auth::user()->isFriendOf($user->id))
-                <div class="d-flex justify-content-center">
-                  <a id="remove-friend-{{$user->id}}" class="remove-friend"><button class="btn btn-secondary" type="submit">Remove Friend</button></a>
-                </div>
+                <a id="remove-friend-{{$user->id}}" class="remove-friend"><button class="btn btn-secondary" type="submit">Remove Friend</button></a>
               @elseif ((Auth::user()->id != $user->id) && !($user->gotFriendRequestFrom(Auth::user())) && !(Auth::user()->gotFriendRequestFrom($user)))
-                <div class="d-flex justify-content-center">
-                  {{-- <form id="form-add-friend-{{$user->id}}" class="form-add-friend" method="POST" action="{{ route('profile.addFriend', ['user' => $user->id])}}">
-                  </form> --}}
-                  <a id="form-add-friend-{{$user->id}}" class="form-add-friend"><button class="btn btn-secondary" type="submit">Add Friend</button></a>
-                </div>
+                <a id="a-add-friend-{{$user->id}}" class="a-add-friend"><button class="btn btn-secondary" type="submit">Add Friend</button></a>
               @endif
             </div>
             @endauth
