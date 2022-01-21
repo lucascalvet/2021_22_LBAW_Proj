@@ -13,30 +13,14 @@ use Illuminate\Support\Facades\URL;
 class MediaContentController extends Controller
 {
     public function create($id_group = false)
-    {
-        /*
-        $url = url()->previous();
-        $path = parse_url($url)["path"];
-        
-        if (substr($path, 1, 5) == "group") {
-            return view('content.media_create', ['id_group' => intval(substr($path, 7))]);
-        } else {
-            return view('content.media_create', ['id_group' => -1]);
-        }
-        */
-        
+    { 
         return view('content.media_create', ['id_group' => $id_group]);
-    }
-
-    public function edit($id)
-    {
-        return view('content.media_edit', ['content' => Content::find($id)]);
     }
 
     public function destroy($id)
     {
-        $mediacontent = MediaContent::find($id);
-        $content = Content::find($id);
+        $mediacontent = MediaContent::findOrFail($id);
+        $content = $mediacontent->content;
         $content->id_creator = 1;
         $mediacontent->alt_text = "[Removed]";
         $mediacontent->media = "";
@@ -47,33 +31,17 @@ class MediaContentController extends Controller
         return redirect()->route('content.show', ['id' => $id]);
     }
 
-    protected function validator(Request $request)
-    {
-        return $request->validate([
-            'alt_text' => 'string|max:255',
-            'description' => 'required|string|max:64000',
-            'media' => 'required|file|mimetypes:image/jpeg,image/png,image/gif,video/webm,video/mp4',
-        ]);
-    }
-
-    public function index(Request $request)
-    {
-        $contents = $request->user()->contents()->paginate(10);
-        return view('content.list', ['contents' => $contents]);
-    }
-
-    public function show($id)
-    {
-        return view('content.single', ['content' => Content::find($id)]);
-    }
-
     public function update(Request $request, $id)
     {
-        abort_if(is_null($content = Content::find($id)), 404);
+        $mediacontent = MediaContent::findOrFail($id);
 
-        $this->authorize('update', $content);
+        $this->authorize('update', $mediacontent->content);
 
-        abort_if(is_null($mediacontent = MediaContent::find($id)), 404);
+        Validator::make($request->all(), [
+            'alt_text' => 'string|max:255',
+            'description' => 'required|string|max:1024',
+            'media' => 'required|file|mimetypes:image/jpeg,image/png,image/gif,video/webm,video/mp4',
+        ])->validate();
 
         $mediacontent->description = $request->description;
         $mediacontent->media = $request->file('media')->store('media', ['disk' => 'my_files']);
@@ -86,6 +54,11 @@ class MediaContentController extends Controller
 
     public function store(Request $request)
     {
+        Validator::make($request->all(), [
+            'alt_text' => 'string|max:255',
+            'description' => 'required|string|max:1024',
+            'media' => 'required|file|mimetypes:image/jpeg,image/png,image/gif,video/webm,video/mp4',
+        ])->validate();
         $user = $request->user();
         $mediacontent = new MediaContent;
         $content = new Content;

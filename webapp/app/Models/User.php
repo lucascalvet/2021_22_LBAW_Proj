@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'name', 'email', 'hashed_password', 'phone_number', 'birthday', 'id_country', 'description',
+        'username', 'name', 'email', 'profile_picture', 'private', 'hashed_password', 'phone_number', 'birthday', 'id_country', 'description',
     ];
 
     /**
@@ -104,14 +104,10 @@ class User extends Authenticatable
     public function userFriends(){
         return $this->belongsToMany(User::class, 'friends', 'id_user2', 'id_user1')->union($this->belongsToMany(User::class, 'friends', 'id_user1', 'id_user2'));
     }
-
-    // public function getFriends()
-    // {
-    //     $f1 = $this->friend();
-    //     $f2 = $this->friend2();
-    //     $friends = $f1->union($f2);
-    //     return $friends;
-    // }
+    
+    public function likes(){
+        return $this->hasMany(Like::class, 'id_user');
+    }
 
     /**
      * The groups that the user is member of.

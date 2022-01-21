@@ -15,13 +15,13 @@ $user = Auth::user();
             <div class="card-body p-5">
               <h2 class="text-uppercase text-center mb-5">Edit Text Content</h2>
 
-              <form method="POST" action="{{ route('textcontent.update', ['id' => $text_content->id_content]) }}"
+              <form method="POST" action="{{ route('content.update', ['id' => $text_content->id_content]) }}"
                 enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
 
                 <div class="form-floating mb-2">
-                  <textarea class="form-control" type="text" id="post_text" name="post_text" rows="30"
+                  <textarea class="form-control @if ($errors->has('post_text')) is-invalid @endif" type="text" id="post_text" name="post_text" rows="30"
                     placeholder="* Post Text" autofocus required rows="10">{{ $text_content->post_text }}</textarea>
                   <label for="post_text">* Post Text</label>
 

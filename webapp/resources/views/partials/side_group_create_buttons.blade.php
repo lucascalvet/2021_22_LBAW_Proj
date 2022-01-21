@@ -31,29 +31,32 @@ $link_create_media = route('mediacontent.make', ['id_group' => $group->id]);
     </div>
     @if($group->moderators->contains($user))
     <div class="d-flex flex-row my-3">
-        <a href="{{ route('group.mod.leave', ['id' => $group->id, 'user' => $user->id]) }}">
-            <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
+        <form method="POST" action="{{ route('group.mod.leave', ['id' => $group->id, 'user' => $user->id]) }}">
+            @csrf
+            <button type="submit" class="btn btn-secondary" style="width: auto; height: auto;">
                 <i class="bi bi-arrow-down-square {{ $icon_size }}"></i>
             </button>
-        </a>
+        </form>
         <span class="d-none d-md-block align-self-center ms-3">Quit Moderation</span>
     </div>
     @endif
     <div class="d-flex flex-row my-3">
-        <a href="{{ route('group.member.leave', ['id' => $group->id, 'user' => $user->id]) }}">
-            <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
+        <form method="POST" action="{{ route('group.member.leave', ['id' => $group->id, 'user' => $user->id]) }}">
+            @csrf
+            <button type="submit" class="btn btn-secondary" style="width: auto; height: auto;">
                 <i class="bi bi-x-circle {{ $icon_size }}"></i>
             </button>
-        </a>
+        </form>
         <span class="d-none d-md-block align-self-center ms-3">Leave Group</span>
     </div>
     @else
     <div class="d-flex flex-row my-3">
-        <a href="{{ route('group.member.join', ['id' => $group->id, 'user' => $user->id]) }}">
-            <button type="button" class="btn btn-secondary" style="width: auto; height: auto;">
+        <form method="POST" action="{{ route('group.member.join', ['id' => $group->id, 'user' => $user->id]) }}">
+            @csrf
+            <button type="submit" class="btn btn-secondary" style="width: auto; height: auto;">
                 <i class="bi bi-box-arrow-in-right {{ $icon_size }}"></i>
             </button>
-        </a>
+        </form>
         <span class="d-none d-md-block align-self-center ms-3">Join Group</span>
     </div>
     @endif
