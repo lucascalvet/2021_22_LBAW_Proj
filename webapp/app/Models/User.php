@@ -57,7 +57,9 @@ class User extends Authenticatable
         return DB::table('admin_user')->where('id_user', $this->id)->exists();
     }
 
-
+    /**
+     * Get the user's friend requests
+     */
     public function friendRequests(){
         return $this->hasMany(FriendRequest::class, 'id_receiver');
     }
@@ -69,7 +71,22 @@ class User extends Authenticatable
         }
         return false;
     }
-    
+
+    /**
+     * The user's comments.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'id_author');
+    }
+
+    /**
+     * The user's notifications.
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'id_user');
+    }
 
     /**
      * The groups that the user is member of.
