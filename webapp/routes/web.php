@@ -23,7 +23,7 @@ Route::get('content/{id}', 'ContentController@show')->whereNumber('id')->name('c
 Route::get('content/{id}/edit', 'ContentController@edit')->whereNumber('id')->middleware('auth')->name('content.edit');
 
 //Like content
-Route::post('content/{id}/like', 'ContentController@like')->middleware('auth')->name('content.like');
+Route::post('content/like/{id}', 'ContentController@like')->middleware('auth')->name('content.like');
 Route::patch('content/{id}', 'ContentController@update')->middleware('auth')->name('content.update');
 Route::delete('content/{id}', 'ContentController@destroy')->middleware('auth')->name('content.destroy');
 Route::patch('content/{id}/remove', 'ContentController@remove')->middleware('auth')->name('content.remove');
